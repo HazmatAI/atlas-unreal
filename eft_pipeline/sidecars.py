@@ -113,8 +113,13 @@ def _mesh_table(manifest, decal_mats, skip_decals):
 
     METADATA, not blob bytes, and deliberately so. Hashing meshes.bin whole costs a multi-GB read
     on every assemble and, worse, cannot be filtered: adding a spray-paint quad would move the id
-    that nav is judged by, even though nav skips decal faces entirely. The offsets and counts here
-    move whenever real geometry does, because every mesh after a changed one shifts.
+    that nav is judged by, even though nav skips decal faces entirely.
+
+    NAME AND SIZE ONLY -- never vtxOffset/idxOffset. Those are allocation artifacts: every mesh
+    written after an inserted one shifts, so a single added decal moved every offset in the file
+    and marked nav, grass, gamedata and the GI volume stale at once. Filtering the decal meshes out
+    of this list does not help when their mere presence renumbers everyone else. Sizes and names do
+    not move unless the geometry itself changed.
     """
     rows = []
     for m in manifest.get('meshes', []):
@@ -122,8 +127,10 @@ def _mesh_table(manifest, decal_mats, skip_decals):
         if skip_decals and subs and all(s.get('materialId', s.get('material_id')) in decal_mats
                                         for s in subs):
             continue                     # a wholly decal mesh: paint, not geometry
-        rows.append([m.get('id'), m.get('name'), m.get('vtxOffset'), m.get('vtxCount'),
-                     m.get('idxOffset'), m.get('idxCount')])
+        # submesh index COUNTS (not starts, which shift the same way) keep a re-split visible.
+        rows.append([m.get('name'), m.get('vtxCount'), m.get('idxCount'),
+                     [s.get('idxCount') for s in subs]])
+    rows.sort(key=lambda r: (str(r[0]), r[1] or 0, r[2] or 0))
     return rows
 
 

@@ -163,7 +163,30 @@ def main():
             mo = byid.get(pid)
             if mo is not None and mo.type.name == "Material":
                 md = mo.read_typetree()
-                out = {"name": md.get("m_Name"), "tex": None, "nrm": None, "w": 0, "h": 0}
+                out = {"name": md.get("m_Name"), "tex": None, "nrm": None, "w": 0, "h": 0,
+                       "opacity": 1.0, "opaque_albedo": False}
+                # The decal shader (Decal/DeferredDecalDiffuseNormalsDynamicEditor) resolves
+                # opacity as albedo.a * _Color.a * _AlphaMultiplier. Read the two material terms;
+                # the albedo term is measured from the exported PNG below. The other alpha-ish
+                # floats a decal material may carry (_NormalAlphaFadeoff, _NormalClip, _Cutoff)
+                # are NOT declared by that shader -- they are stale leftovers from whatever
+                # shader the material was authored against, and acting on them paints fiction.
+                _sp = md.get("m_SavedProperties", {})
+                _fl = {}
+                for _f in (_sp.get("m_Floats") or []):
+                    _k = _f[0] if isinstance(_f, (list, tuple)) else _f.get("first")
+                    _v = _f[1] if isinstance(_f, (list, tuple)) else _f.get("second")
+                    _fl[_k] = _v
+                _ca = 1.0
+                for _c in (_sp.get("m_Colors") or []):
+                    _k = _c[0] if isinstance(_c, (list, tuple)) else _c.get("first")
+                    _v = _c[1] if isinstance(_c, (list, tuple)) else _c.get("second")
+                    if _k == "_Color" and isinstance(_v, dict):
+                        _ca = float(_v.get("a", 1.0))
+                out["opacity"] = max(0.0, min(1.0, _ca * float(_fl.get("_AlphaMultiplier", 1.0) or 1.0)))
+                # The shader's angle term: the decal fades as the receiving surface turns away
+                # from the projection axis, raised to this exponent. Unity's default is 3.0.
+                out["normalPower"] = max(0.01, float(_fl.get("_NormalPower", 3.0) or 3.0))
                 mat_ext = None
                 for f in menv.files.values():
                     try:
@@ -211,8 +234,20 @@ def main():
                             continue
                     if k == "_MainTex":
                         from PIL import Image
+                        import numpy as _np
                         with Image.open(png) as im:
                             out["w"], out["h"] = im.size
+                            # A decal's coverage normally lives in the albedo's alpha. Six of the
+                            # 181 decal albedos on Interchange are stored in a format with no
+                            # alpha at all (sand_tread01 and friends are DXT1), so they have NO
+                            # coverage signal and would paint the whole projector box solid.
+                            # Measure it rather than assuming: the answer decides whether this
+                            # decal needs the vertex-feather path below.
+                            try:
+                                _a = _np.asarray(im.convert("RGBA"))[..., 3]
+                                out["opaque_albedo"] = bool(_a.min() >= 250)
+                            except Exception:
+                                out["opaque_albedo"] = False
                         out["tex"] = ds_name
                     elif k == "_BumpMap":
                         out["nrm"] = ds_name
@@ -455,6 +490,24 @@ def main():
                     "cut": None,
                     "n": 4,
                     "role": "decal",
+                    # COVERAGE. A decal normally gets its shape from the albedo's alpha, and 175
+                    # of Interchange's 181 decal albedos do. The remaining few are stored in a
+                    # format with no alpha channel, so nothing bounds them and they paint the
+                    # projector box as a solid rectangle with a hard edge.
+                    #
+                    # The game feathers its road and track decals through the SoftCutout path:
+                    # coverage comes from per-vertex COLOR_0.a, not from the texture. Reuse it.
+                    # `decal_project` writes that vertex alpha from each vertex's distance to the
+                    # projector box edge, and these params make the shader read it straight
+                    # through (coverage = color.a^2, a smooth quadratic border).
+                    #
+                    # ONLY for the alpha-less ones. A SoftCutout material's tex.a is treated as
+                    # SMOOTHNESS, so flagging a decal that does carry a real mask would throw its
+                    # shape away and replace it with a plain rounded rectangle.
+                    **({"vp": {"softCutout": [1.0, 0.0, 0.0]},
+                        "featherOpacity": round(float(mat.get("opacity", 1.0)), 4),
+                        "normalPower": round(float(mat.get("normalPower", 3.0)), 4)}
+                       if mat.get("opaque_albedo") else {}),
                 }],
             })
             lv_count += 1

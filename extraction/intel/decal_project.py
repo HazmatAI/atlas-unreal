@@ -25,21 +25,25 @@ G3 = np.diag([-1.0, 1.0, 1.0])
 SURFACE_OFFSET_M = 0.012
 # Skip absurd boxes (a few authored decals have degenerate or kilometre-scale extents).
 MAX_BOX_M = 200.0
-# A surface is painted when its normal opposes the projection axis by at least this much (cos of
-# the cutoff angle): 0.5 = 60 degrees. Unity fades decals out past a similar angle, and the cutoff
-# is what stops a decal SMEARING down a surface it only grazes -- at 0.2 (78 degrees) the artwork
-# stretched into long streaks along angled plates and their legs.
-FACING_MIN = 0.50
+# Unity's deferred decal paints EVERY front-facing surface inside the box and attenuates by the
+# angle instead of cutting at one. Decals that carry that attenuation (see the coverage term
+# below, the shader's own _NormalPower curve) use no cutoff at all. This value is the fallback for
+# the ones that cannot carry it, whose coverage lives in their albedo alpha: 0.5 = 60 degrees.
+# REMAINING DEVIATION: the game fades those instead of cutting them. Closing it needs the blend
+# path to multiply texture alpha by COLOR_0.a, which is a shader change, not an extraction one.
+FACING_MIN_NOFADE = 0.50
 # Runaway guard: a projector enclosing very dense geometry (terrain, foliage) contributes an
 # unbounded triangle count. Anything past this is reported and skipped rather than silently
 # doubling the pack.
 MAX_TRIS_PER_DECAL = 4000
-# How far past the authored box depth a decal may follow a surface it is already touching.
-# Authored boxes are routinely a little thinner than the slanted surface they paint: the
-# checkpoint plate sits 24 degrees off perpendicular, so its face sweeps 1.44 m through a 0.63 m
-# box and a hard clip cut the lettering mid-glyph. 2.5x covers that without letting a decal run
-# down a wall (4x did, and it showed).
-DEPTH_REACH = 2.5
+# Unity clips the decal to the authored box EXACTLY: the fragment reconstructs the world position
+# from depth and discards it outside the unit cube, so a surface leaving the box simply stops
+# being painted. Any value but 1.0 paints geometry the game does not.
+#
+# This was 2.5 to stop a hard clip cutting the checkpoint lettering mid-glyph. If the exact box
+# cuts it again, the box or its orientation is being derived wrong and that is the thing to fix --
+# reaching past the authored volume only hides it.
+DEPTH_REACH = 1.0
 
 
 def _load_obj(path, cache):
@@ -219,6 +223,14 @@ def project_decals(dataset, decals, log=print):
         near = np.nonzero(np.linalg.norm(centers - C, axis=1) <= (radii + reach))[0]
         verts_out = []
         uvs_out = []
+        cov_out = []
+        # Only alpha-less decals need a synthesised coverage; the rest already have a real mask in
+        # their albedo and flagging them SoftCutout would DISCARD it (that path reads tex.a as
+        # smoothness). extract_decals decides this per material and marks it here.
+        _sub0 = (dec.get("subs") or [{}])[0]
+        feather = bool(_sub0.get("vp"))
+        feather_peak = float(_sub0.get("featherOpacity", 1.0) or 1.0)
+        feather_power = float(_sub0.get("normalPower", 1.0) or 1.0)
         faces_out = []
         for ii in near:
             mesh, M3, T = keep_inst[ii]
@@ -277,7 +289,14 @@ def project_decals(dataset, decals, log=print):
                 # every decal to the far face of its surface ("its on the backside of the plate
                 # now"). Determined by observation, and the symptom is unmistakable if it ever
                 # flips again: the artwork disappears from the side you are standing on.
-                if float(np.dot(nrm, uy)) < FACING_MIN:
+                _facing = float(np.dot(nrm, uy))
+                # Backfaces never: the decal cannot reach the far side of a surface. Past that,
+                # a decal that CARRIES the shader's angle term (feather, below) needs no cutoff --
+                # the term attenuates it exactly as the game does. A decal whose coverage lives in
+                # its albedo alpha has nowhere to put that term (the blend path reads texture
+                # alpha, not vertex alpha), so it keeps the cutoff as the closest approximation;
+                # without one it paints grazing surfaces at FULL opacity and streaks down them.
+                if _facing < (0.0 if feather else FACING_MIN_NOFADE):
                     continue
                 poly = [np.asarray(p, np.float64) - C for p in tri]
                 # Clip to the IMAGE rectangle (X and Z) exactly -- that is what frames the artwork.
@@ -296,10 +315,25 @@ def project_decals(dataset, decals, log=print):
                         break
                 if len(poly) < 3:
                     continue
+                # COVERAGE, the way the decal shader computes it. Unity's deferred decal does a
+                # HARD clip against the projector box -- there is no edge feather in it, and
+                # inventing one would paint something the game never draws. What it does have is
+                # an angle term: the decal fades as the receiving surface turns away from the
+                # projection axis, raised to _NormalPower, times the material's opacity
+                # (_Color.a * _AlphaMultiplier). Both are real values read off the material.
+                #
+                # Written per POLYGON, since the receiving triangle's normal is constant across
+                # it. The shader squares the vertex alpha (coverage = color.a^2), so store the
+                # square root and let it undo that.
+                _face = max(0.0, float(np.dot(nrm, uy)))
+                cov_tri = (_face ** feather_power) * feather_peak
+                cov_tri = max(0.0, min(1.0, cov_tri)) ** 0.5
                 base = len(verts_out)
                 for p in poly:
                     world = C + p + nrm * SURFACE_OFFSET_M
                     verts_out.append(world)
+                    if feather:
+                        cov_out.append(cov_tri)
                     # UV from the box's own local frame: X across, Z down the image.
                     # U runs against the box's local X: conjugating the projector reversed that
                     # axis's handedness, so reading it directly rendered the artwork mirrored
@@ -336,6 +370,13 @@ def project_decals(dataset, decals, log=print):
                 f.write("vt %.6f %.6f\n" % (u, vv))
             for a, b, c in faces_out:
                 f.write("f %d/%d %d/%d %d/%d\n" % (a + 1, a + 1, b + 1, b + 1, c + 1, c + 1))
+        if feather and len(cov_out) == len(verts_out):
+            # COLOR_0 sidecar, the same <mesh>.vcol.npy the geometry extractor writes for the
+            # game's own vert-painted road decals. RGB stays white; only .a carries coverage.
+            cov = np.asarray(cov_out, np.float32)
+            vc = np.ones((len(cov), 4), np.float32)
+            vc[:, 3] = cov
+            np.save(os.path.join(mesh_dir, name[:-4] + ".vcol.npy"), vc)
         sub = dict(dec["subs"][0])
         # The mesh carries WORLD positions and REAL uv coordinates now, so the instance is identity
         # and the sub's tiling only has to remap the unit square onto the atlas cell.
