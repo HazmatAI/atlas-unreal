@@ -641,7 +641,25 @@ class _Importer(object):
         # ---- alpha -------------------------------------------------------
         # The alpha test runs on the COMPUTED albedo alpha (tex.a * tint.a), so
         # an untextured cutout with tint.a below the cutoff still discards.
-        if alpha_mode != "OPAQUE" and alpha_out is not None:
+        # ---- water: coverage is in RED, not alpha --------------------------
+        # The game's `Decal/Water Deferred Decal` samples the puddle mask from the RED channel;
+        # these atlases ship alpha identically 1.0. Driving opacity from alpha therefore covers
+        # the whole quad with a translucent sheet -- a 30 m glass plate laid over the road, which
+        # is what "the road is transparent" looks like. Take coverage from red and shade it as
+        # wet asphalt: dark, smooth, and opaque where the mask says there is water.
+        if role == "water":
+            if img is not None:
+                sep = _node(nt, "ShaderNodeSeparateColor", -520, 120)
+                nt.links.new(tex.outputs["Color"], sep.inputs["Color"])
+                nt.links.new(sep.outputs["Red"], bsdf.inputs["Alpha"])
+            else:
+                _sock(bsdf, "Alpha", 0.0)          # untextured "water" is not a white slab
+            _sock(bsdf, "Base Color", (0.02, 0.023, 0.026, 1.0))
+            _sock(bsdf, "Roughness", 0.08)
+            _sock(bsdf, "Metallic", 0.0)
+            alpha_mode = "WATER_DONE"
+
+        if alpha_mode not in ("OPAQUE", "WATER_DONE") and alpha_out is not None:
             a_out = alpha_out
             if abs(tint[3] - 1.0) > 1e-4:
                 mn = _math(nt, "MULTIPLY", -520, 120)
