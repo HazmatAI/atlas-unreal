@@ -388,6 +388,8 @@ class _Importer(object):
         self.inst_aff = aff
         self.inst_mesh = col("meshId", 0, np.int64)
         self.inst_lodi = col("lodIndex", -1, np.int64)
+        # needed to find each LOD group's FINEST shipped shell (see the lod filter below)
+        self.inst_lodg = col("lodGroup", -1, np.int64)
         self.inst_root = col("rootId", 0, np.int64)
         self.inst_flags = col("flags", 0, np.int64)
         self.inst_n = n
@@ -416,7 +418,24 @@ class _Importer(object):
             lodv = int(self.lod)
             # lodIndex < 0 means "not part of a LOD group": always keep it,
             # otherwise every non-LOD prop in the map disappears.
+            # A group whose FINEST shipped shell is not the requested level would otherwise
+            # vanish outright: some groups ship only LOD1+ (the assembler's dedup can drop a
+            # redundant LOD0), so an equality test deletes the object instead of drawing it at
+            # the closest shell it has. Take the group's minimum available level instead, which
+            # is what the viewer does when it clamps a forced shell.
             lodok = (self.inst_lodi == lodv) | (self.inst_lodi < 0)
+            grp = self.inst_lodg
+            real = grp >= 0
+            if real.any():
+                gmax = int(grp[real].max())
+                finest = np.full(gmax + 2, 1 << 30, np.int64)
+                np.minimum.at(finest, grp[real], self.inst_lodi[real])
+                nearest = (self.inst_lodi == finest[np.clip(grp, 0, gmax)]) & real
+                rescued = int((nearest & ~lodok & keep).sum())
+                if rescued:
+                    log.info("lod      %d instance(s) kept at their group's finest shell "
+                             "(no LOD%d shipped)" % (rescued, lodv))
+                lodok |= nearest
             stats["lod"] = int((~lodok & keep).sum())
             keep &= lodok
         else:
@@ -649,13 +668,22 @@ class _Importer(object):
         # wet asphalt: dark, smooth, and opaque where the mask says there is water.
         if role == "water":
             if img is not None:
+                # A TEXTURED water material is a puddle decal. Its atlas ships alpha identically
+                # 1.0 and carries the mask in RED, so driving opacity from alpha lays a solid
+                # translucent sheet over the road.
                 sep = _node(nt, "ShaderNodeSeparateColor", -520, 120)
                 nt.links.new(tex.outputs["Color"], sep.inputs["Color"])
                 nt.links.new(sep.outputs["Red"], bsdf.inputs["Alpha"])
+                _sock(bsdf, "Base Color", (0.02, 0.023, 0.026, 1.0))
+                _sock(bsdf, "Roughness", 0.08)
             else:
-                _sock(bsdf, "Alpha", 0.0)          # untextured "water" is not a white slab
-            _sock(bsdf, "Base Color", (0.02, 0.023, 0.026, 1.0))
-            _sock(bsdf, "Roughness", 0.08)
+                # UNTEXTURED water is the sea, lakes and treatment basins: a deep BODY of water,
+                # which the viewer keeps in the OPAQUE pass and shades as dark teal. Treating it
+                # like a puddle with no mask made every one of them fully transparent, so you
+                # looked straight through the sea to the world background.
+                _sock(bsdf, "Alpha", 1.0)
+                _sock(bsdf, "Base Color", (0.0275, 0.1418, 0.1323, 1.0))
+                _sock(bsdf, "Roughness", 0.10)
             _sock(bsdf, "Metallic", 0.0)
             alpha_mode = "WATER_DONE"
 
@@ -665,6 +693,22 @@ class _Importer(object):
         # a SMOOTHNESS map. Driving opacity from that alpha eats the road surface in patches, which
         # is what the asphalt looked like. The viewer computes exactly this:
         #     coverage = clamp(color.a * astr - (acut - ahgt), 0, 1) * color.a
+        # THE VERT-PAINT FAMILY NEVER ALPHA-TESTS. Its texture alpha is a SMOOTHNESS map, and the
+        # assembler's Otsu coverage classifier mis-tags some of these as cutout. The viewer clears
+        # the cutout bit for any vp material that is not a decal (gpu_driven.rs); without the same
+        # guard every texel whose SMOOTHNESS falls under the cutoff is punched out and the ground
+        # slabs come in full of rectangular holes.
+        if isinstance(rec.get("vp"), dict) and role != "decal" and alpha_mode != "OPAQUE":
+            alpha_mode = "OPAQUE"
+            _set(mat, "blend_method", "OPAQUE")
+            _set(mat, "surface_render_method", "DITHERED")
+
+        # RFA GLASS: same channel, same trap. When roughnessFromAlbedoAlpha is set the alpha is a
+        # smoothness map and coverage comes from the TINT alpha alone, not from the texture.
+        if role == "glass" and rec.get("roughnessFromAlbedoAlpha") and alpha_out is not None:
+            _sock(bsdf, "Alpha", tint[3])
+            alpha_mode = "RFA_GLASS_DONE"
+
         sc_p = ((rec.get("vp") or {}).get("softCutout")
                 if isinstance(rec.get("vp"), dict) else None)
         if sc_p and len(sc_p) >= 3 and role == "decal":
@@ -686,7 +730,8 @@ class _Importer(object):
             nt.links.new(fin.outputs[0], bsdf.inputs["Alpha"])
             alpha_mode = "SOFTCUT_DONE"
 
-        if alpha_mode not in ("OPAQUE", "WATER_DONE", "SOFTCUT_DONE") and alpha_out is not None:
+        if alpha_mode not in ("OPAQUE", "WATER_DONE", "SOFTCUT_DONE",
+                              "RFA_GLASS_DONE") and alpha_out is not None:
             a_out = alpha_out
             if abs(tint[3] - 1.0) > 1e-4:
                 mn = _math(nt, "MULTIPLY", -520, 120)
