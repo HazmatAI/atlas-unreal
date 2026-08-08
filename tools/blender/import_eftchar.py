@@ -874,6 +874,13 @@ def import_eftchar(char_dir, clip_name=None, loops=1, name_prefix="",
 
     ident = name_prefix + str(pack.m.get("id", "character"))
     arm_obj, bone_names = _build_armature(pack, rest_mats, lengths, coll, ident)
+    # PUBLISH the axis correction. Blender bones point along their own local +Y, so this importer
+    # rotates every bone by q4 to make that happen (rest = bind_world @ q4). Anything that wants to
+    # sit where the ENGINE puts it -- a weapon attached to Weapon_root with an identity transform --
+    # must undo it: engine_pose = pose_bone.matrix @ q4_inverse. Without that the rifle is rotated
+    # by the bone-axis convention and comes out sideways in the character's hands.
+    arm_obj["eft_bone_axis"] = str(axis_key)
+    arm_obj["eft_q4"] = [c for row in q4 for c in row]
 
     mats = {}
     for i, spec in enumerate(pack.m.get("materials") or []):

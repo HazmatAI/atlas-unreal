@@ -659,7 +659,34 @@ class _Importer(object):
             _sock(bsdf, "Metallic", 0.0)
             alpha_mode = "WATER_DONE"
 
-        if alpha_mode not in ("OPAQUE", "WATER_DONE") and alpha_out is not None:
+        # ---- SoftCutout roads: coverage is VERTEX PAINT, not texture alpha ------------------
+        # `Custom/Vert Paint SoftCutout Decal` is what EFT paves with: roads, parking, yard slabs.
+        # Its coverage is COLOR_0.a shaped by the material's own params, and its texture ALPHA is
+        # a SMOOTHNESS map. Driving opacity from that alpha eats the road surface in patches, which
+        # is what the asphalt looked like. The viewer computes exactly this:
+        #     coverage = clamp(color.a * astr - (acut - ahgt), 0, 1) * color.a
+        sc_p = ((rec.get("vp") or {}).get("softCutout")
+                if isinstance(rec.get("vp"), dict) else None)
+        if sc_p and len(sc_p) >= 3 and role == "decal":
+            astr, acut, ahgt = (float(sc_p[0]), float(sc_p[1]), float(sc_p[2]))
+            vcol = _node(nt, "ShaderNodeVertexColor", -900, -40)
+            vcol.layer_name = "Col"
+            mul = _math(nt, "MULTIPLY", -700, -40); mul.inputs[1].default_value = astr
+            nt.links.new(vcol.outputs["Alpha"], mul.inputs[0])
+            sub = _math(nt, "SUBTRACT", -540, -40); sub.inputs[1].default_value = (acut - ahgt)
+            nt.links.new(mul.outputs[0], sub.inputs[0])
+            cl = _math(nt, "CLAMP" if False else "MINIMUM", -380, -40)
+            cl.inputs[1].default_value = 1.0
+            nt.links.new(sub.outputs[0], cl.inputs[0])
+            mx = _math(nt, "MAXIMUM", -240, -40); mx.inputs[1].default_value = 0.0
+            nt.links.new(cl.outputs[0], mx.inputs[0])
+            fin = _math(nt, "MULTIPLY", -100, -40)
+            nt.links.new(mx.outputs[0], fin.inputs[0])
+            nt.links.new(vcol.outputs["Alpha"], fin.inputs[1])
+            nt.links.new(fin.outputs[0], bsdf.inputs["Alpha"])
+            alpha_mode = "SOFTCUT_DONE"
+
+        if alpha_mode not in ("OPAQUE", "WATER_DONE", "SOFTCUT_DONE") and alpha_out is not None:
             a_out = alpha_out
             if abs(tint[3] - 1.0) > 1e-4:
                 mn = _math(nt, "MULTIPLY", -520, 120)

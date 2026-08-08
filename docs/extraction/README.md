@@ -241,6 +241,7 @@ parameter-fitted reconstruction as the no-game-files fallback.
 | `StaticDeferredDecal` discovery without type trees, payload byte layout, material and atlas resolution, box axes, projection clipping | [decals](decals.md) |
 | Reading IL2CPP MonoBehaviours from raw bytes, per-class payload layouts, exfils/doors/loot/zones, bit masks | [game data](game-data.md) |
 | Physics colliders and their record layout, `interact_<lv>.json`, and the GameObject-name semantic layer | [colliders, interactables and semantics](colliders-interactables-and-semantics.md) |
+| Rebuilding a pack in Blender: which channel means what per material role, shear, bone space, grass, the terrain splat, and the tricks that do not survive a path tracer | [importing into Blender](blender-import.md) |
 | Skeleton and skinning, animation clip decode, the animator graph, equipment binding, the `.eftchar` container | [characters and animation](characters-and-animation.md) |
 | Sky cubemap faces and derived colours, particle systems and flipbook atlases, the Water4 parameter set | [sky, particles and water](sky-particles-and-water.md) |
 | Light extraction, controller-driven lamps, what EFT does and does not ship, the SH irradiance volume format and bake math | [lighting and the SH bake](lighting-and-sh-bake.md) |

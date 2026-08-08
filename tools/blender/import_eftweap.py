@@ -227,7 +227,16 @@ def import_eftweap(weap_dir, armature=None, bone="Weapon_root", collection=None,
         pb = armature.pose.bones.get(bone)
         if pb is not None:
             bpy.context.view_layer.update()
-            obj.matrix_world = armature.matrix_world @ pb.matrix
+            # UNDO THE BONE-AXIS CORRECTION. Blender bones must point along their own local +Y, so
+            # the character importer rotates every bone by q4 when it builds the rest pose
+            # (rest = bind_world @ q4) and publishes q4 on the armature. The engine attaches the
+            # weapon to the bone's OWN matrix, which is pose.matrix @ q4_inverse; using
+            # pose.matrix directly rotates the rifle by that convention and it reads sideways.
+            q4 = armature.get("eft_q4")
+            corr = Matrix.Identity(4)
+            if q4 is not None and len(q4) == 16:
+                corr = Matrix([[q4[r * 4 + c] for c in range(4)] for r in range(4)]).inverted_safe()
+            obj.matrix_world = armature.matrix_world @ pb.matrix @ corr
 
     if verbose:
         print("[eftweap] %s  %d verts, %d tris (%d degenerate dropped), %d submeshes, %d materials"
