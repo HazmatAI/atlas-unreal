@@ -632,14 +632,15 @@ class _Importer(object):
 
         # ---- albedo ------------------------------------------------------
         albedo = rec.get("albedo")
-        if not albedo:
-            vp = rec.get("vp")
-            if isinstance(vp, dict):
-                layers = vp.get("layers") or []
-                if layers and isinstance(layers[0], dict):
-                    # Approximation: the real splat is a 3-layer vertex-paint
-                    # blend; layer 0 is the base and reads correctly on its own.
-                    albedo = layers[0].get("albedo")
+        vp_rec = rec.get("vp") if isinstance(rec.get("vp"), dict) else None
+        vp_layers = (vp_rec.get("layers") or []) if vp_rec else []
+        # the PACK's layer schema is {albedo, normal, uv, tint} (assemble_bevy._vp record),
+        # not the dataset's {tex, nrm, uv, col}
+        vp_ok = (len(vp_layers) == 3
+                 and all(isinstance(l, dict) and l.get("albedo") for l in vp_layers))
+        if not albedo and vp_layers and isinstance(vp_layers[0], dict):
+            # layer 0 is the base; it is also the fallback when the full splat cannot be built
+            albedo = vp_layers[0].get("albedo")
         img = self._image(albedo, False) if albedo else None
         alpha_out = None
         if img is not None:
@@ -657,24 +658,161 @@ class _Importer(object):
                 col_out = oc
             nt.links.new(col_out, bsdf.inputs["Base Color"])
 
+            # ---- VERT-PAINT 3-LAYER SPLAT -------------------------------------------------
+            # Roads, parking, yards and painted metal are a three-layer blend, not one tiled
+            # texture. Weights are the HEIGHTS mask times the mesh's COLOR_0.rgb, raised to the
+            # material's blend exponent and normalised; layer 0 is the base and is also the
+            # fallback when the mask is empty (an unpainted mesh or the "Solid" variant), which
+            # is what stops a near-zero mask washing out to an even three-way mix.
+            #
+            # Each layer has its own ST, and un-baking it from the BASE uv is V-FLIP AWARE: the
+            # assembler baked v' = 1 - (v*sy + oy), so the naive (uv - zw)/xy is wrong and shifts
+            # a layer by up to half a tile. This mirrors the renderer's detail_xform exactly.
+            if vp_ok:
+                def _xf(det, base):
+                    bsx = base[0] if abs(base[0]) > 1e-6 else 1.0
+                    bsy = base[1] if abs(base[1]) > 1e-6 else 1.0
+                    rx, ry = det[0] / bsx, det[1] / bsy
+                    return (rx, ry, det[2] - base[2] * rx, 1.0 - det[3] - ry * (1.0 - base[3]))
+
+                base_st = [float(x) for x in (rec.get("uvXform") or [1, 1, 0, 0])]
+                uvn = _node(nt, "ShaderNodeUVMap", -1500, 700)
+                heights = self._image(vp_rec.get("heights"), True) if vp_rec.get("heights") else None
+                blend_p = max(float(vp_rec.get("blend", 1.0) or 1.0), 1.0)
+
+                def _sample(path, st, y):
+                    """A layer image sampled in its OWN frame, relative to the baked base UV."""
+                    im = self._image(path, False)
+                    if im is None:
+                        return None
+                    r = _xf([float(v) for v in st], base_st)
+                    m = _node(nt, "ShaderNodeMapping", -1180, y)
+                    m.inputs["Scale"].default_value = (r[0], r[1], 1.0)
+                    m.inputs["Location"].default_value = (r[2], r[3], 0.0)
+                    nt.links.new(uvn.outputs["UV"], m.inputs["Vector"])
+                    t = _node(nt, "ShaderNodeTexImage", -980, y)
+                    t.image = im; t.extension = "REPEAT"; t.interpolation = "Smart"
+                    nt.links.new(m.outputs["Vector"], t.inputs["Vector"])
+                    return t
+
+                lay = [_sample(l.get("albedo"), l.get("uv") or [1, 1, 0, 0], 700 - i * 280)
+                       for i, l in enumerate(vp_layers)]
+                if heights is not None and all(l is not None for l in lay):
+                    hr = _xf([1.0, 1.0, 0.0, 0.0], base_st)
+                    hm = _node(nt, "ShaderNodeMapping", -1180, -140)
+                    hm.inputs["Scale"].default_value = (hr[0], hr[1], 1.0)
+                    hm.inputs["Location"].default_value = (hr[2], hr[3], 0.0)
+                    nt.links.new(uvn.outputs["UV"], hm.inputs["Vector"])
+                    ht = _node(nt, "ShaderNodeTexImage", -980, -140)
+                    ht.image = heights; ht.extension = "REPEAT"
+                    nt.links.new(hm.outputs["Vector"], ht.inputs["Vector"])
+
+                    hsep = _node(nt, "ShaderNodeSeparateColor", -800, -140)
+                    nt.links.new(ht.outputs["Color"], hsep.inputs["Color"])
+                    vcs = _node(nt, "ShaderNodeVertexColor", -800, -320)
+                    vcs.layer_name = "Col"
+                    vsep = _node(nt, "ShaderNodeSeparateColor", -640, -320)
+                    nt.links.new(vcs.outputs["Color"], vsep.inputs["Color"])
+
+                    chan = ("Red", "Green", "Blue")
+                    wsock, tot = [], None
+                    for i in range(3):
+                        mul = _math(nt, "MULTIPLY", -460, -140 - i * 120)
+                        nt.links.new(hsep.outputs[chan[i]], mul.inputs[0])
+                        nt.links.new(vsep.outputs[chan[i]], mul.inputs[1])
+                        mx = _math(nt, "MAXIMUM", -320, -140 - i * 120)
+                        nt.links.new(mul.outputs[0], mx.inputs[0])
+                        mx.inputs[1].default_value = 1e-4
+                        pw = _math(nt, "POWER", -180, -140 - i * 120)
+                        nt.links.new(mx.outputs[0], pw.inputs[0])
+                        pw.inputs[1].default_value = blend_p
+                        wsock.append(pw.outputs[0])
+                        if tot is None:
+                            tot = pw.outputs[0]
+                        else:
+                            ad = _math(nt, "ADD", -40, -140 - i * 120)
+                            nt.links.new(tot, ad.inputs[0]); nt.links.new(pw.outputs[0], ad.inputs[1])
+                            tot = ad.outputs[0]
+                    safe = _math(nt, "MAXIMUM", 100, -420); safe.inputs[1].default_value = 1e-4
+                    nt.links.new(tot, safe.inputs[0])
+
+                    acc = None
+                    for i in range(3):
+                        tintl = [float(x) for x in (vp_layers[i].get("tint") or [1, 1, 1])]
+                        tn = _node(nt, "ShaderNodeMix", 260, 700 - i * 200)
+                        tn.data_type = 'RGBA'; tn.blend_type = 'MULTIPLY'
+                        tn.inputs["Factor"].default_value = 1.0
+                        nt.links.new(lay[i].outputs["Color"], tn.inputs[6])
+                        tn.inputs[7].default_value = (tintl[0], tintl[1], tintl[2], 1.0)
+                        nrm_w = _math(nt, "DIVIDE", 260, 620 - i * 200)
+                        nt.links.new(wsock[i], nrm_w.inputs[0])
+                        nt.links.new(safe.outputs[0], nrm_w.inputs[1])
+                        sc = _node(nt, "ShaderNodeVectorMath", 420, 700 - i * 200)
+                        sc.operation = 'SCALE'
+                        nt.links.new(tn.outputs[2], sc.inputs[0])
+                        nt.links.new(nrm_w.outputs[0], sc.inputs["Scale"])
+                        if acc is None:
+                            acc = sc.outputs["Vector"]
+                        else:
+                            ad = _node(nt, "ShaderNodeVectorMath", 580, 700 - i * 200)
+                            ad.operation = 'ADD'
+                            nt.links.new(acc, ad.inputs[0]); nt.links.new(sc.outputs["Vector"], ad.inputs[1])
+                            acc = ad.outputs["Vector"]
+
+                    # empty mask -> base layer, matching the renderer rather than washing out
+                    gate = _math(nt, "GREATER_THAN", 700, -420)
+                    nt.links.new(tot, gate.inputs[0]); gate.inputs[1].default_value = 1e-5
+                    pick = _node(nt, "ShaderNodeMix", 840, 400)
+                    pick.data_type = 'RGBA'
+                    nt.links.new(gate.outputs[0], pick.inputs["Factor"])
+                    nt.links.new(lay[0].outputs["Color"], pick.inputs[6])
+                    nt.links.new(acc, pick.inputs[7])
+                    nt.links.new(pick.outputs[2], bsdf.inputs["Base Color"])
+
         # ---- alpha -------------------------------------------------------
         # The alpha test runs on the COMPUTED albedo alpha (tex.a * tint.a), so
         # an untextured cutout with tint.a below the cutoff still discards.
-        # ---- water: coverage is in RED, not alpha --------------------------
-        # The game's `Decal/Water Deferred Decal` samples the puddle mask from the RED channel;
-        # these atlases ship alpha identically 1.0. Driving opacity from alpha therefore covers
-        # the whole quad with a translucent sheet -- a 30 m glass plate laid over the road, which
-        # is what "the road is transparent" looks like. Take coverage from red and shade it as
-        # wet asphalt: dark, smooth, and opaque where the mask says there is water.
+        # ---- water ---------------------------------------------------------
+        # WHERE THE PUDDLE MASK LIVES IS PER-TEXTURE, not a fixed channel. The renderer probes the
+        # albedo's alpha and only falls back to luma when that alpha is (near) CONSTANT, which is
+        # the City_puddle_atlas case that ships alpha identically 1.0:
+        #     mask = tex.a,  or luma(tex.rgb) when (alpha_hi - alpha_lo) < 13/255
+        # Hardcoding either channel is wrong. Interchange's four water textures all have a REAL
+        # varying alpha (ranges 0..174, 0..255, 0..251, 0..240), so reading red there drew every
+        # puddle at the wrong shape and a fraction of its intended coverage.
+        #
+        # Coverage is then shaped the way the game's own fragment does:
+        #     coverage = clamp(mask * 1.52, 0, 1) * smoothstep(0.015, 0.10, that) * tint.a
+        # The 1.52 is the authored _FadeStrength; the smoothstep suppresses the near-zero tail so
+        # the decal quad's own boundary does not become visible.
         if role == "water":
             if img is not None:
-                # A TEXTURED water material is a puddle decal. Its atlas ships alpha identically
-                # 1.0 and carries the mask in RED, so driving opacity from alpha lays a solid
-                # translucent sheet over the road.
-                sep = _node(nt, "ShaderNodeSeparateColor", -520, 120)
-                nt.links.new(tex.outputs["Color"], sep.inputs["Color"])
-                nt.links.new(sep.outputs["Red"], bsdf.inputs["Alpha"])
-                _sock(bsdf, "Base Color", (0.02, 0.023, 0.026, 1.0))
+                mask_out = None
+                if _alpha_is_constant(img):
+                    lum = _node(nt, "ShaderNodeRGBToBW", -520, 120)
+                    nt.links.new(tex.outputs["Color"], lum.inputs["Color"])
+                    mask_out = lum.outputs["Val"]
+                else:
+                    mask_out = tex.outputs["Alpha"]
+                gain = _math(nt, "MULTIPLY", -360, 120); gain.inputs[1].default_value = 1.52
+                nt.links.new(mask_out, gain.inputs[0])
+                cl = _math(nt, "MINIMUM", -220, 120); cl.inputs[1].default_value = 1.0
+                nt.links.new(gain.outputs[0], cl.inputs[0])
+                ss = _node(nt, "ShaderNodeMapRange", -80, 120)
+                ss.interpolation_type = 'SMOOTHSTEP'
+                ss.inputs["From Min"].default_value = 0.015
+                ss.inputs["From Max"].default_value = 0.10
+                nt.links.new(cl.outputs[0], ss.inputs["Value"])
+                tail = _math(nt, "MULTIPLY", 60, 120)
+                nt.links.new(cl.outputs[0], tail.inputs[0])
+                nt.links.new(ss.outputs["Result"], tail.inputs[1])
+                fin = _math(nt, "MULTIPLY", 200, 120)
+                fin.inputs[1].default_value = float(tint[3])   # authored _Color.a, not a constant
+                nt.links.new(tail.outputs[0], fin.inputs[0])
+                nt.links.new(fin.outputs[0], bsdf.inputs["Alpha"])
+                # Wet asphalt keeps the AUTHORED tint; the records carry materially different
+                # colours and alphas and overwriting them flattened every puddle to one look.
+                _sock(bsdf, "Base Color", (tint[0] * 0.25, tint[1] * 0.25, tint[2] * 0.25, 1.0))
                 _sock(bsdf, "Roughness", 0.08)
             else:
                 # UNTEXTURED water is the sea, lakes and treatment basins: a deep BODY of water,
@@ -746,8 +884,29 @@ class _Importer(object):
                 a_out = gt.outputs[0]
             nt.links.new(a_out, bsdf.inputs["Alpha"])
 
-        # ---- roughness from albedo alpha ---------------------------------
-        if rec.get("roughnessFromAlbedoAlpha") and alpha_out is not None \
+        # ---- roughness ----------------------------------------------------
+        # A bound _SpecMap wins: it is a GLOSS map (high = shiny), the inverse of Blender's
+        # roughness, and it is per-texel where the material's scalar roughness is one number for
+        # the whole surface. 2,492 Interchange materials ship one. The character and weapon
+        # importers already invert it; the map importer read only the scalar, so every painted,
+        # worn and wet surface came in uniformly rough.
+        spec_path = rec.get("specMap")
+        simg = self._image(spec_path, True) if spec_path else None
+        if simg is not None:
+            stex = _node(nt, "ShaderNodeTexImage", -1000, -600)
+            stex.image = simg
+            stex.label = "gloss (_SpecMap)"
+            stex.extension = "REPEAT"
+            _inv = _math(nt, "SUBTRACT", -700, -600)
+            _inv.inputs[0].default_value = 1.0
+            nt.links.new(stex.outputs["Color"], _inv.inputs[1])
+            _cl = _math(nt, "MAXIMUM", -540, -600)
+            nt.links.new(_inv.outputs[0], _cl.inputs[0])
+            _cl.inputs[1].default_value = 0.06
+            nt.links.new(_cl.outputs[0], bsdf.inputs["Roughness"])
+
+        # ---- roughness from albedo alpha (only when no gloss map is bound) ---
+        if simg is None and rec.get("roughnessFromAlbedoAlpha") and alpha_out is not None \
                 and role in ("opaque", "glass"):
             sub = _math(nt, "SUBTRACT", -520, -60)
             sub.inputs[0].default_value = 1.0
@@ -1220,6 +1379,31 @@ class _Importer(object):
                 obj.hide_render = True
             link(obj)
             self.n_objects += 1
+
+
+def _alpha_is_constant(img):
+    """True when an image's ALPHA is (near) constant, so the mask is in the luma instead.
+
+    Mirrors the renderer's probe: sample on a big stride and call it constant when the range is
+    under 13/255. Blender keeps pixels as a flat RGBA float list; sampling every 101st texel is
+    the same cadence and keeps this cheap on a 2K atlas. Undecodable -> False, i.e. assume the
+    alpha mask, which is the renderer's fallback too.
+    """
+    try:
+        n = img.size[0] * img.size[1]
+        if n <= 0:
+            return False
+        px = img.pixels[:]
+        lo, hi = 1.0, 0.0
+        for i in range(3, len(px), 4 * 101):
+            a = px[i]
+            if a < lo:
+                lo = a
+            if a > hi:
+                hi = a
+        return (hi - lo) < (13.0 / 255.0)
+    except Exception:
+        return False
 
 
 def _set(obj, attr, value):

@@ -36,6 +36,9 @@ validator, and each was invisible on the surfaces where the two interpretations 
 | water coverage | nothing | every road under a puddle decal |
 | SoftCutout coverage | nothing | every road, parking bay and yard slab |
 | grass card V | nothing | every blade, tips buried and cut ends waving |
+| water mask channel | a constant-alpha atlas | every puddle whose alpha is real |
+| vert-paint layer count | a single-layer surface | every road, yard and painted slab |
+| `specMap` | matte surfaces | anything painted, worn or wet |
 
 The lesson is procedural: when a surface looks wrong, find the channel and compare it against the
 shader before touching geometry or lighting. Three of the four above were first mistaken for
@@ -52,13 +55,16 @@ it is not opacity in three of the six cases.
 | `cutout` | MASK | real coverage | alpha, tested against `alphaCutoff` |
 | `glass` | BLEND | real coverage | alpha |
 | `decal` | BLEND | real coverage, **unless** the material carries `vp.softCutout` | alpha, or vertex paint (below) |
-| `water` | BLEND | **identically 1.0** | the albedo's **RED** channel |
+| `water` | BLEND | usually a REAL mask; constant on some atlases | the albedo's alpha, or its luma when that alpha is constant |
 | terrain | OPAQUE | unused | the MicroSplat control maps |
 
 Two special cases carry the surface of the whole map between them:
 
-**SoftCutout decals** (`vp.softCutout = [alphaStrength, cutoff, alphaHeight]`, 133 materials on
-Interchange) are the roads, parking and yard slabs. Their coverage is per-vertex `COLOR_0.a`, and
+**SoftCutout decals** (`vp.softCutout = [alphaStrength, cutoff, alphaHeight]`) are the roads,
+parking and yard slabs. On Interchange 133 materials carry those params but only 117 are
+`role == "decal"`; the other 16 are opaque Vert-Paint SOLIDS and must have NO alpha gate at all.
+Gate on the role, not on the presence of the params, or those sixteen ground and courtyard
+materials come in full of holes or vanish. Their coverage is per-vertex `COLOR_0.a`, and
 their texture alpha is a SMOOTHNESS map:
 
 ```
@@ -69,11 +75,37 @@ coverage = clamp(COLOR_0.a * alphaStrength - (cutoff - alphaHeight), 0, 1) * COL
 different render paths, and conflating them produces the invisible-parking-lot / hard-dirt-road
 pair.
 
-**Water decals** ship `alpha = 1.0` everywhere and put the puddle mask in RED. Driving opacity from
-alpha covers the entire quad with a translucent sheet.
+**Water decals** do NOT have a fixed mask channel. The renderer probes the albedo's alpha and
+only falls back to luma when that alpha is (near) CONSTANT:
+
+```
+mask = tex.a,  or luma(tex.rgb) when (alpha_hi - alpha_lo) < 13/255      # stride-101 sample
+coverage = clamp(mask * 1.52, 0, 1) * smoothstep(0.015, 0.10, that) * tint.a
+```
+
+The 1.52 is the authored fade strength and the smoothstep suppresses the near-zero tail, which is
+what stops the decal quad's own boundary becoming visible. `City_puddle_atlas` is the constant-alpha
+case that motivates the luma path, but it is the exception: all four of Interchange's water
+textures carry a real varying alpha (ranges 0..174, 0..255, 0..251, 0..240), so hardcoding EITHER
+channel is wrong. Hardcoding red draws every one of those puddles at the wrong shape and a fraction
+of its coverage; hardcoding alpha lays a translucent sheet over the road wherever the atlas really
+is constant. Keep the authored tint too: the records carry materially different colours and alphas,
+including 0, 0.297, 0.5804 and 0.747.
+
+Untextured `water` is not a puddle at all. It is the sea, lakes and treatment basins, which the
+renderer keeps in the OPAQUE pass and shades as a dark teal body.
+
+**Vert-Paint materials are a THREE-layer blend**, not one tiled texture, and 138 of them pave
+Interchange. Weights are the heights mask times the mesh's `COLOR_0.rgb`, raised to the material's
+blend exponent and normalised, with layer 0 as the base and as the fallback when the mask is empty
+(an unpainted mesh or the SOLID variant) so a near-zero mask does not wash out to an even mix. Each
+layer carries its own ST, and un-baking it from the base UV is V-FLIP AWARE: the assembler baked
+`v' = 1 - (v*sy + oy)`, so the naive `(uv - offset) / scale` shifts a layer by up to half a tile.
 
 Everything else: normal maps are DirectX convention, so invert green. `_SpecMap` is a GLOSS map,
-the inverse of roughness. UV tiling and the V flip are already baked into the vertex UVs, so
+the inverse of roughness, and it is PER-TEXEL where the material's scalar roughness is one number
+for the whole surface; 2,492 Interchange materials ship one, so ignoring it makes every painted,
+worn and wet surface uniformly rough. UV tiling and the V flip are already baked into the vertex UVs, so
 `materials.json.uvXform` is reference only and must not be applied again.
 
 ## Coordinates, shear and instancing
@@ -182,6 +214,18 @@ worse rather than better.
 - **World volumes.** A Cycles world Volume Scatter is unbounded: camera rays integrate it to
   infinity and the frame renders black. Atmospherics must be a bounded box containing the shot.
 
+## Two Blender behaviours a fresh implementation will trip on
+
+`Material.blend_method` and `alpha_threshold` are legacy ALIASES of `surface_render_method` under
+EEVEE Next (4.2+). Assigning `'OPAQUE'` or `'CLIP'` is a silent no-op that leaves the material on
+`HASHED`, so a MASK alpha test has to live in the node graph as a GREATER_THAN on the computed
+alpha rather than in a material property.
+
+`COLOR_0` is packed `unorm8x4`, and Blender converts colour attributes on write. The attribute must
+be CORNER-domain `BYTE_COLOR` written through `color_srgb` to round-trip the bytes; writing through
+the linear `color` property changes the numeric values, which are blend WEIGHTS here, not a colour.
+That silently moves Vert-Paint layer selection and SoftCutout edges.
+
 ## Scripts
 
 `tools/blender/` holds runnable importers; each is standalone and imports nothing from this repo.
@@ -211,3 +255,8 @@ worse rather than better.
 | The character stands in mid-air on bushes | ground found by raycasting down from the sky |
 | Terrain soft and smeared close up | the baked albedo slice used instead of the MicroSplat splat |
 | The whole frame renders black in Cycles | an unbounded world Volume Scatter |
+| Puddles the wrong shape, or a sheet over the road | the mask channel hardcoded instead of probed |
+| The sea invisible | untextured water treated as a puddle with no mask |
+| Roads one flat tiled texture instead of a gravel/sand mix | the Vert-Paint splat collapsed to layer 0 |
+| Painted and wet surfaces uniformly rough | `specMap` never bound; only the scalar roughness read |
+| MicroSplat weights mirrored against the terrain | the control-map V flipped a second time |

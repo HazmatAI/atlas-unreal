@@ -39,7 +39,7 @@ Three independent sidecar producers. None of them participates in pack reassembl
 
 | Subsystem | Extractor | Output | Consumer |
 |---|---|---|---|
-| Sky | `extraction/unity/eft_extract_sky.py` | `packs/shared/sky/*.png` + `packs/shared/sky/sky.json` | none in this repo (see §2.7) |
+| Sky | `extraction/unity/eft_extract_sky.py` | `packs/shared/sky/*.png` + `packs/shared/sky/sky.json` | not the native viewer; `tools/blender/make_sky_equirect.py` reads them (see §2.7) |
 | Particles | `extraction/unity/eft_extract_particles.py` | `<pack>/particles.json` + `<pack>/tex_fx/*.png` | `viewer/src/fx.rs` |
 | Water params | `extraction/unity/eft_extract_water4.py` | `packs/shared/water4.json` | none in this repo; one value hand-copied into `viewer/assets/shaders/gpu_draw.wgsl:1765` |
 | Sea level | `tools/build_map.py:228` `derive_sea_level` | `manifest.seaLevel` (float, metres) | `viewer/src/render/gpu_driven.rs:3351` |
@@ -209,7 +209,7 @@ Measured on the shipped bundle (24 cubemaps): `rain_1k_sharp_DXT1`, 1024 px, `is
 
 ### 2.7 What the viewer actually renders
 
-**Nothing in this repo reads `sky.json` or the exported face PNGs.** `viewer/src/main.rs:1638-1648` `build_sky_cubemap` calls `build_procedural_sky` unconditionally and nothing else. The comment at `:1639-1644` records why: the exported assets are environment **captures** - photo-spheres with treelines baked into the horizon - so using them as a sky dome puts photographic trees behind real map geometry.
+**The native viewer does not read `sky.json` or the exported face PNGs; `tools/blender/make_sky_equirect.py` does, to build a world texture.** `viewer/src/main.rs:1638-1648` `build_sky_cubemap` calls `build_procedural_sky` unconditionally and nothing else. The comment at `:1639-1644` records why: the exported assets are environment **captures** - photo-spheres with treelines baked into the horizon - so using them as a sky dome puts photographic trees behind real map geometry.
 
 The dome that ships is 6 × 128 × 128 `Rgba16Float` (`main.rs:1651`, `:1696`), with `TextureViewDimension::Cube` (`:1700`), built from:
 

@@ -46,18 +46,13 @@ def build_terrain_splat(mat, tile, layers_dir, uv_vflipped=True, max_layers=12):
     uvn = nt.nodes.new("ShaderNodeTexCoord"); uvn.location = (-1600, 0)
     uv_src = uvn.outputs["UV"]
 
-    # The importer un-flips V for Blender's bottom-left origin; the control maps are authored in
-    # the pack's top-left space, so flip V back for THEM only. The layer textures tile, so their
-    # V origin does not matter.
-    if uv_vflipped:
-        flip = nt.nodes.new("ShaderNodeVectorMath"); flip.operation = 'MULTIPLY_ADD'
-        flip.location = (-1420, 120)
-        flip.inputs[1].default_value = (1.0, -1.0, 1.0)
-        flip.inputs[2].default_value = (0.0, 1.0, 0.0)
-        nt.links.new(uv_src, flip.inputs[0])
-        ctrl_uv = flip.outputs["Vector"]
-    else:
-        ctrl_uv = uv_src
+    # NO SECOND FLIP. The renderer samples the control maps with the mesh's own baked UV, and the
+    # map importer has already converted that UV once, from the pack's top-left origin to
+    # Blender's bottom-left. Sampling the control image with the converted V therefore lands on
+    # the same texel the renderer reads. Flipping again here mirrored the MicroSplat weights
+    # top-to-bottom across the tile while leaving the geometry and the layer textures unmirrored,
+    # so roads and gravel appeared on the wrong side of the terrain.
+    ctrl_uv = uv_src
 
     # control maps: sampled once each, split to 4 weight channels
     weights = {}
