@@ -5,13 +5,25 @@ extracted from the game's own files — geometry, lights, water, glass, loot, fi
 by a GPU-driven Rust/Bevy engine: compute culling with Hi-Z occlusion, bindless materials,
 cascaded shadows, baked SH global illumination, SSAO / SSR / TAA, volumetric sun shafts.
 
-![The TerraGroup tower — Ground Zero](shots/tower.jpg)
+The images below are offline Cycles renders of the same extracted packs, built by the Blender
+importer in `tools/blender/`. They are not viewer frames.
 
-![Cultist shrine — Ground Zero](shots/shrine.jpg)
+![The ULTRA mall central square, Interchange](docs/img/interchange-mall-interior-photoreal.jpg)
 
-![Power substation — Interchange](shots/substation.jpg)
+*Interchange, the ULTRA mall central square. Photoreal mode.*
 
-![Backstreets — Streets of Tarkov](shots/streets.jpg)
+![Scav camp in the woods, Interchange](docs/img/interchange-bearcamp-photoreal.jpg)
+
+*Interchange, the wooded ZoneBearCamp bot zone. Photoreal mode.*
+
+![The power station yard, Interchange](docs/img/interchange-powerstation-game.jpg)
+
+*Interchange, the power station yard. Game-accurate mode, finished with the game's own colour
+grade.*
+
+![The same camera in both modes, Interchange](docs/img/game-vs-photoreal.jpg)
+
+*One camera, both modes: game-accurate on the left, photoreal on the right.*
 
 ## Overlay mode
 
