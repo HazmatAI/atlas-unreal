@@ -242,6 +242,13 @@ parameter-fitted reconstruction as the no-game-files fallback.
 | Reading IL2CPP MonoBehaviours from raw bytes, per-class payload layouts, exfils/doors/loot/zones, bit masks | [game data](game-data.md) |
 | Physics colliders and their record layout, `interact_<lv>.json`, and the GameObject-name semantic layer | [colliders, interactables and semantics](colliders-interactables-and-semantics.md) |
 | Rebuilding a pack in Blender: which channel means what per material role, shear, bone space, grass, the terrain splat, and the tricks that do not survive a path tracer | [importing into Blender](blender-import.md) |
+| Why correct materials render washed out, routing a character so it does not walk through a truck, solving a follow camera, and deriving sun/sky for an offline render | [importing into Blender](blender-import.md) |
+| Checking any external renderer against the viewer frame-for-frame (`EFT_POSE`, `EFT_CLEAN`, matched-pixel comparison) | [importing into Blender](blender-import.md#verifying-against-the-viewer) |
+| Building the same scene twice, once for parity and once for a photograph: what `MODE` set to `"game"` or `"photoreal"` changes, what it deliberately shares, and how to run each | [importing into Blender](blender-import.md#two-modes-one-builder) |
+| Working under the game's look inside the DCC rather than grading afterwards: installing the grade as an OCIO View, and the `active_views` allowlist that silently discards it | [importing into Blender](blender-import.md#installing-the-grade-as-a-blender-view-and-the-allowlist-that-eats-it) |
+| Making any external renderer match the GAME: the matched-shot method, the channel rules that have bitten, the grade chain, fitting sun and sky, and where parity fights photorealism | [game parity](game-parity.md) |
+| Deliberately DEPARTING from the game's look for a photoreal render: the six departures ranked by payoff, what each costs in parity, and how to measure whether it landed | [photorealism](photorealism.md) |
+| Which of the two I need: match the reference frame → game parity; make a still that reads as a photograph → photorealism. They share every number and cross-reference rather than repeat | [game parity](game-parity.md) + [photorealism](photorealism.md) |
 | Skeleton and skinning, animation clip decode, the animator graph, equipment binding, the `.eftchar` container | [characters and animation](characters-and-animation.md) |
 | Sky cubemap faces and derived colours, particle systems and flipbook atlases, the Water4 parameter set | [sky, particles and water](sky-particles-and-water.md) |
 | Light extraction, controller-driven lamps, what EFT does and does not ship, the SH irradiance volume format and bake math | [lighting and the SH bake](lighting-and-sh-bake.md) |
