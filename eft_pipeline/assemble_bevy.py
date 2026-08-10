@@ -50,8 +50,10 @@ try: sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 except Exception: pass
 
 # --- reuse the tarkmap correctness core VERBATIM (vendored into the new repo) --------------------------------
-# Primary: the vendored package. Dev fallback: the upstream tarkmap in place, so this
-# script is runnable against the real interchange_v2 dataset today.
+# Primary: the vendored package. Dev fallback: an upstream tarkmap checkout in place, so this
+# script is runnable against the real interchange_v2 dataset today. Point TARKMAP_ROOT at that
+# checkout (the directory that CONTAINS the `tarkmap` package); it defaults to a sibling of this
+# repository. Never hardcode a machine-specific path here.
 try:
     from eft_pipeline.tarkmap_core import instmath, culls, objio, matsig
     from eft_pipeline.tarkmap_core.config import MapConfig
@@ -61,7 +63,8 @@ except Exception:
         from eft_pipeline.tarkmap_core import instmath, culls, objio, matsig
         from eft_pipeline.tarkmap_core.config import MapConfig
     except Exception:
-        _UP = r"C:\Users\user\beamng_blender_pipeline\tarkmap"
+        _REPO = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        _UP = os.environ.get('TARKMAP_ROOT') or os.path.join(os.path.dirname(_REPO), 'tarkmap')
         sys.path.insert(0, _UP)
         from tarkmap import instmath, culls, objio, matsig            # type: ignore
         from tarkmap.config import MapConfig                          # type: ignore
@@ -96,7 +99,7 @@ VERTEX_ATTRS = [
 
 # instance stride padded to 80 (multiple of 16) so a WGSL storage-buffer read maps to
 # 3x vec4 (affine) + 2x vec4 (ids+flags+ancestry) with no straddling. The former 3 pad u32 now
-# carry the renderer's folded transform ancestry + level — the AUTHORITATIVE loot-glow join key
+# carry the renderer's folded transform ancestry + level - the AUTHORITATIVE loot-glow join key
 # (gamedata containers record the same folded chain; the viewer intersects them, replacing the
 # name+radius guesses that lit decorative same-mesh neighbours and missed offset-pivot parts).
 IDT = np.dtype([('affine', '<f4', (12,)), ('meshId', '<u4'), ('lodGroup', '<i4'),
@@ -209,17 +212,17 @@ class _TexTest:
     def alpha_coverage(self, name):
         """Universal DATA-DRIVEN coverage detection: returns the Otsu-split alpha cutoff when the
         texture's own alpha histogram says it is authored hole-coverage, else None. No shader
-        names, no per-asset rules, and no fixed cutoff — the histogram supplies its own split.
+        names, no per-asset rules, and no fixed cutoff - the histogram supplies its own split.
         Three criteria, each physically motivated (validated across foliage atlases, ground
         overlays, camo nets vs. AO/height/smoothness alpha on floors and props):
-          * Otsu separability >= 0.5      — the alpha is clearly BIMODAL (two populations);
-          * transparent-mode mean <= 0.1  — the low mode is actual HOLES (data-alpha lows sit
+          * Otsu separability >= 0.5      - the alpha is clearly BIMODAL (two populations);
+          * transparent-mode mean <= 0.1  - the low mode is actual HOLES (data-alpha lows sit
                                             higher: AO/height rarely reaches true zero);
-          * solid-mode mean >= 0.3        — the stuff you KEEP is meaningfully opaque (alpha-as-
+          * solid-mode mean >= 0.3        - the stuff you KEEP is meaningfully opaque (alpha-as-
                                             data clusters far below: measured 0.12-0.22 on the
                                             false-positive floors vs 0.36-0.97 on real coverage).
         The old fixed-number test ((A<80)>10% AND (A>200)>2%) missed real foliage whose leaves
-        are semi-soft (brush_dry: 95% holes but few texels above 200) — exactly the class of
+        are semi-soft (brush_dry: 95% holes but few texels above 200) - exactly the class of
         hardcoded-threshold bug this replaces."""
         if not name: return None
         if name in self._cov: return self._cov[name]
@@ -369,7 +372,7 @@ class MaterialFactory:
         }
         # LEGACY TRANSPARENT/REFLECTIVE/SPECULAR glass (glassTRS): the family's own response
         # values, presence-gated so packs without the re-extract keep their exact old records.
-        # In this family tex.a is TRANSPARENCY x gloss — NOT smoothness — so the smA name-rule
+        # In this family tex.a is TRANSPARENCY x gloss - NOT smoothness - so the smA name-rule
         # above must not stand for it (it painted bullet holes as dark smoothness spots and let
         # a global reflection guess blow crumpled windshields out to white).
         if sb.get('glassTRS'):
@@ -378,7 +381,7 @@ class MaterialFactory:
             if sb.get('opacS') is not None:
                 rec["opacityScale"] = round(float(sb['opacS']), 4)
             if sb.get('reflCube') is not None:
-                # mean linear rgb of the material's own _Cube — the game's actual reflection.
+                # mean linear rgb of the material's own _Cube - the game's actual reflection.
                 rec["reflectCube"] = [round(float(x), 5) for x in sb['reflCube']]
             if sb.get('reflCol') is not None:
                 rec["reflectColor"] = [round(float(x), 6) for x in sb['reflCol']]
@@ -422,9 +425,9 @@ class MaterialFactory:
         if name in self._DET_MEAN:
             return self._DET_MEAN[name]
         try:
-            # NOTE: MaterialFactory has no _open (that's _TexTest) — calling self._open here was an
+            # NOTE: MaterialFactory has no _open (that's _TexTest) - calling self._open here was an
             # AttributeError swallowed by this except, silently neutralizing EVERY pack's detail
-            # mean (dark ANGRYMESH detail maps then darken surfaces ~2x — the exact bug this code
+            # mean (dark ANGRYMESH detail maps then darken surfaces ~2x - the exact bug this code
             # exists to fix). Open the texture directly.
             im = _PILImage.open(os.path.join(self.ds, 'tex', name + '.png')).convert('RGB')
             im.thumbnail((256, 256))                       # mean is ~scale-invariant; keep it cheap
@@ -449,7 +452,20 @@ class MaterialFactory:
             })
         rec = {"layers": layers, "heights": self._tex(vp.get('heights')),
                "blend": float(vp.get('blend', 1.0))}
-        if any(k in vp for k in ('astr', 'acut', 'ahgt')):
+        # TWO PRODUCERS SPELL THIS BLOCK DIFFERENTLY, and only one spelling used to be read.
+        # eft_extract_v2.py copies the SoftCutout params off the Unity material as three separate
+        # keys (astr/acut/ahgt); extract_decals.py SYNTHESISES the feather for alpha-less decals and
+        # writes it already assembled as softCutout: [astr, acut, ahgt]. The any() test below only
+        # ever matched the first, so 78 of interchange's 1,731 decal materials shipped a `vp` with
+        # NO softCutout, fell through to the plain-decal path, and painted their whole projector
+        # footprint at albedo.a == 1.0 -- a decal shell 18 mm off the plate rendering as an opaque
+        # rectangle (the smeared concrete side face and the hard-edged jagged ground lip).
+        # An EXPLICIT list wins: that producer is stating the final triple, not three fields to be
+        # reassembled with defaults.
+        sc = vp.get('softCutout')
+        if isinstance(sc, (list, tuple)) and len(sc) >= 3:
+            rec["softCutout"] = [float(sc[0]), float(sc[1]), float(sc[2])]
+        elif any(k in vp for k in ('astr', 'acut', 'ahgt')):
             rec["softCutout"] = [float(vp.get('astr', 0.0)), float(vp.get('acut', 0.0)), float(vp.get('ahgt', 0.0))]
         return rec
 
@@ -539,11 +555,11 @@ class _PackShipper:
         """Materialize src at <pack>/<rel> (rel = pack-relative, posix slashes). None if src missing.
 
         HARDLINK first, copy as fallback. A self-contained streets pack ships ~6.4 GB of textures
-        that already exist, byte-identical and read-only, in the extraction dir — copying them cost
+        that already exist, byte-identical and read-only, in the extraction dir - copying them cost
         ~56 s per build AND a second 6.4 GB on disk per pack. A hardlink is the same inode: no
         bytes moved, no extra space. It only works on the same volume (os.link raises OSError
         otherwise, e.g. assets on D: and packs on C:) and needs the source to stay put, which it
-        does — the extraction dir IS the pipeline's durable input.
+        does - the extraction dir IS the pipeline's durable input.
 
         NOTE the link is to a file the pipeline treats as immutable. Anything that later rewrites a
         texture must replace it (write temp + os.replace), never edit in place, or it would mutate
@@ -686,7 +702,7 @@ def main():
            else os.path.join(os.getcwd(), 'packs', f'{MAP}.eftpack'))
     # ATOMIC EMISSION (Codex review): write into a staging sibling and swap at the end. Writing
     # blobs in place with the manifest last meant a mid-build failure left new meshes.bin under
-    # the OLD manifest — a pack that loads without error and renders garbage.
+    # the OLD manifest - a pack that loads without error and renders garbage.
     FINAL_OUT = OUT
     OUT = OUT + '.building'
     if os.path.exists(OUT):
@@ -714,7 +730,7 @@ def main():
 
     # ---- STEP 1: structural culls (culls.Culls -- verbatim) --------------------------------------------------
     # Lazy world-diameter lookup for the oversized-INACTIVE gate: local OBJ AABB diagonal (v-lines
-    # only, cached per mesh — invoked solely for the rare aih==False instances) x the instance's
+    # only, cached per mesh - invoked solely for the rare aih==False instances) x the instance's
     # conservative row-norm scale. None on any read failure -> the gate skips that instance.
     _aabb_cache = {}
 
@@ -977,11 +993,11 @@ def main():
         # ---- per-submesh dedup / smooth-normal build (objio + the assemble geometry loop -- verbatim math) ----
         pending = []; f0 = 0
         for sb in subs:
-            # UNIVERSAL alpha-coverage recovery — no shader lists, the texture data decides.
+            # UNIVERSAL alpha-coverage recovery - no shader lists, the texture data decides.
             # Unity's RenderType tag gives the extractor an authoritative role, but CUSTOM EFT
             # shaders (SpeedTreeEFT foliage, Cloth ground overlays, deferred one-offs) don't tag
             # TransparentCutout and fell through to 'opaque' -> solid black cards/sheets. For any
-            # opaque textured sub whose alpha is NOT smoothness (smA — the game's own flag), ask
+            # opaque textured sub whose alpha is NOT smoothness (smA - the game's own flag), ask
             # the albedo's alpha histogram whether it is authored hole-coverage (alpha_coverage:
             # Otsu bimodality + true-zero holes + opaque solid mode). Cutoff priority: the
             # material's own authored _Cutoff (game data) over the histogram's Otsu split.
@@ -1430,7 +1446,7 @@ def main():
             shutil.copy2(src, tgt)
             print(f"[bevy] shared sidecar: {dst} <- {src}")
         elif not os.path.exists(tgt):
-            print(f"[bevy] shared sidecar MISSING: {dst} (no {src}) — the viewer loses that layer")
+            print(f"[bevy] shared sidecar MISSING: {dst} (no {src}) - the viewer loses that layer")
     print("[bevy] remaining per-map steps: extract_semantics.py -> semantics.json; SH bake -> volume; build_grass")
 
     mb = lambda f: os.path.getsize(f) / 1e6 if os.path.exists(f) else 0

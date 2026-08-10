@@ -2,7 +2,7 @@
 
 - [1. What a StaticDeferredDecal is](#1-what-a-staticdeferreddecal-is)
 - [2. Finding the projectors without typetrees](#2-finding-the-projectors-without-typetrees)
-- [3. The MonoBehaviour payload - exact byte layout](#3-the-monobehaviour-payload--exact-byte-layout)
+- [3. The MonoBehaviour payload - exact byte layout](#3-the-monobehaviour-payload---exact-byte-layout)
 - [4. Material and texture resolution (one-hop external table)](#4-material-and-texture-resolution-one-hop-external-table)
 - [5. The projector transform](#5-the-projector-transform)
 - [6. The projector box: axes, atlas rect, UV](#6-the-projector-box-axes-atlas-rect-uv)
@@ -303,15 +303,27 @@ Candidate triangles are those with **any** vertex inside (`extraction/intel/deca
 
 ```
 n = normalize(cross(v1 - v0, v2 - v0))      # skip if ‖cross‖ < 1e-12
-keep if  n · uy >= FACING_MIN (= 0.50, i.e. 60°)
+keep if  n · uy >= FACING_MIN (= 0.50, i.e. 60°)          # EVERY decal, no exemptions
 ```
 
-(`extraction/intel/decal_project.py:211-228`)
+(`extraction/intel/decal_project.py:308`; the constant is declared at `:43`. Earlier revisions of
+this document cited `:211-228`, which is stale.)
 
 Two independent things are being enforced:
 
-- **Sign** - the decal paints the faces the projector lands *on*. Conjugation flips the effective sense of `uy`; getting the sign wrong moves every decal to the far face of its surface. Signature: the artwork disappears from the side you are standing on and is visible only from behind the plate (`extraction/intel/decal_project.py:222-226`).
-- **Magnitude** - the cutoff stops a decal **smearing** down surfaces it only grazes. At `0.2` (78°) the artwork stretched into long streaks along angled plates and their support legs **[unverified]**. Without any cull, a box sitting on dense terrain clips thousands of invisible ground triangles (1.42 M for one level's decals **[unverified]**) and back faces get painted through (`extraction/intel/decal_project.py:29-32`, `:220-224`).
+- **Sign** - the decal paints the faces the projector lands *on*. Conjugation flips the effective sense of `uy`; getting the sign wrong moves every decal to the far face of its surface. Signature: the artwork disappears from the side you are standing on and is visible only from behind the plate (`extraction/intel/decal_project.py:296-301`).
+- **Magnitude** - the cutoff stops a decal **smearing** down surfaces it only grazes. At `0.2` (78°) the artwork stretched into long streaks along angled plates and their support legs **[unverified]**. Without any cull, a box sitting on dense terrain clips thousands of invisible ground triangles (1.42 M for one level's decals **[unverified]**) and back faces get painted through (`extraction/intel/decal_project.py:27-42`, `:293-301`).
+
+**The cutoff is UNCONDITIONAL, and it was briefly not.** A revision of this code exempted feathered
+decals (`0.0 if feather else FACING_MIN`, with the constant renamed `FACING_MIN_NOFADE`) on the
+theory that a decal carrying the shader's own angle term needs no geometric approximation. The
+renderer never applied that term, so the exemption did not soften those faces, it painted them at
+full strength. It has been reverted; the story is worth reading once before anyone re-derives the
+same reasoning, in [The `vp` spelling split](#the-vp-spelling-split-and-the-cull-that-was-waived-for-it).
+
+**The remaining deviation, and it is now the only one:** the game FADES surfaces past the cutoff
+where this CUTS them. Closing it needs the blend path to multiply texture alpha by `COLOR_0.a`,
+which is a shader change, not an extraction one (`extraction/intel/decal_project.py:40-42`).
 
 ### Step 5 - clip to the box (Sutherland–Hodgman)
 
@@ -424,7 +436,7 @@ row_from_top = H - (cy1 + v · (cy2 − cy1))
 
 so `v = 0` (the `−uz` side of the box) reads the rect's `cy1` edge and `v = 1` (the `+uz` side) reads `cy2`. The V flip belongs **once**, at texture-fetch time, and only there.
 
-**Consumer contract.** `role: "decal"` must map to alpha **BLEND** (`eft_pipeline/assemble_bevy.py:310-311`) and to a small coplanar depth separation. The reference renderer pushes clip-space `z += 1.0e-3 · w` on the decal colour pass only (`viewer/assets/shaders/gpu_draw.wgsl:992`, `:1000-1001`) rather than using a rasterizer depth bias. The stated reason - that a depth-bias `constant` on a `Depth32Float` target scales as `constant · 2^(exponent(z)−23)` and therefore drifts with camera distance - is the shader comment's own rationale (`viewer/assets/shaders/gpu_draw.wgsl:979-982`) and is **[unverified]** here. In a Blender-style importer the equivalent is: alpha-blended material, backface culling off or winding-correct, and a small polygon offset on top of the 12 mm geometric offset already baked in.
+**Consumer contract.** `role: "decal"` must map to alpha **BLEND** (`eft_pipeline/assemble_bevy.py:310-311`) and to a small coplanar depth separation. The reference renderer pushes clip-space `z += 1.0e-3 · w` on the decal colour pass only (`viewer/assets/shaders/gpu_draw.wgsl:992`, `:1000-1001`) rather than using a rasterizer depth bias. The stated reason - that a depth-bias `constant` on a `Depth32Float` target scales as `constant · 2^(exponent(z)−23)` and therefore drifts with camera distance - is the shader comment's own rationale (`viewer/assets/shaders/gpu_draw.wgsl:979-982`) and is **[unverified]** here. In a Blender-style importer the equivalent is: alpha-blended material, backface culling off or winding-correct, and a **geometric** offset on top of the 12 mm this bake already applied - a path tracer has no depth bias to borrow, and a polygon offset is a rasterizer feature. `tools/blender/import_eftpack.py` uses `DECAL_LIFT = 0.006 m` (`:128`) applied per-vertex along the vertex normal, and only to the vertices used by `decal`/`water` faces (`:2135-2161`), so a mesh that mixes roles does not tear. Note that the 12 mm here is bake-time and applies to **projected** decal geometry only: roads, yard slabs and water decals are ordinary submeshes with no bake-time offset at all, so the importer's 6 mm is their only separation. See [blender-import.md](blender-import.md#coplanar-overlays-a-6-mm-lift-replaces-the-depth-push).
 
 **Normal-map albedo guard.** Some "decal" materials are bevel *normal* maps. Painting them as albedo turns every edge blue. `albedo_is_normalmap` (`eft_pipeline/assemble_bevy.py:196-207`) reduces the albedo to a single pixel - `im.convert('RGB').resize((8,8)).resize((1,1)).getpixel((0,0))` - and classifies on that pixel (`:204-205`):
 
@@ -433,6 +445,73 @@ b > 200 and abs(r-128) < 45 and abs(g-128) < 45 and b > r + 55 and b > g + 55
 ```
 
 This is a **channel-relation** test, not a distance to `[128,128,255]`: it demands a strongly blue-dominant pixel with mid-grey R and G, each channel bounded independently. It runs over every `role: "decal"` submesh with a `tex` at `eft_pipeline/assemble_bevy.py:778-782`. When dropping a submesh, **mark it** (`sb['drop_nm_decal'] = True`), never remove it - a removed sub takes its `n` out of the running face cursor and shifts every later submesh's face range earlier by `n`.
+
+### The `vp` spelling split, and the cull that was waived for it
+
+**Both halves are FIXED in the working tree.** This is written down because it is the canonical
+example of the failure this whole document is organised around: two independent components, each
+locally correct, disagreeing about a spelling; nothing crashed, no validator fired, and the defect
+was invisible on every surface where the two readings happen to agree.
+
+**Half one: two producers, two spellings, one reader.** The `vp` block is written by two different
+extractors, and they did not agree on how to say "this material is a SoftCutout decal":
+
+| producer | writes | when |
+|---|---|---|
+| `extraction/unity/eft_extract_v2.py:1096-1103` | `vp["astr"]`, `vp["acut"]`, `vp["ahgt"]` - three separate scalars copied off the Unity material | only when the material AUTHORS `_AlphaStrength`, because absent (engine-default feathering) and an explicit 0 are different render paths |
+| `extraction/intel/extract_decals.py:507-510` | `vp = {"softCutout": [1.0, 0.0, 0.0]}`, already assembled, plus `featherOpacity` and `normalPower` | only for decals whose albedo carries no alpha (`opaque_albedo`), because flagging one that DOES carry a real mask would throw its shape away - a SoftCutout material's `tex.a` is read as SMOOTHNESS |
+
+`assemble_bevy._vp` recognised the first spelling and only the first. Handed the second, it returned
+the degenerate `{"layers": [], "heights": None, "blend": 1.0}` and the flag was gone. Downstream,
+`softcutout_params` keys off exactly that triple - its own doc comment says "this param IS the
+shader signature" (`viewer/src/render/gpu_driven.rs:1740-1746`) - so `MAT_FLAG_SOFTCUTOUT` was never
+set, the fragment shader fell through to the plain-blend branch, and that branch keeps the
+`tex.a * tint.a` coverage (`viewer/assets/shaders/gpu_draw.wgsl:1532`). The albedo these materials
+share has alpha extrema `(255, 255)`. **Coverage was therefore 1.0 at every texel: a decal shell
+18 mm off the plate rendering as an opaque rectangle.**
+
+Population, re-measured on `packs/interchange.eftpack/materials.json` and reproducible: 5,765
+materials, **1,731** with `role: "decal"`, 195 of those carrying a `vp` block, 117 with `softCutout`
+and **78 without**. All 78 were byte-identical `{"layers": [], "heights": null, "blend": 1.0}` with
+`alphaMode: "BLEND"`, and all 78 share one albedo, `tex/sand_tread01__sharedassets5_835.png`. That
+single-albedo fingerprint is what identifies the cause: it is exactly the alpha-less class
+`extract_decals` marks, and nothing else.
+
+The per-vertex coverage itself was never lost - `assemble_bevy.py:1024-1029` writes real `COLOR_0`
+whenever `sb['vp']` is truthy - so the data was in the pack the whole time and only the material
+flag that causes it to be sampled was missing. **The fix is to accept an explicit triple first and
+fall back to the three scalars** (`eft_pipeline/assemble_bevy.py:462-466`). The ordering is the
+point: a producer that states the final triple is stating a result, not three fields to be
+reassembled with defaults, so the explicit spelling must win rather than merely be tolerated.
+
+**Half two: the facing cull had been waived on the strength of that flag.** `decal_project` computed
+`feather = bool(_sub0.get("vp"))` and dropped the 60° cutoff for those decals
+(`0.0 if feather else FACING_MIN_NOFADE`), on the documented assumption that a decal carrying the
+shader's angle term needs no geometric approximation because "the term attenuates it exactly as the
+game does". It then baked that term per polygon into vertex alpha
+(`extraction/intel/decal_project.py:337-339`):
+
+```
+cov_tri = ((n · uy) ** normalPower * featherOpacity) ** 0.5     # sqrt, because the shader squares
+```
+
+The square root is correct and the fade is genuinely in the mesh. But **the shader only reads vertex
+alpha on the SoftCutout path**, which half one guaranteed these materials never reached. The baked
+fade was written, shipped, and never sampled, so the exemption did not soften those faces, it
+painted them at full strength. Scene-wide it put **13.3% of all baked decal faces** onto surfaces
+the projector only grazes, and near-vertical faces got rank-1 UVs: one measured receiver ran
+**19.3 m per UV repeat at 11.9:1 anisotropy**, against **6.0 and 2.2** on that same decal's own
+horizontal faces (`extraction/intel/decal_project.py:33-38`). The visible result was a vertical
+smear down grazing concrete and a hard-edged, jagged lip where the ground footprint ended.
+
+**The document was right and the code drifted.** [Step 4](#step-4---per-triangle-facing-cull) and
+invariant 7 have always stated `n · uy >= 0.50` unconditionally, and invariant 7 names the exact
+symptom the exemption produced. The cull is unconditional again and the constant is `FACING_MIN`
+once more. Two smaller disagreements in the same block are worth knowing about and are NOT bugs
+today: `normalPower` is written with a default of **3.0** (`extract_decals.py:189`, floored at 0.01)
+and read back with a default of **1.0** (`decal_project.py:242`); and a fitted `_NormalPower` of
+0.19 bottoming out at 0.60 coverage was quoted alongside this investigation but **appears nowhere in
+the repository** and could not be re-derived, so it is not recorded here as data.
 
 ---
 
@@ -448,7 +527,7 @@ The visual signatures in this table are historical field observations recorded i
 | 4 | `u = 0.5 − (p·ux)/(2hx)` - U runs **against** the conjugated box X | **Mirrored text** ("ЯATNU" for "UNTAR"); placement otherwise perfect |
 | 5 | V passes through **unflipped** at rect→UV time; the single flip happens at fetch | Wrong atlas **row band** selected - a different word/stain of the same atlas appears |
 | 6 | `n · uy >= FACING_MIN` with the correct **sign** | Decal on the **back face** - invisible from the side you stand on, visible from behind |
-| 7 | `FACING_MIN >= 0.5` (60°) | **Smearing**: artwork stretched into long streaks down grazing/angled surfaces and their legs |
+| 7 | `FACING_MIN >= 0.5` (60°), applied **unconditionally**, with no exemption for feathered decals | **Smearing**: artwork stretched into long streaks down grazing/angled surfaces and their legs. Waiving it for `vp` decals put 13.3% of baked decal faces onto grazing surfaces at full opacity - [the `vp` spelling split](#the-vp-spelling-split-and-the-cull-that-was-waived-for-it) |
 | 8 | Facing cull present at all | Thousands of invisible terrain triangles baked; back faces painted through |
 | 9 | Depth clip uses `DEPTH_REACH · hy`, not `hy` | **Letters cut mid-glyph** along a straight line that follows no surface edge |
 | 10 | `DEPTH_REACH <= ~2.5` | Decal runs off its plate and down the adjacent wall |
@@ -463,6 +542,7 @@ The visual signatures in this table are historical field observations recorded i
 | 19 | Material env bound to a **function-local** name | Silent mass "unresolved materials"; no exception, no traceback |
 | 20 | Submeshes are **marked**, not removed, when dropped | Later submeshes read face ranges shifted by `n`; the last submesh renders a see-through hole |
 | 21 | The bake's `G` and the assembler's `coordinates.global_matrix` are the same transform | Config override desynchronises baked decals from geometry, silently |
+| 22 | `assemble_bevy._vp` accepts BOTH `vp` spellings: an explicit `softCutout` triple and the `astr`/`acut`/`ahgt` scalars | The flag is dropped, `MAT_FLAG_SOFTCUTOUT` never sets, coverage falls back to `tex.a` = 1.0, and the decal paints its whole footprint opaque. Cost 78 of 1,731 decal materials - [the `vp` spelling split](#the-vp-spelling-split-and-the-cull-that-was-waived-for-it) |
 
 ---
 

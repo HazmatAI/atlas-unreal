@@ -1,4 +1,4 @@
-"""decal_project — clip receiving geometry against a decal's projection box.
+"""decal_project - clip receiving geometry against a decal's projection box.
 
 Unity's StaticDeferredDecal is a PROJECTOR: it paints whatever geometry lies inside its box, so a
 sign spanning two staggered plates paints both. Emitting one flat quad at the box centre cannot do
@@ -25,13 +25,22 @@ G3 = np.diag([-1.0, 1.0, 1.0])
 SURFACE_OFFSET_M = 0.012
 # Skip absurd boxes (a few authored decals have degenerate or kilometre-scale extents).
 MAX_BOX_M = 200.0
-# Unity's deferred decal paints EVERY front-facing surface inside the box and attenuates by the
-# angle instead of cutting at one. Decals that carry that attenuation (see the coverage term
-# below, the shader's own _NormalPower curve) use no cutoff at all. This value is the fallback for
-# the ones that cannot carry it, whose coverage lives in their albedo alpha: 0.5 = 60 degrees.
-# REMAINING DEVIATION: the game fades those instead of cutting them. Closing it needs the blend
-# path to multiply texture alpha by COLOR_0.a, which is a shader change, not an extraction one.
-FACING_MIN_NOFADE = 0.50
+# FACING CUTOFF, applied to EVERY decal: 0.5 = 60 degrees off the projection axis. This is what
+# docs/extraction/decals.md Step 4 and invariant #7 have always specified, unconditionally, and
+# invariant #7 names the exact symptom of losing it: "SMEARING - artwork stretched into long
+# streaks down grazing/angled surfaces and their legs".
+#
+# IT USED TO BE SKIPPED for feathered decals, on the theory that a decal carrying the shader's own
+# angle term (baked into COLOR_0.a below) needs no hard cutoff because the term attenuates it the
+# way the game does. THE RENDERER DOES NOT APPLY THAT TERM. So the exemption did not soften those
+# grazing faces, it painted them at full strength: scene-wide it put 13.3% of all baked decal faces
+# onto surfaces the projector only grazes, and near-vertical faces got rank-1 UVs -- one measured
+# receiver ran 19.3 m per UV repeat at 11.9:1 anisotropy, against 6.0 and 2.2 on that same decal's
+# own horizontal faces.
+# REMAINING DEVIATION, unchanged and now the only one: the game FADES surfaces past the cutoff
+# where this CUTS them. Closing that needs the blend path to multiply texture alpha by COLOR_0.a,
+# which is a shader change, not an extraction one.
+FACING_MIN = 0.50
 # Runaway guard: a projector enclosing very dense geometry (terrain, foliage) contributes an
 # unbounded triangle count. Anything past this is reported and skipped rather than silently
 # doubling the pack.
@@ -136,7 +145,7 @@ def project_decals(dataset, decals, log=print):
 
     scene_p = os.path.join(dataset, "scene.json")
     if not os.path.isfile(scene_p):
-        log("  [decals] no scene.json — cannot project; keeping flat quads")
+        log("  [decals] no scene.json - cannot project; keeping flat quads")
         return decals
     scene = json.load(open(scene_p, encoding="utf-8"))
     inst = scene.get("instances") or []
@@ -193,7 +202,7 @@ def project_decals(dataset, decals, log=print):
         radii.append(float(np.linalg.norm(w.max(axis=0) - c)))
         keep_inst.append((mesh, M3, T))
     if not keep_inst:
-        log("  [decals] no usable instance geometry — keeping flat quads")
+        log("  [decals] no usable instance geometry - keeping flat quads")
         return decals
     centers = np.asarray(centers, np.float64)
     radii = np.asarray(radii, np.float64)
@@ -290,13 +299,13 @@ def project_decals(dataset, decals, log=print):
                 # now"). Determined by observation, and the symptom is unmistakable if it ever
                 # flips again: the artwork disappears from the side you are standing on.
                 _facing = float(np.dot(nrm, uy))
-                # Backfaces never: the decal cannot reach the far side of a surface. Past that,
-                # a decal that CARRIES the shader's angle term (feather, below) needs no cutoff --
-                # the term attenuates it exactly as the game does. A decal whose coverage lives in
-                # its albedo alpha has nowhere to put that term (the blend path reads texture
-                # alpha, not vertex alpha), so it keeps the cutoff as the closest approximation;
-                # without one it paints grazing surfaces at FULL opacity and streaks down them.
-                if _facing < (0.0 if feather else FACING_MIN_NOFADE):
+                # Backfaces never, and grazing faces never either -- for EVERY decal, feathered or
+                # not. This used to exempt feathered decals (`0.0 if feather else FACING_MIN`) on
+                # the assumption that the renderer applies the baked angle fade in COLOR_0.a for
+                # them. It does not, so the exemption shipped grazing faces at full opacity: the
+                # exact "streaks down grazing surfaces and their legs" that invariant #7 exists to
+                # forbid. One cutoff, unconditionally, as the docs always said.
+                if _facing < FACING_MIN:
                     continue
                 poly = [np.asarray(p, np.float64) - C for p in tri]
                 # Clip to the IMAGE rectangle (X and Z) exactly -- that is what frames the artwork.
