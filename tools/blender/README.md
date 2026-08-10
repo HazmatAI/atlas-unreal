@@ -125,19 +125,30 @@ Cycles falls back to CPU without saying so. And the camera solve is the slowest 
 it is one Python thread doing `frame_set` plus raycasts plus keyframe inserts, so solve only the
 frames actually being shot.
 
-## `examples/` - shooting an interior
+## `examples/` - the worked shots
 
-`example_scene.py` stages an outdoor walk, and an interior is a different problem.
-[`examples/`](examples/) is the worked one: the ULTRA shopping mall on Interchange, in four scripts
-that run as a chain and that are readable in order.
+`example_scene.py` stages one outdoor walk and renders one kind of frame. [`examples/`](examples/)
+carries the four shots that are actually published, each as a chain of scripts that is readable in
+order. Every path in them defaults under `renders/`, every one is overridable from the environment,
+and none of them edits `example_scene.py`: they load it and set its globals, so both stagings stay
+runnable.
 
-| script | runs | what it does |
+| chain | runs | what it does |
 |---|---|---|
 | `examples/mall_interior_build.py` | in Blender | routes the boss patrol, builds the map region around it, and probes four static 35 mm cameras before spending a render on them |
 | `examples/mall_interior_cams.py` | in Blender | re-stages a built `.blend`: curated cameras, the actor in frame, and the compositor rebuilt without the depth haze |
 | `examples/mall_interior_render.py` | in Blender | renders the static cameras to linear EXR, and carries the two lighting controls |
 | `examples/mall_interior_grade.py` | outside Blender | linear statistics first, the AgX grade second |
+| `examples/exterior_photoreal_build.py` | in Blender | the outdoor photoreal build, plus an 80x45 raycast probe of every candidate frame that rejects the ones where the solved boom has parked the lens inside a bush |
+| `examples/exterior_photoreal_render.py` | in Blender | renders the chosen frames flat, and sets the transparent-bounce budget that decides whether the lower half of a foliage frame exists |
+| `examples/exterior_photoreal_grade.py` | outside Blender | linear statistics, an exposure sweep, and the AgX photoreal finish |
+| `examples/sequence_game_render.py` | in Blender | a whole patrol as a SEQUENCE in game mode, on the previous ZonePowerStation staging, with `cinematic_render_settings` and motion blur. Grade with the stock `eft_grade.py` |
+| `examples/mode_comparison.py` | in Blender | one frame of one mode, from a camera FORCED to be the same one in both. Run it twice |
+| `examples/mode_comparison_compose.py` | outside Blender | finishes each half the way its own mode intends and composes them side by side |
 
+### Shooting an interior
+
+The mall chain is the worked interior, because an interior is a different problem from a vista.
 Geometry, terrain, lights, character and every material rule come from `example_scene.py`
 unchanged, because none of them care whether there is a roof. Three things do, and they are the
 reason this is committed rather than described:
@@ -168,6 +179,165 @@ blender --background --python tools/blender/examples/mall_interior_cams.py
 blender --background --python tools/blender/examples/mall_interior_render.py
 python  tools/blender/examples/mall_interior_grade.py stats renders/mall/mall_test_01.exr
 ```
+
+### Shooting an exterior still
+
+The exterior chain builds the shipped ZoneBearCamp staging in photoreal mode and then does the one
+thing a still out of a solved shot needs and a sequence does not: it **probes every candidate frame
+before rendering any of them**. A solved follow camera is a continuous move through a forest, and a
+forest is full of places a camera should not stop. An 80x45 raycast grid per candidate, classified
+by material role, plus a six-axis 0.5 m probe from the camera origin, rejected frames 44, 68, 140
+and 236 on this route (100% grass or foliage, `boxed` 3 to 6, i.e. the boom collapsed to its 2.34 m
+minimum and the lens is inside a bush) and frames 56, 80, 104 and 128 (55-65% terrain at 1.5-1.8 m
+median depth, the camera skimming the ground). None of those is visible in the camera keys and each
+costs a 30 to 66 second render to find by eye.
+
+The second thing it carries is `transparent_max_bounces`. It is a WHOLE-PATH counter and Cycles
+fails closed: at the default of 8, 13.22% of frame 20 is exactly 0.0 luma and the frame mean is 40%
+low. It never reads as pure black in the EXR, because the analytic depth haze adds in-scatter on top
+of the dead pixel, so the file contains no zeros and the defect measures 0.00129 linear.
+`cine_camera.cinematic_render_settings` knows this and sets 256; nothing calls that function, so
+the render script sets it and prints what it was.
+
+### Shooting a sequence
+
+`sequence_game_render.py` is the same pipeline aimed at a shot rather than a still, in game mode,
+on the previous ZonePowerStation staging (`example_scene` still records it in a comment). It builds
+once, saves the `.blend`, and reuses it on later runs so a re-render costs only the render. Render
+settings come from `cine_camera.cinematic_render_settings` rather than being restated: 256 samples,
+adaptive threshold 0.005, 180 degree motion blur, persistent data. Frames go out as half-float DWAA
+because a lossless 32-bit 360-frame sequence is ten times the disk for a grade that quantises to 8
+bits anyway. The default renders four spread frames; `EFT_FRAMES=all` renders the shot, about 3.2
+hours on two RTX 5090s under OptiX.
+
+### Both modes at one camera
+
+`mode_comparison.py` renders one frame of one mode per process, deliberately: each build is ~3,700
+objects and 300 MB, and `_clear()` unlinks objects without purging the datablocks behind them, so
+building both in one session runs out of memory on the second.
+
+**The camera has to be forced, and that is the whole reason the script exists.** `cine_camera`'s
+solve is a Viterbi pass whose per-state cost is measured by RAYCASTING THE SCENE - body-point
+visibility, ground clearance, how much grass is in the way - so the solved move is a function of the
+geometry. The two modes do not import identical geometry, and neither do two builds separated by a
+change to the importer. A comparison whose halves have drifted by half a metre is worthless: the eye
+reads the parallax, not the shading. So the first run writes the solved camera at the target frame
+to a JSON sidecar and every later run clears the camera's animation and assigns that matrix,
+pinning the DOF focus empty with it. What is deliberately *not* forced is `aperture_blades` (0
+against 9) and the sample count (`MODES` gives photoreal 4x, because it does not path-trace its
+atmosphere and spends the freed time on samples): both are things the comparison exists to show.
+
+## Reproducing the images in the top-level README
+
+Every image on the front page is one of these chains. The table is the mapping; the commands under
+it are literal. All four are Interchange, `packs/interchange.eftpack`, 2560x1440, rendered flat to
+linear EXR with the display transform applied afterwards by `eft_grade.py`.
+
+| README image | chain | mode | patrol zone / span | MAP\_RADIUS | frame | samples | grade |
+|---|---|---|---|---|---|---|---|
+| `docs/img/interchange-mall-interior-photoreal.jpg` | `mall_interior_*` | photoreal | `ZoneCenterBot` / way `BossWay1` | 110 | static `mall_cam_03`, 35 mm | 384 | AgX, E 0.93650, cos^4 35 mm |
+| `docs/img/interchange-bearcamp-photoreal.jpg` | `exterior_photoreal_*` | photoreal | `ZoneBearCamp` (3, 5) | 190 | 20 of 360, 50 mm f/2.8 | 384 | AgX, E 2.37876, cos^4 50 mm |
+| `docs/img/interchange-powerstation-game.jpg` | `sequence_game_render.py` | game | `ZonePowerStation` (0, 6) | 150 | 140 of 360, 50 mm f/2.8 | 256 | game LUT, E 1.35, authored vignette |
+| `docs/img/game-vs-photoreal.jpg` | `mode_comparison*` | both | `ZoneBearCamp` (3, 5) | 170 | 300 of 360, 50 mm f/2.8 | 96 game, 172 photoreal | left game LUT E 1.35; right filmic E 0.28909, cos^4 50 mm |
+
+**The mall central square**, photoreal. `GRASS_RADIUS` is not used (interior), `diffuse_bounces` 8,
+depth haze OFF, glare and CA ON, `transparent_max_bounces` 256, DOF off.
+
+```
+blender --background --python tools/blender/examples/mall_interior_build.py
+blender --background --python tools/blender/examples/mall_interior_cams.py
+EFT_CAMS=mall_cam_03 blender --background --python tools/blender/examples/mall_interior_render.py
+python tools/blender/examples/mall_interior_grade.py auto renders/mall/mall_test_03.exr
+```
+
+`auto` grades each frame at its own grey-metered exposure, which for this frame is 0.93650; the
+optical vignette is the 35 mm the cameras use, grain `N_sat` 15000 at seed 0.
+
+**The wooded scav camp**, photoreal. `GRASS_RADIUS` 40 with the pack's own wind, `HAZE_ZMAX` 209
+(= `MAP_RADIUS` x 1.1), bevel 2 mm, height-falloff haze applied analytically from the Z pass, glare
+and CA on, `transparent_max_bounces` 256. The camera is at Blender (-484.73, -107.01, 26.88).
+
+```
+blender --background --python tools/blender/examples/exterior_photoreal_build.py
+EFT_FRAMES=20:01 blender --background --python tools/blender/examples/exterior_photoreal_render.py
+EFT_E=2.37876 EFT_SEED=1 python tools/blender/examples/exterior_photoreal_grade.py final \
+    renders/exterior/exterior_photoreal_01.exr
+```
+
+`MAP_RADIUS` 190 rather than the shipped 170 is the one value here that is historical rather than
+chosen. The region filter used to test each instance's sampled mesh centre, and a 64-vertex stride
+aliases on a 513x513 terrain grid, so terrain tile `Slice_2_2` reported its centre 185.5 m from this
+route and was culled at 170: `terrain_splat` then printed "rebuilt 0 terrain material(s)" and the
+frame rendered ground props over a void, with no error anywhere. `_select` now tests the mesh's
+world AABB, whose distance to this route is 0.0 m because the route is inside the tile, so 170 keeps
+the terrain too. 190 is kept as the default because it is what the published frame was built with
+and the extra 20 m of map is visible behind the actor.
+
+**The power station yard**, game-accurate, finished with the game's own grade. `GRASS_RADIUS` 26,
+uniform TRACED haze exactly as `SUN_ENERGY` 6.90 / `SKY_STRENGTH` 2.35 were fitted, `glassTRS`, no
+cavity, no compositor, 180 degree motion blur. The routed walk is 181.1 m over 318 nav nodes and
+`SHOT_SECONDS` films the first 12.0 s, i.e. frames 1..360 at 30 fps.
+
+```
+EFT_FRAMES=140 blender --background --python tools/blender/examples/sequence_game_render.py
+python tools/blender/eft_grade.py renders/powerstation renders/powerstation \
+    --lut packs/shared/grade_lut.bin --look game --exposure 1.35
+```
+
+The grade is the stock CLI at its defaults; 1.35 is the viewer's `DEFAULT_GRADE_EXPOSURE` and the
+authored vignette is on. `--auto` would solve the highlight rule instead and land on 1.31156 for
+this frame, which is not what was published.
+
+**The two-mode comparison**, one camera, frame 300, on `example_scene`'s shipped defaults
+throughout. Left half game, right half photoreal, composed 5128x1440 with an 8 px gap. The camera is
+at Blender (-476.73, -97.02, 28.14).
+
+```
+EFT_MODE=game       blender --background --python tools/blender/examples/mode_comparison.py
+EFT_MODE=photoreal  blender --background --python tools/blender/examples/mode_comparison.py
+EFT_E=0.28909 python tools/blender/examples/mode_comparison_compose.py \
+    renders/comparison/game_f0300.exr renders/comparison/photoreal_f0300.exr renders/comparison
+```
+
+The right half's `EFT_E` is there because the published caption's 0.28909 cannot be re-metered
+today. That half was graded when `eft_grade`'s look named `agx` was the curve `x/(x+0.155)*1.019`;
+that curve is now named `filmic` (and `agx` is Blender's real AgX Base sRGB), and its 18% grey
+anchor was re-solved from 0.0342 to 0.03202 afterwards. The same meter on the same frame therefore
+returns 0.27066 now, 0.095 EV darker. `--look agx` is the better picture and a different one.
+
+### What these commands do NOT give you
+
+Read this before diffing a rebuild against a published image.
+
+- **The packs are not in the repository and never will be**: they are game-derived. Build your own
+  with `python tools/build_map.py interchange`, plus the dataset for the real MicroSplat terrain and
+  a character and weapon for the actor. Nothing here can run without them, and a pack rebuilt from a
+  different game patch is a different pack.
+- **The camera solve raycasts the scene, so a rebuilt scene solves a different move.** This is the
+  big one. `solve_follow_camera` scores every candidate camera position by casting visibility rays
+  at the subject, so anything that changes what is in the scene - a different pack, a different
+  `MAP_RADIUS`, a change to the region filter or to the grass - changes the solved path, and the
+  frame numbers in the table then point at different pictures. Only `mode_comparison.py` is immune,
+  because it forces the transforms from a sidecar; that is exactly why it does.
+- **Three things moved after the power station sequence was shot**, all of them forward, and all of
+  them change its pixels: the grass field went from a disc about the route centroid with no wind to
+  a capsule along the routed polyline with the pack's own WavingGrass stage; the region filter went
+  from a mesh-centre test to a world-AABB test, which is a strict superset (3,683 to 3,766 instances
+  at radius 170); and `cinematic_render_settings` went from `transparent_max_bounces` 32, which
+  leaves 0.48% of a foliage frame at exactly 0.0 luma, to 256, which is converged. The staging, the
+  camera solve, the resolution, the samples and the grade are unchanged. The frame is the same
+  frame; the pixels are not the same pixels.
+- **`MODES["photoreal"]["samples"]` has since gone from 172 to 4x `SAMPLES` = 384**, so a rebuilt
+  right half of the comparison is cleaner than the published one.
+- **The exposures in the table were recovered, not read from a log.** They were solved back out of
+  the published PNGs and verified against them: the mall and scav-camp frames come back bit
+  identical at the values above, and the comparison's two halves within 1 CV at worst. The one place
+  the recovery is a reconstruction rather than a recovery is the *chain* behind the power station
+  frame: the shot itself was driven by a script that lived outside the repository and no longer
+  exists, so `sequence_game_render.py` is the smallest faithful equivalent rather than that file
+  recovered. Its staging, samples, resolution and grade are all confirmed against the surviving
+  render logs and against the published frame, which regrades from the surviving EXR to 0.249 CV
+  mean absolute, i.e. PNG rounding.
 
 ## Sun and sky are fitted, not guessed
 
