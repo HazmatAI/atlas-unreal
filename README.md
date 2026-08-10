@@ -8,6 +8,10 @@ cascaded shadows, baked SH global illumination, SSAO / SSR / TAA, volumetric sun
 The images below are offline Cycles renders of the same extracted packs, built by the Blender
 importer in `tools/blender/`. They are not viewer frames.
 
+![The checkpoint on the forest road, Interchange](docs/img/interchange-bearcamp-checkpoint-photoreal.jpg)
+
+*Interchange, the checkpoint on the ZoneBearCamp forest road. Photoreal mode.*
+
 ![The ULTRA mall central square, Interchange](docs/img/interchange-mall-interior-photoreal.jpg)
 
 *Interchange, the ULTRA mall central square. Photoreal mode.*
