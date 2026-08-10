@@ -43,14 +43,23 @@ def equirect(faces, size, width):
     (x, y, z) -> (x, -z, y).
     """
     h = width // 2
-    # Blender's equirect convention: u = 0.5 looks along +Y, v = 0.5 is the horizon.
     u = (np.arange(width, dtype=np.float32) + 0.5) / width
     v = (np.arange(h, dtype=np.float32) + 0.5) / h
     theta = (u - 0.5) * (2.0 * np.pi)               # azimuth
     phi = (0.5 - v) * np.pi                         # elevation, +pi/2 at the top row
     ct = np.cos(phi)[:, None]
-    bx = (-np.sin(theta)[None, :]) * ct
-    by = (np.cos(theta)[None, :]) * ct
+    # AZIMUTH, and this is the one line in the file that is easy to get backwards. Blender's
+    # Environment Texture node maps a direction to `u = 0.5 - atan2(d.y, d.x) / 2pi` (the
+    # equirectangular case in kernel/geom/../projection). Our `u = 0.5 + theta / 2pi`, so the
+    # direction this texel must hold has atan2(by, bx) = -theta, i.e.
+    #     bx = cos(theta) * ct,  by = -sin(theta) * ct.
+    # The previous pair, (-sin, +cos), is atan2 = theta + pi/2: a 90 degree rotation AND a flip of
+    # handedness, so the sky was loaded MIRRORED and every cloud mass - and every reflection of one
+    # off the pack's 587 near-mirror materials - sat in the wrong world direction. Verified by
+    # rendering a synthetic 5-texel dot: it lands where the formula above predicts to 0.300 deg,
+    # and 47.596 deg away from where the old pair predicted.
+    bx = (np.cos(theta)[None, :]) * ct
+    by = (-np.sin(theta)[None, :]) * ct
     bz = np.repeat(np.sin(phi)[:, None], width, 1)
 
     # Blender -> pack (Y-up)

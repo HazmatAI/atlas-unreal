@@ -18,7 +18,13 @@ CARD GEOMETRY matches what the viewer builds (render/gpu_driven.rs): a THREE-pla
 a camera-facing billboard, so it reads correctly from any angle and needs no per-frame work.
 
 SCALE: Interchange ships 3.26 million clumps. Building all of them as Blender geometry is not
-useful for a shot, so `radius` selects a disc around a point and `max_clumps` caps the rest.
+useful for a shot, so `radius` selects a disc around a point (or a CAPSULE around a polyline, see
+`points`) and `max_clumps` caps the rest.
+
+WIND. The sidecar ships Unity's own WavingGrass parameters and this importer used to throw them
+away, leaving the field frozen for the whole shot while a character walks through it. `wind=True`
+ports the viewer's vertex stage (gpu_draw.wgsl, "WavingGrass (#4)") verbatim as a Geometry Nodes
+modifier, so Blender evaluates it per frame with no Python rebuild. See `_wind_nodes`.
 """
 
 import json
@@ -86,9 +92,114 @@ def _material(name, tex_path, tint):
     return mat
 
 
+def _dist2_to_polyline(pos, pts):
+    """Squared distance from each clump to a polyline, both in PACK space. (n,) float32.
+
+    A disc about a route's CENTROID is the wrong shape for a walking shot: on the 24.6 m patrol
+    this file is normally called with, the actor is outside a 26 m disc for the first ~210 of 360
+    frames, so grass is dense where nobody looks and absent where he walks. A capsule about the
+    routed polyline is the same cost and follows him.
+    """
+    p = np.asarray(pts, np.float32).reshape(-1, 3)
+    best = np.full(pos.shape[0], np.inf, np.float32)
+    for i in range(p.shape[0] - 1):
+        a, b = p[i], p[i + 1]
+        ab = b - a
+        L2 = float(ab @ ab)
+        d = pos - a[None, :]
+        t = np.clip((d @ ab) / L2, 0.0, 1.0) if L2 > 1e-12 else np.zeros(pos.shape[0], np.float32)
+        q = d - t[:, None] * ab[None, :]
+        np.minimum(best, np.einsum("ij,ij->i", q, q), out=best)
+    return best
+
+
+def _wind_nodes(name, strength, amount, speed):
+    """The viewer's WavingGrass vertex stage as a Geometry Nodes group.
+
+    gpu_draw.wgsl, @vertex "WavingGrass (#4)":
+
+        ph   = time*speed + t.x*0.35 + t.z*0.27
+        sway = (sin(ph) + 0.5*sin(2.13*ph + 1.7),  cos(0.87*ph + 0.4) + 0.5*sin(1.61*ph))
+        world += vec3(sway.x, 0, sway.y) * amount*strength*h
+
+    with `t` the CLUMP's translation and `h` the blade-local height, so the base stays planted and
+    only the tips move. Both of those are per-vertex constants, so they are baked once into the
+    "eft_wind" attribute (x = the constant part of the phase, y = h) and the modifier only has to
+    evaluate the trigonometry against Scene Time.
+
+    The pack-space offset (sway.x, 0, sway.y) becomes (sway.x, -sway.y, 0) in Blender, the same
+    (x, y, z) -> (x, -z, y) the vertices themselves took.
+
+    PHASE: the viewer's clock is `time.elapsed_secs_wrapped() % 3600` and Blender's is
+    frame/fps from the scene start, so this reproduces the MOTION but not the game's absolute
+    phase. For a rendered shot that is not a difference anyone can measure.
+    """
+    ng = bpy.data.node_groups.new(name, "GeometryNodeTree")
+    ng.interface.new_socket("Geometry", in_out='INPUT', socket_type='NodeSocketGeometry')
+    ng.interface.new_socket("Geometry", in_out='OUTPUT', socket_type='NodeSocketGeometry')
+    n = ng.nodes
+    gi = n.new("NodeGroupInput"); gi.location = (-900, 0)
+    go = n.new("NodeGroupOutput"); go.location = (700, 0)
+
+    at = n.new("GeometryNodeInputNamedAttribute"); at.location = (-900, -240)
+    at.data_type = 'FLOAT_VECTOR'
+    at.inputs["Name"].default_value = "eft_wind"
+    sep = n.new("ShaderNodeSeparateXYZ"); sep.location = (-700, -240)
+    ng.links.new(at.outputs["Attribute"], sep.inputs["Vector"])
+
+    tm = n.new("GeometryNodeInputSceneTime"); tm.location = (-900, -420)
+
+    def math(op, x, y, a=None, b=None):
+        m = n.new("ShaderNodeMath"); m.operation = op; m.location = (x, y)
+        for i, v in ((0, a), (1, b)):
+            if v is None:
+                continue
+            if hasattr(v, "default_value") or hasattr(v, "is_linked"):
+                ng.links.new(v, m.inputs[i])
+            else:
+                m.inputs[i].default_value = float(v)
+        return m.outputs[0]
+
+    # ph = seconds*speed + ph_const
+    ph = math('ADD', -500, -380,
+              math('MULTIPLY', -680, -420, tm.outputs["Seconds"], speed), sep.outputs["X"])
+    # sway.x = sin(ph) + 0.5*sin(2.13*ph + 1.7)
+    swx = math('ADD', -80, -140,
+               math('SINE', -320, -100, ph),
+               math('MULTIPLY', -240, -220,
+                    math('SINE', -400, -220,
+                         math('ADD', -560, -220, math('MULTIPLY', -700, -220, ph, 2.13), 1.7)),
+                    0.5))
+    # sway.y = cos(0.87*ph + 0.4) + 0.5*sin(1.61*ph)
+    swz = math('ADD', -80, -560,
+               math('COSINE', -320, -500,
+                    math('ADD', -480, -500, math('MULTIPLY', -640, -500, ph, 0.87), 0.4)),
+               math('MULTIPLY', -240, -640,
+                    math('SINE', -400, -640, math('MULTIPLY', -560, -640, ph, 1.61)), 0.5))
+    # amp = amount * strength * h
+    amp = math('MULTIPLY', 60, -380, sep.outputs["Y"], float(amount) * float(strength))
+
+    comb = n.new("ShaderNodeCombineXYZ"); comb.location = (400, -300)
+    ng.links.new(math('MULTIPLY', 240, -160, swx, amp), comb.inputs["X"])
+    ng.links.new(math('MULTIPLY', 240, -560, math('MULTIPLY', 240, -700, swz, -1.0), amp),
+                 comb.inputs["Y"])
+
+    sp = n.new("GeometryNodeSetPosition"); sp.location = (550, 0)
+    ng.links.new(gi.outputs[0], sp.inputs["Geometry"])
+    ng.links.new(comb.outputs["Vector"], sp.inputs["Offset"])
+    ng.links.new(sp.outputs["Geometry"], go.inputs[0])
+    return ng
+
+
 def import_eftgrass(pack_dir, center=None, radius=None, max_clumps=400000,
-                    collection_name="grass", verbose=True):
-    """Build the grass field as one merged mesh per kind. Returns the objects created."""
+                    points=None, wind=False, collection_name="grass", verbose=True):
+    """Build the grass field as one merged mesh per kind. Returns the objects created.
+
+    points   optional polyline in PACK space. When given it replaces `center` in the distance
+             test: clumps are kept within `radius` of the POLYLINE rather than of a point.
+    wind     port the pack's own WavingGrass parameters as a Geometry Nodes modifier. Defaults
+             off so every existing caller keeps building byte-identical geometry.
+    """
     pack_dir = os.path.abspath(pack_dir)
     side = json.load(open(os.path.join(pack_dir, "grass_sidecar.json"), encoding="utf-8"))
     fmt = int(side.get("format", 1) or 1)
@@ -103,7 +214,18 @@ def import_eftgrass(pack_dir, center=None, radius=None, max_clumps=400000,
             else np.zeros(n, np.uint32))
 
     keep = np.ones(n, bool)
-    if center is not None and radius is not None:
+    if points is not None and radius is not None:
+        p = np.asarray(points, np.float32).reshape(-1, 3)
+        r = float(radius)
+        # bbox prefilter first: the exact test is O(clumps x segments) and the file holds 3.26 M
+        lo, hi = p.min(0) - r, p.max(0) + r
+        near = np.all((pos >= lo[None, :]) & (pos <= hi[None, :]), 1)
+        keep &= near
+        sub = np.nonzero(near)[0]
+        if sub.size:
+            ok = _dist2_to_polyline(pos[sub], p) <= r * r
+            keep[sub[~ok]] = False
+    elif center is not None and radius is not None:
         c = np.asarray(center, np.float32)
         d = pos - c[None, :]
         keep &= np.einsum("ij,ij->i", d, d) <= float(radius) ** 2
@@ -115,6 +237,14 @@ def import_eftgrass(pack_dir, center=None, radius=None, max_clumps=400000,
               % (n, fmt, stride, idx.size))
 
     kinds = side.get("kinds") or []
+    w = side.get("wind") or {}
+    W_S, W_A, W_SP = (float(w.get("strength", 0.0) or 0.0), float(w.get("amount", 0.0) or 0.0),
+                      float(w.get("speed", 0.0) or 0.0))
+    windy = bool(wind) and W_S > 0.0 and W_A > 0.0
+    wind_ng = _wind_nodes("eft_grass_wind", W_S, W_A, W_SP) if windy else None
+    if wind and not windy:
+        print("[eftgrass] wind requested but the sidecar ships none (%r); field stays static" % w)
+
     coll = bpy.data.collections.get(collection_name) or bpy.data.collections.new(collection_name)
     if coll.name not in bpy.context.scene.collection.children:
         bpy.context.scene.collection.children.link(coll)
@@ -185,11 +315,24 @@ def import_eftgrass(pack_dir, center=None, radius=None, max_clumps=400000,
         me.materials.append(_material("grass_%d" % ki, tex,
                                       entry.get("tint") or side.get("tint") or [1, 1, 1]))
         o = bpy.data.objects.new("grass_kind_%d" % ki, me)
+        if windy:
+            # (phase constant, blade-local height) per vertex, the two per-vertex constants of the
+            # viewer's sway. `y` is the card height ALREADY scaled by the clump's scale lane, and
+            # it is clamped at 0 so the base cannot be pushed below the terrain it was placed on.
+            phc = (pos[sel, 0] * 0.35 + pos[sel, 2] * 0.27).astype(np.float32)[:, None]
+            wv = np.zeros((m, nv, 3), np.float32)
+            wv[..., 0] = phc
+            wv[..., 1] = np.maximum(y, 0.0)
+            a = me.attributes.new("eft_wind", 'FLOAT_VECTOR', 'POINT')
+            a.data.foreach_set("vector", wv.reshape(-1, 3).ravel())
+            md = o.modifiers.new("eft_wind", 'NODES')
+            md.node_group = wind_ng
         coll.objects.link(o)
         objs.append(o)
         if verbose:
             print("[eftgrass]   kind %2d  %7d clumps  %-30s" % (ki, m, os.path.basename(tex)))
 
-    print("[eftgrass] %d kind mesh(es), %d clumps, %d planes each (%.2f x %.2f m cards)"
-          % (len(objs), idx.size, PLANES, HALF_WIDTH * 2, HEIGHT))
+    print("[eftgrass] %d kind mesh(es), %d clumps, %d planes each (%.2f x %.2f m cards)%s"
+          % (len(objs), idx.size, PLANES, HALF_WIDTH * 2, HEIGHT,
+             ", wind strength %.3g amount %.3g speed %.3g" % (W_S, W_A, W_SP) if windy else ""))
     return objs

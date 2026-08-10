@@ -8,14 +8,15 @@
 6. [The probe grid: bounds, spacing, caps](#6-the-probe-grid-bounds-spacing-caps)
 7. [SH convention: basis, radiance vs irradiance](#7-sh-convention-basis-radiance-vs-irradiance)
 8. [Probe validity and virtual offset](#8-probe-validity-and-virtual-offset)
-9. [Pass A - sky visibility + shadow-tested practicals](#9-pass-a--sky-visibility--shadow-tested-practicals)
-10. [Pass B - one diffuse bounce with per-material albedo](#10-pass-b--one-diffuse-bounce-with-per-material-albedo)
+9. [Pass A - sky visibility + shadow-tested practicals](#9-pass-a---sky-visibility--shadow-tested-practicals)
+10. [Pass B - one diffuse bounce with per-material albedo](#10-pass-b---one-diffuse-bounce-with-per-material-albedo)
 11. [`volume.bin` / `volume_valid.bin` / `volume.json` byte formats](#11-volumebin--volume_validbin--volumejson-byte-formats)
 12. [GPU backend: buffer layouts, chunking, TDR-safe batching](#12-gpu-backend-buffer-layouts-chunking-tdr-safe-batching)
 13. [How the viewer samples the volume](#13-how-the-viewer-samples-the-volume)
 14. [The direct/indirect split and the realtime light grid](#14-the-directindirect-split-and-the-realtime-light-grid)
 15. [Invariants and failure signatures](#15-invariants-and-failure-signatures)
 16. [Environment knobs](#16-environment-knobs)
+17. [Reproducing this lighting in an offline renderer](#17-reproducing-this-lighting-in-an-offline-renderer)
 
 ---
 
@@ -648,3 +649,35 @@ The bake's floors exist because the probe grid is coarse; the runtime has per-pi
 | `EFT_GI` | sidecar `gi_intensity`, else 1.0 | Viewer-side GI multiplier override; non-finite or negative values fall back to 1.0 (`viewer/src/render/gpu_driven.rs:5276-5280`). |
 
 CLI: `bake-sh <pack_dir> [--rays N] [--backend auto|gpu|cpu] [--indirect-only]` (`viewer/src/sh_bake.rs:952-1050`).
+
+---
+
+## 17. Reproducing this lighting in an offline renderer
+
+A path tracer has no SH volume, and the pack gives it **no sun to copy**: every one of the 1,659
+lights is Point or Spot (§1 - the sun is a day/night script, and any Directional found in a scene is
+deliberately discarded). So an external render needs a sun direction, a sun strength and a sky
+strength, and only the first of those is in the pack (`volume.json.sun_dir`).
+
+Do not guess the other two. Guessing produces the classic mismatch - blown-out lit ground with
+crushed, muddy shade, physically inconsistent with the overcast sky it is paired with - and it is
+invisible until compared against the viewer.
+
+**Solve them.** A path tracer is LINEAR in each light's power, so for a fixed camera
+
+    render(sun=a, sky=b)  ==  a * render(sun=1, sky=0) + b * render(sun=0, sky=1)
+
+exactly. Two basis renders span the space; fit `(a, b)` by least squares against a viewer frame of
+the identical camera, comparing AFTER both have been through the same grade (an ungraded comparison
+fits the wrong thing, because the grade is strongly non-linear). On Interchange this moved the
+sun:sky ratio from a guessed 3.75 to a fitted 2.94 and cut RMS error against the viewer by 20%.
+
+Two properties of this lighting model that an offline renderer cannot reproduce, and must instead
+be accounted for:
+
+- **The ambient is a baked ONE-bounce volume** (§10), while a path tracer computes full GI. Agreement
+  is therefore VIEW-DEPENDENT: a fit made in an open yard drifts in an enclosed corner, where extra
+  bounces brighten the path-traced result. Fit per shot; do not expect one pair to serve a map.
+- **Exposure interacts with the grade.** The display LUT compresses toward a warm white above linear
+  1.0, so an over-lit surface DESATURATES (see blender-import.md). A lighting error therefore shows
+  up as wrong COLOUR, not merely wrong brightness, and is easily misread as a broken material.
