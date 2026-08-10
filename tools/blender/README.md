@@ -125,6 +125,50 @@ Cycles falls back to CPU without saying so. And the camera solve is the slowest 
 it is one Python thread doing `frame_set` plus raycasts plus keyframe inserts, so solve only the
 frames actually being shot.
 
+## `examples/` - shooting an interior
+
+`example_scene.py` stages an outdoor walk, and an interior is a different problem.
+[`examples/`](examples/) is the worked one: the ULTRA shopping mall on Interchange, in four scripts
+that run as a chain and that are readable in order.
+
+| script | runs | what it does |
+|---|---|---|
+| `examples/mall_interior_build.py` | in Blender | routes the boss patrol, builds the map region around it, and probes four static 35 mm cameras before spending a render on them |
+| `examples/mall_interior_cams.py` | in Blender | re-stages a built `.blend`: curated cameras, the actor in frame, and the compositor rebuilt without the depth haze |
+| `examples/mall_interior_render.py` | in Blender | renders the static cameras to linear EXR, and carries the two lighting controls |
+| `examples/mall_interior_grade.py` | outside Blender | linear statistics first, the AgX grade second |
+
+Geometry, terrain, lights, character and every material rule come from `example_scene.py`
+unchanged, because none of them care whether there is a roof. Three things do, and they are the
+reason this is committed rather than described:
+
+- **The walkable floors come from `gamedata.rooms[]` and `patrol_ways`, not from the nav grid.**
+  The mall's floors are pack Y=27.1 (level 1) and Y=36.6 (level 2). The nav grid *also* reports a
+  walkable layer at Y=21.3 under the whole footprint, and that layer is the outdoor ground the
+  building stands on. Resolving a floor from it drops the camera through the slab onto the parking
+  deck, silently, and the frame is daylight and parked cars. Stage from `rooms[]`, let the raycast
+  refine upward, and clamp how far it may fall.
+- **The practicals are the interior's entire light budget.** Measured on the central square, 541
+  imported practicals give a median linear 0.15416; sun and sky alone, with the practicals hidden,
+  give 0.00088, 175x darker. The trap is that with AgX and grey metering an unlit room still grades
+  to a plausible looking picture, because auto exposure puts whatever median it finds at middle
+  grey. The graded PNG cannot tell you whether the room is lit; only the linear statistics can.
+- **Depth haze must be off indoors.** The analytic in-scatter fitted for a 150 m outdoor vista
+  contributes 0.0199 linear at 60 m, which is more than the surface it covers in a room whose
+  median is 0.014, and the frame reads smoke filled. Glare and chromatic aberration stay on: they
+  are lens behaviour and do not care what is being photographed. `diffuse_bounces` goes 4 to 8,
+  because indoors the interreflection *is* the light.
+
+Every path defaults under `renders/` and every one is overridable from the environment, so the
+chain runs from a clean checkout with a built pack and nothing edited:
+
+```
+blender --background --python tools/blender/examples/mall_interior_build.py
+blender --background --python tools/blender/examples/mall_interior_cams.py
+blender --background --python tools/blender/examples/mall_interior_render.py
+python  tools/blender/examples/mall_interior_grade.py stats renders/mall/mall_test_01.exr
+```
+
 ## Sun and sky are fitted, not guessed
 
 The pack ships no directional light at all: every one of its lights is Point or Spot, and the
