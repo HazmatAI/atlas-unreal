@@ -48,10 +48,15 @@ env:
     EFT_OUTDIR    where the .exr files go  (default renders/exterior)
     EFT_PREFIX    filename prefix          (default "exterior_photoreal_")
     EFT_FRAMES    comma list of "frame:slot"; slot is the output suffix.
-                  Default "20:01,200:02,212:03,248:04,320:05,356:06", the six frames the probe
-                  in exterior_photoreal_build.py selected out of the 360-frame shot.
+                  Default "20:01,200:02,212:03,248:04,320:05,356:06,14:07", the six frames the
+                  probe in exterior_photoreal_build.py selected out of the 360-frame shot at its
+                  default stride, plus frame 14, which only a stride of 6 finds. Slots 06 and 07
+                  are the two frames on the repository's front page.
     EFT_RES       WxH, default 2560x1440
-    EFT_SPP       samples override; the photoreal mode's own value is 4x SAMPLES, i.e. 384
+    EFT_SPP       samples override; the photoreal mode's own value is 4x SAMPLES, i.e. 384. The two
+                  front-page frames were shot at 640, which is the last step on this content that
+                  is visible at all: the denoiser carries 384 fine everywhere except the grass at
+                  grazing incidence, which is most of the lower third of both frames.
     EFT_TMB       transparent_max_bounces, default 256. See above before lowering it.
 """
 import os
@@ -69,7 +74,7 @@ BLEND = os.environ.get("EFT_BLEND", os.path.join(OUT_DIR, "exterior_photoreal.bl
 OUTDIR = os.environ.get("EFT_OUTDIR", OUT_DIR)
 PREFIX = os.environ.get("EFT_PREFIX", "exterior_photoreal_")
 JOBS = [p.split(":") for p in
-        os.environ.get("EFT_FRAMES", "20:01,200:02,212:03,248:04,320:05,356:06").split(",")
+        os.environ.get("EFT_FRAMES", "20:01,200:02,212:03,248:04,320:05,356:06,14:07").split(",")
         if p.strip()]
 
 bpy.ops.wm.open_mainfile(filepath=os.path.abspath(BLEND))

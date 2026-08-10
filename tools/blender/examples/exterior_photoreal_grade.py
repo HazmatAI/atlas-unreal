@@ -40,17 +40,38 @@ what "photoreal" means here (see docs/extraction/photorealism.md):
                ISO 400 on full frame. This is the one INVENTED number in the chain - the pack ships
                no sensor - so it is named after what it is rather than called "film grain".
 
-WHAT THE PUBLISHED FRAME USED. docs/img/interchange-bearcamp-photoreal.jpg is slot 01 (patrol frame
-20) at E = 2.37876, which is that frame's OWN grey-metered exposure, with grain seed 1. So
+WHAT THE PUBLISHED FRAMES USED, AND WHY NONE OF THEM IS THE METER'S FIRST ANSWER. The two frames on
+the repository's front page are slot 07 (patrol frame 14) and slot 06 (patrol frame 356):
 
-    EFT_E=2.37876 EFT_SEED=1 python tools/blender/examples/exterior_photoreal_grade.py final \
-        renders/exterior/exterior_photoreal_01.exr
+    frame   image                                                slot   Egrey      published E
+    14      interchange-bearcamp-photoreal.jpg                    07    2.38885    1.68920
+    356     interchange-bearcamp-checkpoint-photoreal.jpg         06    0.90763    0.76320
 
-reproduces it, and so does `auto` on that frame up to the noise realisation. That exposure was
-RECOVERED by solving it back out of the published PNG rather than read from a log: graded at it,
-the result matches the published pixels to 0.25 CV mean absolute, which is PNG rounding. The whole
-six-frame set was finished at that one exposure, held from the first frame, because a per-frame
-auto flickers across a shot.
+Both published values are the frame's own grey meter pulled DOWN: 1.68920 is 2.38885 at -0.50 EV
+and 0.76320 is 0.90763 at -0.25 EV, exactly. That is the `sweep` mode being used for what it is
+for. A centre-weighted meter is a statement about where the subject is, and in both of these the
+subject is off centre and darker than what surrounds it - a figure in his own shade against a lit
+meadow, a figure against a yellow van - so the meter lifts the frame until the highlights go chalky.
+The sweep grades either side of the meter and prints the shadow and highlight populations, and the
+number picked is the one that keeps the sky and the van's roof off the ceiling. Take the meter as a
+starting point, never as the answer.
+
+    EFT_E=1.68920 python tools/blender/examples/exterior_photoreal_grade.py final \
+        renders/exterior/exterior_photoreal_07.exr
+    EFT_E=0.76320 python tools/blender/examples/exterior_photoreal_grade.py final \
+        renders/exterior/exterior_photoreal_06.exr
+
+Those exposures were RECOVERED by solving them back out of the published PNGs rather than read from
+a log, and the recovery is tight: regraded at them, the two frames match the published pixels to
+0.162 and 0.151 CV mean absolute over 8x8 blocks, against 0.159 and 0.148 CV between two grain
+SEEDS of the same grade. The residual is the noise realisation and nothing else, and it is not a
+free parameter of the fit: 0.01 EV either way doubles it. EFT_LENS must stay at its default of 50 -
+grading these two frames through the 35 mm optical vignette moves them 4.53 CV, i.e. 30x the
+grain, and it is the second thing to check if a rebuild will not land.
+
+The earlier six-frame set, of which frame 20 (slot 01) was the front-page pick, was finished at one
+held exposure of E = 2.37876 with grain seed 1, because a per-frame auto flickers across a shot.
+Stills are metered one at a time.
 
 env:
     EFT_OUTDIR   where the graded PNGs go (default renders/exterior)

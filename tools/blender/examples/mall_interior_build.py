@@ -45,8 +45,22 @@ THE STAGING THAT WORKED. BossWay1 routed on the pack's own baked nav grid via na
 path is one a bot could actually walk rather than a straight line through the retail units. Its
 centroid is pack (-21.2, 27.1, -33.2) and MAP_RADIUS 110 about that point imports 16,407 instances
 and 27.45 M triangles. The check that the region filter did not slice the building in half is the
-probe's own sky fraction: every camera comes back with sky at 0.00% of its frame, i.e. the shell is
-closed and no ray escapes. Cameras are STATIC 35 mm with depth of field off. A 50 mm sees almost
+probe's own sky fraction: every camera should come back with sky at 0.00% of its frame, i.e. the
+shell is closed and no ray escapes. READ THE NEXT PARAGRAPH BEFORE TRUSTING THAT NUMBER.
+
+THE SKY FRACTION WAS NOT EVIDENCE UNTIL THE ATMOSPHERE BOX CAME OUT OF THE DEPSGRAPH, and it is
+recorded here because the same mistake was made in every probe in this repository. `hide_render` IS
+A RENDER FLAG. Step 5 below builds `eft_atmosphere` as a real mesh cube MAP_RADIUS * 2.2 across and
+sets `hide_render` on it, which stops Cycles tracing it and does NOT remove it from the view layer,
+from the evaluated depsgraph, or from `scene.ray_cast`. Every probe taken with the box there is
+casting into the inside of a closed 528 x 528 x 80 m room, so `sky` CANNOT be anything but 0.00%
+whether the mall's shell is closed, open, or absent, and the "no ray escapes" reading was a
+tautology. It was caught on an outdoor staging, where all 144 swept poses came back sky 0.00% with
+p90 depth 290-350 m - the box's own wall - and the same pose reads sky 73.96% once the box is
+`hide_viewport`'d. The conclusion happens to be TRUE indoors, which is exactly why it survived so
+long. This file now hides the box for the probe, prints the correction it makes at the first camera,
+and puts the box back before the save, so the 0.00% is a measurement again. Cameras are STATIC 35 mm
+with depth of field off. A 50 mm sees almost
 nothing of a room, DOF hides the geometry a legibility test is there to read, and cine_camera.py's
 Viterbi solve is the slowest step in example_scene and buys nothing when the camera does not move.
 
@@ -266,6 +280,16 @@ g["_try"](scene, "compositing_node_group", None)
 g["_compositor"](scene, haze=True)
 
 # -- 7. place the actor, then the cameras, from a raycast probe -------------------------------
+# THE ATMOSPHERE BOX COMES OUT OF THE DEPSGRAPH FIRST, and stays out until the save. hide_render
+# (set in step 5) is a RENDER flag: the box is still in the view layer and scene.ray_cast still
+# hits it, so with it there the frame probe below is casting inside a closed 528 x 528 x 80 m room
+# and its `sky` column is 0.00% by construction. See the module docstring for the measurement that
+# caught this. hide_viewport is the flag that removes it.
+atm.hide_viewport = True
+bpy.context.view_layer.update()
+print("[mall] eft_atmosphere hide_render=%s (a RENDER flag), hide_viewport=%s for the probe"
+      % (atm.hide_render, atm.hide_viewport), flush=True)
+
 dg = bpy.context.evaluated_depsgraph_get()
 scene.frame_set(int((scene.frame_start + scene.frame_end) * 0.42))
 dg = bpy.context.evaluated_depsgraph_get()
@@ -287,7 +311,7 @@ dg = bpy.context.evaluated_depsgraph_get()
 print("[mall] actor at blender (%.1f, %.1f, %.1f)" % tuple(arm.location), flush=True)
 
 NDIR = 24
-KEYS = ("sky", "actor", "glass", "foliage", "terrain", "water", "solid")
+KEYS = ("sky", "actor", "glass", "foliage", "terrain", "water", "solid", "atmosphere")
 
 
 def classify(obj, idx):
@@ -299,6 +323,10 @@ def classify(obj, idx):
         if p is arm:
             return "actor"
         p = p.parent
+    if obj.name == "eft_atmosphere":
+        # Only reachable if the box is back in the depsgraph. It is a class of its own so that it
+        # is visible as one, rather than being counted as `solid` and read as a wall of the mall.
+        return "atmosphere"
     mat = None
     try:
         mat = obj.data.materials[obj.data.polygons[idx].material_index]
@@ -409,6 +437,12 @@ for k, fr in enumerate(CAM_FRACS):
           % (cam.name, rec["pack"][0], rec["pack"][1], rec["pack"][2], rec["ceiling"],
              rec["clear_med"], rec["clear_max"], rec["med_depth"], rec["sky"], rec["solid"],
              rec["glass"], rec["actor"], rec["terrain"], near, los, dmin), flush=True)
+
+# Put the box back exactly as step 5 left it, BEFORE the save: hide_render'd and visible to the
+# view layer. A .blend saved with hide_viewport set renders identically but carries a state
+# example_scene never sets, and every script that opens the file afterwards inherits it.
+atm.hide_viewport = False
+bpy.context.view_layer.update()
 
 scene.camera = cams[0]
 os.makedirs(os.path.dirname(os.path.abspath(PROBE_JSON)) or ".", exist_ok=True)

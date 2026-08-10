@@ -24,6 +24,18 @@ more than the scripts that found them.
    the haze is real light being removed from the fitted sun and sky pair. Indoors there is no vista
    to attenuate, so there is nothing to remove.
 
+   BUT hide_render IS A RENDER FLAG, AND THIS FILE IS ALL RAYCASTS. The box is a real mesh cube
+   MAP_RADIUS * 2.2 across; hide_render stops Cycles tracing it and leaves it in the view layer, in
+   the evaluated depsgraph, and in scene.ray_cast. Every probe in this repository written before
+   this was noticed - the one at the bottom of this file included - was casting into the inside of
+   a closed 528 x 528 x 80 m room, which means its `sky` column was 0.00% BY CONSTRUCTION and the
+   comment that read it as "the shell is closed and the camera is inside it" was reading a
+   tautology. It was caught outdoors, where 144 swept poses all came back sky 0.00% with p90 depth
+   290-350 m (the box wall, not any surface in the map) and the same pose reads sky 73.96% with the
+   box hide_viewport'd. The conclusion is TRUE indoors, which is exactly why it survived. This file
+   now sets hide_viewport for the whole staging and clears it before the save, so the number is a
+   measurement again, and `atmosphere` is a probe class of its own so a regression says so.
+
 2. A CAMERA WAS UNDER THE MALL. gamedata rooms[] and patrol_ways[] put the mall's walkable floors
    at pack Y=27.1 (level 1) and Y=36.6 (level 2). The nav grid ALSO reports a walkable layer at
    Y=21.3 across the whole footprint, and that is not a floor of the building: it is the outdoor
@@ -88,8 +100,13 @@ if old is not None:
 ng = g["_compositor"](scene, haze=False)
 print("[cams] compositor rebuilt haze=OFF: %d node(s) %s"
       % (len(ng.nodes), sorted({n.bl_idname for n in ng.nodes})), flush=True)
-print("[cams] atmosphere hide_render=%s" % bpy.data.objects["eft_atmosphere"].hide_render,
-      flush=True)
+# THE ATMOSPHERE BOX COMES OUT OF THE DEPSGRAPH FOR THE WHOLE OF THIS FILE, and goes back before
+# the save. hide_render is a RENDER flag and this file is all raycasts: see the docstring.
+atm = bpy.data.objects["eft_atmosphere"]
+atm.hide_viewport = True
+bpy.context.view_layer.update()
+print("[cams] atmosphere hide_render=%s (a RENDER flag), hide_viewport=%s for the raycasts"
+      % (atm.hide_render, atm.hide_viewport), flush=True)
 
 # The importer names the armature after the character directory, so derive it rather than typing
 # the name twice; fall back to the one armature in the scene if that ever stops being true.
@@ -188,7 +205,7 @@ SPECS = [
     ("mall_cam_04", c4, CHEST, None),
 ]
 
-KEYS = ("sky", "actor", "glass", "foliage", "terrain", "water", "solid")
+KEYS = ("sky", "actor", "glass", "foliage", "terrain", "water", "solid", "atmosphere")
 
 
 def classify(obj, idx):
@@ -200,6 +217,10 @@ def classify(obj, idx):
         if p is arm:
             return "actor"
         p = p.parent
+    if obj.name == "eft_atmosphere":
+        # Only reachable if the box is back in the depsgraph, in which case every other column in
+        # the row is wrong too. It is a class of its own so that it says so.
+        return "atmosphere"
     mat = None
     try:
         mat = obj.data.materials[obj.data.polygons[idx].material_index]
@@ -272,12 +293,20 @@ for nm, org, look, want in SPECS:
     for k in KEYS:
         rec[k] = round(100.0 * counts.get(k, 0) / tot, 2)
     rows.append(rec)
-    # sky 0.00% on every row is the check that the shell is closed and the camera is inside it.
+    # sky 0.00% on every row is the check that the shell is closed and the camera is inside it,
+    # and it is only that check because the atmosphere box was taken out of the depsgraph above.
+    # With the box in, this column reads 0.00% for any scene at all. `atmosphere` above 0.00% here
+    # means the box came back and the row means nothing.
     print("[probe] %s pack(%.1f %.1f %.1f) depth med %.1f p90 %.1f | sky %.1f%% solid %.1f%% "
           "glass %.1f%% actor %.1f%% terrain %.1f%% | lamps<20m %d (LOS %d) nearest %.1f m"
           % (nm, rec["pack"][0], rec["pack"][1], rec["pack"][2], rec["med_depth"],
              rec["p90_depth"], rec["sky"], rec["solid"], rec["glass"], rec["actor"],
              rec["terrain"], near, los, dmin), flush=True)
+
+# Put the box back as example_scene left it, hide_render'd and visible to the view layer, BEFORE
+# the save. Every script that opens this .blend afterwards inherits whatever state it is saved in.
+atm.hide_viewport = False
+bpy.context.view_layer.update()
 
 scene.camera = cams[0]
 os.makedirs(os.path.dirname(os.path.abspath(PROBE_JSON)) or ".", exist_ok=True)

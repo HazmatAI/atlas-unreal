@@ -1109,6 +1109,40 @@ attribute returns `srgb_to_linear(byte/255)`, so byte 128 arrives as 0.2159 wher
 ([vert-paint divergence 1](#vert-paint-six-divergences-worth-the-node-count)); switching the
 attribute to `FLOAT_COLOR` also works and costs 4x the storage per corner.
 
+### `hide_render` does not hide anything from `scene.ray_cast`, and it invalidated every sky probe
+
+**This is a correction to a measurement method used repeatedly in this repository, not a bug in
+Blender.** `hide_render` is a RENDER flag. It stops Cycles tracing an object and leaves that object
+in the view layer, in the evaluated depsgraph, and therefore in `scene.ray_cast`. `hide_viewport` is
+the flag that removes it from the depsgraph.
+
+The photoreal path builds `eft_atmosphere` as a real mesh cube `MAP_RADIUS * 2.2` across and
+`ATM_HEIGHT` (80 m) tall and sets `hide_render` on it, because the height-falloff atmosphere is
+applied analytically per pixel from the Z pass rather than traced
+([the two modes](#two-modes-one-builder)). Every raycast probe taken while that box exists is
+therefore casting inside a closed 528 x 528 x 80 m room:
+
+| column | what it actually reported |
+|---|---|
+| `sky` | **0.00%, always, for any scene.** No ray can leave a closed box. Every "sky 0.00%, therefore the shell is closed / the camera is indoors / this pose sees no sky" conclusion in this repository was a tautology |
+| `p90` / `mean` depth | capped at the box's own half width, not at anything in the map |
+| `solid` | inflated by exactly the rays that left the map, because no classifier had a name for the box and they fell through to the default class |
+
+The signature is unmistakable once known. On an outdoor ZoneRoad staging **all 144 swept poses**
+returned sky 0.00% with p90 depth 290-350 m, which is the box wall and not any surface on
+Interchange; the ranking built on those numbers was ranking nothing. The same pose returns **sky
+73.96%** with the box `hide_viewport`'d.
+
+Probing code should hide the box for the probe, restore it before saving the `.blend` (so the file
+carries the state the builder set, not the state the probe wanted), and carry `atmosphere` as a
+class of its own so a regression shows up in a column instead of hiding inside `solid`. The three
+scripts in `tools/blender/examples/` that probe now do all three, and the exterior build prints the
+before/after correction at its first candidate frame on every run.
+
+What this does not invalidate: probes that never depended on the sky column. A camera buried in a
+bush reads 100% grass or foliage with `near` at 100% whether the box is there or not, and a 1.5 m
+median depth is not a 200 m box, so the frames the exterior chain rejected are still rejected.
+
 ### The 5.1 compositor and animation API moved, and most of it fails silently
 
 | What changed | The trap |
@@ -1552,6 +1586,7 @@ the scripts run in, how to run either mode, and the external-process bridge.
 | A black wedge over most of the frame, subject nowhere in it | the camera is INSIDE geometry: a fixed offset with a "shove sideways when stuck" escape, which shoves it deeper whenever sideways is inward |
 | The subject disappears behind posts and clutter the camera "checked" | occlusion tested with a single ray to the chest instead of several body points |
 | A re-render is 10x slower than the build that made it | `scene.cycles.device` is saved in the .blend but the ENABLED DEVICES are an addon preference; `--factory-startup` resets them and Cycles falls back to CPU silently |
+| A raycast probe reports sky 0.00% everywhere, indoors and out, with p90 depth pinned near `MAP_RADIUS` | the `hide_render`'d atmosphere box is still in the depsgraph and every ray is terminating on it. `hide_render` is a render flag; use `hide_viewport` for the probe. See [`hide_render` does not hide anything from `scene.ray_cast`](#hide_render-does-not-hide-anything-from-sceneray_cast-and-it-invalidated-every-sky-probe) |
 | Terrain soft and smeared close up | the baked albedo slice used instead of the MicroSplat splat |
 | The whole frame renders black in Cycles | an unbounded world Volume Scatter |
 | Puddles the wrong shape, or a sheet over the road | the mask channel hardcoded instead of probed |

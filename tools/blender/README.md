@@ -128,10 +128,11 @@ frames actually being shot.
 ## `examples/` - the worked shots
 
 `example_scene.py` stages one outdoor walk and renders one kind of frame. [`examples/`](examples/)
-carries the four shots that are actually published, each as a chain of scripts that is readable in
-order. Every path in them defaults under `renders/`, every one is overridable from the environment,
-and none of them edits `example_scene.py`: they load it and set its globals, so both stagings stay
-runnable.
+carries the shots that are actually published, each as a chain of scripts that is readable in
+order, plus two standalone checks that answer a question about a pack rather than making a picture
+out of it. Every path in them defaults under `renders/`, every one is overridable from the
+environment, and none of them edits `example_scene.py`: they load it and set its globals, so both
+stagings stay runnable.
 
 | chain | runs | what it does |
 |---|---|---|
@@ -145,6 +146,8 @@ runnable.
 | `examples/sequence_game_render.py` | in Blender | a whole patrol as a SEQUENCE in game mode, on the previous ZonePowerStation staging, with `cinematic_render_settings` and motion blur. Grade with the stock `eft_grade.py` |
 | `examples/mode_comparison.py` | in Blender | one frame of one mode, from a camera FORCED to be the same one in both. Run it twice |
 | `examples/mode_comparison_compose.py` | outside Blender | finishes each half the way its own mode intends and composes them side by side |
+| `examples/verify_decal_bake.py` | outside Blender | audits a pack and its dataset for the two decal claims every frame here depends on: that the 60 degree facing cull was applied (falsified by a pair of kept normals more than 120 degrees apart, which needs no knowledge of the projector axis) and that the SoftCutout flag survived into `materials.json`. numpy only |
+| `examples/verify_glass_bounds.py` | in Blender | imports one small region in each glass mode and asserts STRUCTURALLY that the legacy `glassTRS` reflection is bounded: no BSDF in either additive lobe, the environment entering as a value through a `E/(1+E)` Reinhard, and a ceiling of `_ReflectColor`. Nothing on the photoreal path exercises this, which is why it is a separate check |
 
 ### Shooting an interior
 
@@ -199,6 +202,43 @@ of the dead pixel, so the file contains no zeros and the defect measures 0.00129
 `cine_camera.cinematic_render_settings` knows this and sets 256; nothing calls that function, so
 the render script sets it and prints what it was.
 
+### Every "sky 0.00%" probe in this repository was reading the inside of a box
+
+`hide_render` is a RENDER flag. `example_scene` builds `eft_atmosphere` as a real mesh cube
+`MAP_RADIUS * 2.2` across and `ATM_HEIGHT` tall, and the photoreal path sets `hide_render` on it so
+Cycles does not trace it and the haze is applied analytically from the Z pass instead. That flag
+does not remove the object from the view layer, from the evaluated depsgraph, or from
+`scene.ray_cast`.
+
+So every raycast probe written before this was noticed - the frame probe in
+`exterior_photoreal_build.py`, the camera probes in both mall scripts - was casting into the inside
+of a closed 528 x 528 x 80 m room. Three consequences, in order of how badly they mislead:
+
+- **`sky` could not be anything but 0.00%**, for any scene, closed or open or empty. Any conclusion
+  drawn from it ("the shell is closed", "the camera is inside the building", "this pose sees no
+  sky") was a tautology, not a measurement.
+- **Long rays terminated on the box wall**, so `p90` and `mean` depth were capped at the box's own
+  half width rather than at whatever the map does.
+- **Those hits were counted as `solid`**, because no classifier had a name for the box, so the
+  built-geometry fraction was inflated by exactly the rays that left the map.
+
+It was caught on an outdoor ZoneRoad staging, where all 144 swept poses came back sky 0.00% with
+p90 depth 290-350 m - which is the box wall, and not any surface on Interchange - so the ranking
+built on top of them was ranking nothing. The same pose reads **sky 73.96%** once the box is
+`hide_viewport`'d, which is the flag that takes an object out of the depsgraph.
+
+The three probe scripts now set `hide_viewport` for the probe and clear it again before the save,
+so the `.blend` is written in the state `example_scene` left it in. `exterior_photoreal_build.py`
+prints the before/after at its first candidate frame, so the size of the correction is measured on
+every run rather than taken on trust. And `atmosphere` is a probe class of its own in all three, so
+if the box ever comes back it appears in a column instead of hiding inside `solid`.
+
+Two things this does NOT invalidate. The frames the exterior probe rejected are still rejected: a
+lens buried in a bush reads 100% grass or foliage with `near` at 100% either way, and a 1.5 m
+median depth is not a 200 m box. And the mall's shell really is closed - that conclusion happens to
+be true, which is exactly why a vacuous check survived so long behind it. Neither is an argument
+for having measured it the way it was measured.
+
 ### Shooting a sequence
 
 `sequence_game_render.py` is the same pipeline aimed at a shot rather than a still, in game mode,
@@ -230,13 +270,15 @@ atmosphere and spends the freed time on samples): both are things the comparison
 ## Reproducing the images in the top-level README
 
 Every image on the front page is one of these chains. The table is the mapping; the commands under
-it are literal. All four are Interchange, `packs/interchange.eftpack`, 2560x1440, rendered flat to
-linear EXR with the display transform applied afterwards by `eft_grade.py`.
+it are literal. All five are Interchange, `packs/interchange.eftpack`, 2560x1440, rendered flat to
+linear EXR with the display transform applied afterwards by `eft_grade.py`, and every photoreal one
+runs with `transparent_max_bounces` 256.
 
 | README image | chain | mode | patrol zone / span | MAP\_RADIUS | frame | samples | grade |
 |---|---|---|---|---|---|---|---|
+| `docs/img/interchange-bearcamp-checkpoint-photoreal.jpg` | `exterior_photoreal_*` | photoreal | `ZoneBearCamp` (3, 5) | 190 | 356 of 360, 50 mm f/2.8 | 640 | AgX, E 0.76320, cos^4 50 mm |
 | `docs/img/interchange-mall-interior-photoreal.jpg` | `mall_interior_*` | photoreal | `ZoneCenterBot` / way `BossWay1` | 110 | static `mall_cam_03`, 35 mm | 384 | AgX, E 0.93650, cos^4 35 mm |
-| `docs/img/interchange-bearcamp-photoreal.jpg` | `exterior_photoreal_*` | photoreal | `ZoneBearCamp` (3, 5) | 190 | 20 of 360, 50 mm f/2.8 | 384 | AgX, E 2.37876, cos^4 50 mm |
+| `docs/img/interchange-bearcamp-photoreal.jpg` | `exterior_photoreal_*` | photoreal | `ZoneBearCamp` (3, 5) | 190 | 14 of 360, 50 mm f/2.8 | 640 | AgX, E 1.68920, cos^4 50 mm |
 | `docs/img/interchange-powerstation-game.jpg` | `sequence_game_render.py` | game | `ZonePowerStation` (0, 6) | 150 | 140 of 360, 50 mm f/2.8 | 256 | game LUT, E 1.35, authored vignette |
 | `docs/img/game-vs-photoreal.jpg` | `mode_comparison*` | both | `ZoneBearCamp` (3, 5) | 170 | 300 of 360, 50 mm f/2.8 | 96 game, 172 photoreal | left game LUT E 1.35; right filmic E 0.28909, cos^4 50 mm |
 
@@ -253,16 +295,40 @@ python tools/blender/examples/mall_interior_grade.py auto renders/mall/mall_test
 `auto` grades each frame at its own grey-metered exposure, which for this frame is 0.93650; the
 optical vignette is the 35 mm the cameras use, grain `N_sat` 15000 at seed 0.
 
-**The wooded scav camp**, photoreal. `GRASS_RADIUS` 40 with the pack's own wind, `HAZE_ZMAX` 209
-(= `MAP_RADIUS` x 1.1), bevel 2 mm, height-falloff haze applied analytically from the Z pass, glare
-and CA on, `transparent_max_bounces` 256. The camera is at Blender (-484.73, -107.01, 26.88).
+**The checkpoint and the wooded scav camp**, photoreal, two frames of ONE solved 360-frame walk and
+therefore one build. `GRASS_RADIUS` 40 with the pack's own wind, `HAZE_ZMAX` 209 (= `MAP_RADIUS` x
+1.1), bevel 2 mm, height-falloff haze applied analytically from the Z pass, glare and CA on,
+`transparent_max_bounces` 256, 640 samples.
 
 ```
-blender --background --python tools/blender/examples/exterior_photoreal_build.py
-EFT_FRAMES=20:01 blender --background --python tools/blender/examples/exterior_photoreal_render.py
-EFT_E=2.37876 EFT_SEED=1 python tools/blender/examples/exterior_photoreal_grade.py final \
-    renders/exterior/exterior_photoreal_01.exr
+EFT_PROBE_STEP=6 blender --background --python tools/blender/examples/exterior_photoreal_build.py
+EFT_FRAMES=356:06,14:07 EFT_SPP=640 \
+    blender --background --python tools/blender/examples/exterior_photoreal_render.py
+EFT_E=0.76320 python tools/blender/examples/exterior_photoreal_grade.py final \
+    renders/exterior/exterior_photoreal_06.exr
+EFT_E=1.68920 python tools/blender/examples/exterior_photoreal_grade.py final \
+    renders/exterior/exterior_photoreal_07.exr
 ```
+
+`EFT_PROBE_STEP=6` rather than the default 12 is what puts frame 14 in front of the probe at all;
+frame 356 is in the default stride. `EFT_LENS` stays at its default of 50, which is the solved
+camera's own focal length and therefore the right cos^4 optical vignette: grading either frame
+through the 35 mm falloff moves it 4.53 CV, 30x the grain, and is the second thing to check if a
+rebuild will not land.
+
+Neither exposure is the meter's first answer, and that is deliberate. Both are the frame's own
+centre-weighted grey meter pulled DOWN by a swept offset - 1.68920 is Egrey 2.38885 at -0.50 EV,
+0.76320 is Egrey 0.90763 at -0.25 EV - because in both frames the subject is off centre and darker
+than what surrounds him, so the meter lifts until the sky or the van's roof goes chalky. Run
+`sweep` and choose on the shadow and highlight populations. Both exposures were recovered by
+solving them back out of the published PNGs: regraded, the two frames match to 0.162 and 0.151 CV
+mean absolute over 8x8 blocks, against 0.159 and 0.148 CV between two grain SEEDS of the same
+grade, so the residual is the noise realisation and nothing else, and 0.01 EV either way doubles
+it.
+
+The older front-page pick from this same walk was frame 20 (slot 01) at E 2.37876, seed 1. It is
+still a good frame and still the render script's slot 01; the two published now simply read better,
+one at each end of the walk.
 
 `MAP_RADIUS` 190 rather than the shipped 170 is the one value here that is historical rather than
 chosen. The region filter used to test each instance's sampled mesh centre, and a 64-vertex stride
