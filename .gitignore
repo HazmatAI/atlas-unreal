@@ -1,8 +1,9 @@
 # build output
 target/
 dist/
+renders/
 
-# map packs (game-derived geometry/textures — never redistribute)
+# map packs (game-derived geometry/textures - never redistribute)
 packs/
 *.eftpack/
 *.eftpack
@@ -10,10 +11,10 @@ eft_assets/
 tarkmap/out/
 /out/
 
-# game-extracted map assets — belt-and-suspenders so extracted geometry/textures/scenes can
+# game-extracted map assets - belt-and-suspenders so extracted geometry/textures/scenes can
 # NEVER be committed even if the pipeline writes loose files inside the tree (the dirs above
 # cover the normal locations; these catch stray files anywhere). None of these types have a
-# legitimate place in a Rust/Python source tree — they are always game-derived output.
+# legitimate place in a Rust/Python source tree - they are always game-derived output.
 *.obj
 *.glb
 *.gltf
@@ -37,7 +38,7 @@ grass_density_*.bin
 # tarkov.dev json caches they pull). 1.8 GB; the *.eftpack rules above already catch most of
 # it, so without this the leftovers look small and committable when they are not source.
 _tw/
-# Blender addon workspace (binary rigs/animations, 30 MB) — not part of the viewer build.
+# Blender addon workspace (binary rigs/animations, 30 MB) - not part of the viewer build.
 .blender-toolkit/
 
 # local config & secrets
@@ -76,6 +77,11 @@ tools/_*
 docs/_bench_logs/
 # the viewer's double-click geometry probe dumps the picked instance here
 pick.json
+# analysis caches. A probe that walks every texture in a pack memoises its per-file statistics
+# next to the script, and a pickle of game-derived measurements is game-derived data.
+*.pkl
+*.npy
+*.npz
 # scratch cargo target dirs from side-by-side builds (the real one is already ignored above)
 target_*/
 
@@ -92,7 +98,7 @@ target_*/
 !docs/extraction/**/*.md
 !.claude/skills/**/*.md
 
-# GAME CONTENT — never tracked. The grade LUT source is extracted verbatim from the
+# GAME CONTENT - never tracked. The grade LUT source is extracted verbatim from the
 # game's resources.assets and its .bin is that asset's derivative; both are rebuilt
 # locally by extraction/grade/make_grade_lut_game.py.
 extraction/grade/lut_amidgen_bluegreen.png
