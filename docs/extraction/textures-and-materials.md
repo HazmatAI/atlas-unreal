@@ -331,7 +331,17 @@ Authored overrides (`:294-304`): `_Glossiness` → `roughness = clamp(1 - gloss,
 
 Runtime clamps `roughness` to `[0.03, 1.0]`, default 0.55 when absent (`viewer/src/render/gpu_driven.rs:2330-2334`).
 
-`specMap` carries the `_SpecMap`/`_SpecTex`/`_GlossMap` path (legacy Unity specular convention: RGB = specular colour, A = gloss) for consumers that want per-pixel roughness where the albedo alpha is unusable (`extraction/unity/eft_extract_v2.py:1113-1117`).
+`specMap` carries the `_SpecMap`/`_SpecTex`/`_GlossMap` path (legacy Unity specular convention: RGB = specular colour, A = gloss) as PROVENANCE for the scalar (`extraction/unity/eft_extract_v2.py:1113-1117`).
+
+**Do not sample it as a texture.** The assembler has already reduced that map to the scalar
+`roughness` ("roughness from _SpecMap luma", `eft_pipeline/assemble_bevy.py:357`), and the renderer
+never reads the map: it takes the scalar, or per-pixel roughness from the ALBEDO ALPHA when
+`roughnessFromAlbedoAlpha` is set (`gpu_draw.wgsl:1430-1432`). Binding it as a per-texel gloss map
+is a regression, not an upgrade: 2,492 Interchange materials carry a `specMap` and for **189** of
+them it IS THE ALBEDO FILE, so `roughness = 1 - albedo` makes bright paint glossy - a red forklift
+measured R/G 0.96 against its texture's 1.43 (viewer: 1.45), reading as washed-out grey. A further
+2,469 of the 2,492 also set `roughnessFromAlbedoAlpha`, so binding the map additionally SUPPRESSES
+the per-pixel path the renderer actually uses.
 
 `doubleSided` is hardcoded `true` for every material (`eft_pipeline/assemble_bevy.py:348`): EFT's deferred renderer draws building shells solid from both sides. Back faces flip the shading normal (`viewer/assets/shaders/gpu_draw.wgsl:1162-1164`).
 
@@ -448,13 +458,15 @@ Texture sampling uses `textureSampleGrad` with gradients scaled by the **relativ
 
 ## 12. Parallax / height
 
-`extraction/unity/eft_extract_v2.py:1198-1209`: the `_ParallaxMap` slot plus the `_Parallax` float (default 0.02, 5 decimals). **[unverified]** a source comment puts the population at roughly 44 materials game-wide.
+`extraction/unity/eft_extract_v2.py:1198-1209`: the `_ParallaxMap` slot plus the `_Parallax` float (default 0.02, 5 decimals). Measured over the six shipped packs, **139** materials carry a usable `parallax.map`: streets_nav 135, woods 4, none in factory_rework, ground_zero, icebreaker or interchange. Authored `scale` spans 0.005..0.080, so the `[0, 0.5]` clamp below never binds. (A source comment putting the population at roughly 44 materials game-wide is **[unverified]** and does not match the packs.)
 
 `materials.json.parallax = { "map": <path>, "scale": float }` (`eft_pipeline/assemble_bevy.py:386-392`), `null` for vp materials or when no map is bound.
 
 Height is **DATA**, uploaded LINEAR: the runtime inserts the height map into the same bindless albedo array but registers it in `ctrl_tex_linear` (`viewer/src/render/gpu_driven.rs:2288`), which forces a raw linear upload and blocks BC. It does **not** set `no_downscale`, so the height map *is* mip-skipped at reduced texture quality (§18). Scale is clamped to `[0, 0.5]` (`:2289`). `EFT_PARALLAX=0` masks the flag for every material, giving a byte-identical A/B against the non-parallax render.
 
-The shader marches a tangent-space view ray (steep parallax/occlusion) and produces `puv`, which then feeds the **base albedo and base normal** samples - note `viewer/assets/shaders/gpu_draw.wgsl:1173` samples the normal at `puv`, not `o.uv`. `puv == o.uv` when the flag is clear.
+The shader marches a tangent-space view ray (steep parallax/occlusion) and produces `puv`, which then feeds the **base albedo and base normal** samples - note `viewer/assets/shaders/gpu_draw.wgsl:1173` samples the normal at `puv`, not `o.uv`. `puv == o.uv` when the flag is clear. Emissive stays on `o.uv` (`:1135`) and the detail maps carry their own ST, so exactly two samples move.
+
+A node-graph consumer cannot express the march (no loops, no conditional re-sampling) and must fall back to the shader's own first iteration in closed form; the Blender port, its constants and the traps (`1 - g`, the green channel, no Bump node) are in [blender-import.md](blender-import.md#parallax-one-step-not-thirty-two).
 
 ---
 
@@ -502,7 +514,7 @@ Captured, all presence-gated so non-glass materials re-extract identically:
 
 `cube_mean_rgb(pptr)` - `extraction/unity/eft_extract_v2.py:270-318`. **[unverified, external Unity convention]** cubemaps are stored **face-major** (face 0's full mip chain, then face 1's, …); the byte-offset arithmetic below is written on that assumption and nothing in this repository proves it.
 
-Bytes come through `get_image_data()` (resolves `m_StreamData`). Supported `m_TextureFormat` values and block sizes: `10 → BC1 (8 B/4×4)`, `12 → BC3 (16 B)`, `25 → BC7 (16 B)`, `4 → RGBA32 (w*h*4)`. Per-face chain length = `Σ_{m<mips} mip_bytes(face>>m, face>>m)`; face *i*'s top mip starts at `i * chain`. The BC decoders return **BGRA**, so RGB is taken as `[..., 2::-1]`. Each face contributes `mean((px/255)^2.2)`; the result is the sum divided by 6, rounded to 5. Any failure → `None` → the consumer keeps its analytic environment.
+Bytes come through `get_image_data()` (resolves `m_StreamData`). Supported `m_TextureFormat` values and block sizes: `10 → BC1 (8 B/4×4)`, `12 → BC3 (16 B)`, `25 → BC7 (16 B)`, `4 → RGBA32 (w*h*4)`. Per-face chain length = `Σ_{m<mips} mip_bytes(face>>m, face>>m)`; face *i*'s top mip starts at `i * chain`. The BC decoders return **BGRA**, so RGB is taken as `[..., 2::-1]`. Each face contributes `mean((px/255)^2.2)`; the result is the sum divided by 6, rounded to 5. Any failure → `None` → no `MAT_FLAG_GLASS_CUBE`, and the consumer falls back to the baked SH volume along the reflection vector, Reinhard-compressed into the LDR domain the cube lived in (`viewer/assets/shaders/gpu_draw.wgsl:1627-1638`). It is **not** the analytic sky: that path mixed in raw sky RADIANCE, roughly 4x brighter than any environment the game mirrors, and washed every facade pane to white milk over its dark interior.
 
 Assembly (`eft_pipeline/assemble_bevy.py:365-384`) sets `glassTRS: true`, force-clears `roughnessFromAlbedoAlpha`, and emits `opacityScale`, `reflectCube`, `reflectColor`, `specColor`, `shininess` when present.
 
@@ -516,6 +528,10 @@ glass_spec = (R<<16) | (G<<8) | B                   # specColor, default 0.5 gre
 glass_shin = clamp(shininess, 0.01, 1.0)            # default 0.078 (legacy shader UI default)
 roughness  = clamp( sqrt(2 / (glass_shin*128 + 2)), 0.03, 1.0 )     # Blinn-Phong power -> GGX
 ```
+
+That `roughness` is a **dead lane** for this family: `gpu_draw.wgsl:1638` and `:1651` select the TRS environment and the family's own Blinn lobe over `refl_rgb`/`spec_rgb`, discarding the GGX lobe that would have read it. It is packed anyway because the field is shared with every other material.
+
+Population over the six shipped packs: **1,057** materials satisfy the consumer gate `role == "glass" && glassTRS` (streets_nav 503, ground_zero 401, interchange 153; none in factory_rework, icebreaker or woods). Of those, 10 carry `reflectCube`, 28 are untextured, 12 carry a normal map, 4 authored no `shininess` (so they take the 0.078 default), and 21 ship `opacityScale` 0. A record with `glassTRS` but a different role gets no lane at all (`viewer/src/render/gpu_driven.rs:2013`); interchange ids 1613/2054/2248 are exactly that and carry none of the response fields. The composition contract - only the diffuse is scaled by coverage, `tint.a` enters coverage twice, and both additive lobes are bounded by `_ReflectColor`/`_SpecColor` because the family's reflection input is an LDR cube - plus the Blender port are in [blender-import.md](blender-import.md#legacy-glass-glasstrs-is-four-lobes-not-a-principled).
 
 For packs **without** this capture, glass alpha semantics are probed per texture: `glass_alpha_is_mask` (`viewer/src/render/gpu_driven.rs:6015-6028`) samples every 101st pixel and returns true when more than 40 % have `alpha < 26`. True → coverage-mask glass (shard atlases), which masks every lighting term including the additive reflection; false → smoothness-in-alpha. A `glassTRS` capture is authoritative and skips the probe entirely.
 
@@ -708,7 +724,7 @@ Every texture-load failure returns a **1×1 placeholder** rather than skipping t
 **Never captured at all:**
 
 - **Occlusion / AO maps** - no `_OcclusionMap` slot appears in any slot list, and `_OcclusionStrength` is never read. Ambient occlusion is entirely screen-space at runtime.
-- **Metallic-gloss / spec-gloss *maps*** - only the scalar floats `_Metallic` and `_Glossiness` are read. `_MetallicGlossMap` and `_SpecGlossMap` are not in any slot list. Per-pixel roughness comes from albedo alpha (`roughnessFromAlbedoAlpha`) or `_SpecMap` luma.
+- **Metallic-gloss / spec-gloss *maps*** - only the scalar floats `_Metallic` and `_Glossiness` are read. `_MetallicGlossMap` and `_SpecGlossMap` are not in any slot list. Per-pixel roughness comes from albedo alpha (`roughnessFromAlbedoAlpha`) ONLY; `_SpecMap` luma is folded into the scalar at assembly and the map itself is never sampled at runtime.
 - **Texture sampler state** - `m_WrapMode`, `m_FilterMode`, `m_Aniso` are never read; the runtime hardcodes Repeat + trilinear + anisotropy.
 - **Secondary UV sets / lightmap UVs** - the vertex format carries exactly one UV (`eft_pipeline/assemble_bevy.py:88-95`). **[unverified]** whether EFT ships baked lightmaps or light probes at all; no code in this repository settles that, so treat "nothing is lost" as an assumption, not a fact.
 - **Tangents** - not exported; generated at import from UV + normal (`viewer/src/render/standard.rs:443`) or derived from a screen-space cotangent frame in the shader.
