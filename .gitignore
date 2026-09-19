@@ -3,6 +3,19 @@ target/
 dist/
 renders/
 
+# Unreal Engine generated output (plugin source and descriptors remain tracked)
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+BuildPluginPackage/
+unreal/AtlasEftImporterHost/Content/Atlas/
+.vs/
+*.sln
+*.vcxproj*
+*.opensdf
+*.sdf
+
 # map packs (game-derived geometry/textures - never redistribute)
 packs/
 *.eftpack/
@@ -89,6 +102,7 @@ target_*/
 # Exception: the README (release landing page).
 *.md
 !README.md
+!AGENTS.md
 !third_party/**/README.md
 # Exception: docs/extraction/. Unlike a working note these describe the pipeline's invariants
 # rather than one investigation, they are verified against the source they document, and they are
@@ -96,7 +110,10 @@ target_*/
 # markdown at a neutral path so an importer author, a person, or any agent reads the same source;
 # .claude/skills/ holds only a discovery shim pointing here.
 !docs/extraction/**/*.md
+!docs/unreal/**/*.md
 !.claude/skills/**/*.md
+# Persistent project journal requested for the Atlas -> Unreal importer work.
+!progress.md
 
 # GAME CONTENT - never tracked. The grade LUT source is extracted verbatim from the
 # game's resources.assets and its .bin is that asset's derivative; both are rebuilt

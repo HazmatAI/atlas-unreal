@@ -1,0 +1,27 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "5.8",
+	"Category": "Development",
+	"Description": "Minimal host project for Atlas EFT Importer commandlet and automation tests.",
+	"Plugins": [
+		{
+			"Name": "AtlasEftImporter",
+			"Enabled": true
+		},
+		{
+			"Name": "ModelContextProtocol",
+			"Enabled": true
+		},
+		{
+			"Name": "AllToolsets",
+			"Enabled": true
+		},
+		{
+			"Name": "EditorToolset",
+			"Enabled": true
+		}
+	],
+	"AdditionalPluginDirectories": [
+		"../BuildPluginPackage"
+	]
+}
