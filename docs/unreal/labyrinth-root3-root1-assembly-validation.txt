@@ -1,0 +1,15 @@
+Map assemblage Root3 + voisin Root1 — 2026-09-20
+
+Map de contrôle: /Game/Atlas/Sectors/Assemblies/L_Atlas_Root003_Root001_Adjacent. Elle contient 2 références ULevelStreamingAlwaysLoaded vers Root3 et Root1, toutes deux chargées/visibles à transform identité. Aucun acteur StaticMesh n'est copié dans le niveau persistant. Commandlet create/répétitions puis reload `-ValidateOnly` PASS: 1 944 IDs Root3 + 10 009 IDs Root1; aucun doublon inter-level.
+
+Bounds UE en cm au staging:
+- Root3: (-2287.021, -5346.584, -1039.593) .. (-629.743, -2591.222, 1478.870)
+- Root1: (-3383.764, -4467.952, -472.591) .. (6545.657, 2547.392, 739.713)
+
+Paire source de raccord: Root3 instance 14303 Bunker_Door_B_01_R_220-110_LOD0 contre Root1 instance 6257 Pipe_support_wall_01_A_LOD0; recouvrement AABB d'environ 0,100 x 0,022 x 1,170 m, sans gap.
+
+Bounds de reload final recalculées par les huit coins des AABB locales LOD0 sous le RelativeTransform sérialisé du root mesh (la cache ComponentToWorld de `LoadPackage` sans world était invalide et a été rejetée). Min/max concordent avec les rapports Root1/Root3 à 0,25 cm. La paire Root3 door 14303 / Root1 pipe-support 6257 overlap en coordonnées UE X/Y/Z `117,0001 / 10,0000 / 2,2000 cm` (seuil 0,5 cm sur chaque axe). BuildPlugin Package15 Editor/Development/Shipping; deux créations corrigées et reload ValidateOnly PASS.
+
+La map assembly de 7 118 octets a été remplacée après backup datée: ancienne SHA-256 `4E63A3421406632EDA9150A845EA2B079F75CC0BE418C2D89A3735ACE4B00B59`; sauvegarde sous `Aether/sector_collision_stage/Root1AdjacencyStageHost/Saved/Backups/LiveAssemblyBoundsFix/L_Atlas_Root003_Root001_Adjacent.original.20260920-191726.umap`. SHA-256 assembly finale stage/live `4ADC4028CB23AE9A858EE0D8B58729DF48A660B243DE5097D73E2D6A0D5E04C7`. Root3 live préexistante reste modifiée/résérialisée par rapport à Root3 staging (hashs live 4CEF41B2…EEF5C, stage DCC7E3DF…123D82C); elle a été strictement préservée, l'assembly ne stockant que son chemin de package. Aucune validation MCP/live n'est affirmée tant que MyProject n'est pas rouvert.
+
+Prochain test manuel précis: ouvrir MyProject, puis l'assembly ci-dessus; confirmer deux sublevels loaded/visible, transform identity, Root3=1 944 et Root1=10 009 acteurs géométriques, aucun AtlasInstance dupliqué; Root3 collision=1 702 composants/4 layer actors et Root1 collision=6 805/4; tester les line traces Pawn et WorldStatic sur un mesh blocker Root1 et une box Root3, vérifier aucun overlap event ni génération navmesh. Ne pas sauvegarder de changement manuel.

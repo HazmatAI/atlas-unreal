@@ -267,11 +267,13 @@ bool FMaterialImporter::ImportOpaqueMaterial(
     const FString& InstanceDestinationPath,
     const FString& TextureDestinationPath,
     FMaterialImportResult& OutResult,
-    FString& OutError)
+    FString& OutError,
+    bool bReuseExistingMaster)
 {
     OutResult = FMaterialImportResult();
     OutError.Reset();
-    if (Material.AlphaMode != EMaterialAlphaMode::Opaque || Material.Role != TEXT("opaque"))
+    if (Material.AlphaMode != EMaterialAlphaMode::Opaque || Material.Role != TEXT("opaque")
+        || Material.bUnsupportedOpaqueFeatures || !Material.bDoubleSided)
     {
         OutError = FString::Printf(TEXT("Material %u is not an opaque Atlas material."), Material.Id);
         return false;
@@ -288,9 +290,9 @@ bool FMaterialImporter::ImportOpaqueMaterial(
     const FTextureReference* AlbedoReference = FindTexture(Material, ETextureSemantic::Albedo);
     const FTextureReference* NormalReference = FindTexture(Material, ETextureSemantic::Normal);
     const FTextureReference* SpecularReference = FindTexture(Material, ETextureSemantic::Specular);
-    if (!AlbedoReference || !NormalReference || !SpecularReference)
+    if (!AlbedoReference || !NormalReference)
     {
-        OutError = FString::Printf(TEXT("Material %u requires albedo, normal, and specMap provenance for this vertical test."), Material.Id);
+        OutError = FString::Printf(TEXT("Material %u requires albedo and normal textures for this vertical test."), Material.Id);
         return false;
     }
 
@@ -299,20 +301,22 @@ bool FMaterialImporter::ImportOpaqueMaterial(
     FTextureImportResult SpecularResult;
     if (!FTextureImporter::ImportTexture(PackDirectory, *AlbedoReference, TextureDestinationPath, AlbedoResult, OutError)
         || !FTextureImporter::ImportTexture(PackDirectory, *NormalReference, TextureDestinationPath, NormalResult, OutError)
-        || !FTextureImporter::ImportTexture(PackDirectory, *SpecularReference, TextureDestinationPath, SpecularResult, OutError))
+        || (SpecularReference
+            && !FTextureImporter::ImportTexture(PackDirectory, *SpecularReference, TextureDestinationPath, SpecularResult, OutError)))
     {
         return false;
     }
     if (!AlbedoResult.bSRGB || AlbedoResult.CompressionSettings != TC_Default
         || NormalResult.bSRGB || NormalResult.CompressionSettings != TC_Normalmap || NormalResult.bFlipGreenChannel
-        || SpecularResult.bSRGB || SpecularResult.CompressionSettings != TC_Masks)
+        || (SpecularReference && (SpecularResult.bSRGB || SpecularResult.CompressionSettings != TC_Masks)))
     {
         OutError = TEXT("Imported textures do not match the required Atlas semantic settings.");
         return false;
     }
 
-    UMaterial* Master = nullptr;
-    if (!BuildMasterMaterial(MasterDestinationPath, Master, OutError))
+    UMaterial* Master = bReuseExistingMaster
+        ? LoadObject<UMaterial>(nullptr, *(MasterDestinationPath / TEXT("M_AtlasOpaque.M_AtlasOpaque"))) : nullptr;
+    if (!Master && !BuildMasterMaterial(MasterDestinationPath, Master, OutError))
     {
         return false;
     }
@@ -344,11 +348,14 @@ bool FMaterialImporter::ImportOpaqueMaterial(
     // also permits an explicit inactive provenance reference in the static switch's uncompiled branch.
     Instance->TextureParameterValues = {
         FTextureParameterValue(FMaterialParameterInfo(BaseColorTextureParameter), AlbedoResult.Texture),
-        FTextureParameterValue(FMaterialParameterInfo(NormalTextureParameter), NormalResult.Texture),
-        FTextureParameterValue(
-        FMaterialParameterInfo(SpecularProvenanceTextureParameter),
-        SpecularResult.Texture)
+        FTextureParameterValue(FMaterialParameterInfo(NormalTextureParameter), NormalResult.Texture)
     };
+    if (SpecularReference)
+    {
+        Instance->TextureParameterValues.Add(FTextureParameterValue(
+            FMaterialParameterInfo(SpecularProvenanceTextureParameter),
+            SpecularResult.Texture));
+    }
     Instance->VectorParameterValues = {
         FVectorParameterValue(
             FMaterialParameterInfo(TintParameter),
@@ -376,11 +383,20 @@ bool FMaterialImporter::ImportOpaqueMaterial(
     {
         return Value.ParameterInfo.Name == SpecularProvenanceTextureParameter;
     });
+    const float ExpectedRoughnessSelector = Material.bRoughnessFromAlbedoAlpha ? 1.0f : 0.0f;
+    const bool bSpecularProvenanceRoundTrips = SpecularReference
+        ? SpecularProvenanceOverride && SpecularProvenanceOverride->ParameterValue == SpecularResult.Texture
+        : SpecularProvenanceOverride == nullptr;
     if (Instance->Parent != Master
         || UMaterialEditingLibrary::GetMaterialInstanceTextureParameterValue(Instance, BaseColorTextureParameter) != AlbedoResult.Texture
         || UMaterialEditingLibrary::GetMaterialInstanceTextureParameterValue(Instance, NormalTextureParameter) != NormalResult.Texture
-        || !SpecularProvenanceOverride || SpecularProvenanceOverride->ParameterValue != SpecularResult.Texture
-        || !FMath::IsNearlyEqual(UMaterialEditingLibrary::GetMaterialInstanceScalarParameterValue(Instance, UseAlbedoAlphaRoughnessParameter), 1.0f)
+        || !bSpecularProvenanceRoundTrips
+        || !FMath::IsNearlyEqual(
+            UMaterialEditingLibrary::GetMaterialInstanceScalarParameterValue(Instance, UseAlbedoAlphaRoughnessParameter),
+            ExpectedRoughnessSelector)
+        || !FMath::IsNearlyEqual(
+            UMaterialEditingLibrary::GetMaterialInstanceScalarParameterValue(Instance, RoughnessParameter),
+            Material.Roughness)
         || UMaterialEditingLibrary::GetMaterialInstanceStaticSwitchParameterValue(Instance, DebugUseSpecularProvenanceParameter))
     {
         OutError = TEXT("Material-instance parent or parameter round-trip validation failed.");

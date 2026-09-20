@@ -1,0 +1,226 @@
+Root=3 (SBG_Labyrinth_Area_03) Level=547 Grandparent=9787 Expected=53
+Material 298 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0298.MI_Atlas_0298
+Material 299 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0299.MI_Atlas_0299
+Material 679 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0679.MI_Atlas_0679
+Material 680 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0680.MI_Atlas_0680
+Material 703 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0703.MI_Atlas_0703
+Material 704 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0704.MI_Atlas_0704
+Material 796 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0796.MI_Atlas_0796
+Material 797 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0797.MI_Atlas_0797
+Material 798 OPAQUE /Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0798.MI_Atlas_0798
+Instance 13745 mesh=750 parent=14421 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 -244.652009
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13746 mesh=750 parent=14420 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 1105.241013
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13747 mesh=750 parent=14419 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 295.394993
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13748 mesh=750 parent=14417 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 970.265961
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13749 mesh=750 parent=14418 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 565.342999
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13750 mesh=750 parent=14416 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 -379.776001
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13751 mesh=750 parent=14414 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 160.420001
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13752 mesh=750 parent=14415 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 430.368996
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13753 mesh=750 parent=14412 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 -649.874020
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13754 mesh=750 parent=14413 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 -784.848022
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13755 mesh=750 parent=14411 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 835.291958
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13756 mesh=750 parent=14410 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 -109.677994
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13757 mesh=750 parent=14408 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 25.446001
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13758 mesh=750 parent=14409 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -1952.721977 -2805.410957 -514.750004
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 13759 mesh=750 parent=14407 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2232.975006 -2805.410957 700.318003
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14083 mesh=784 parent=14112 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 850.644970
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14084 mesh=784 parent=14115 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 -1039.593029
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14085 mesh=784 parent=14114 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 -229.298997
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14086 mesh=784 parent=14113 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 -89.789999
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14087 mesh=784 parent=14116 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 -629.984999
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14088 mesh=784 parent=14118 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 -359.888005
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14089 mesh=784 parent=14117 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 -499.396992
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14090 mesh=784 parent=14105 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 990.155029
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14091 mesh=784 parent=14104 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 580.696011
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14092 mesh=784 parent=14103 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 180.307996
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14093 mesh=784 parent=14107 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 -769.495010
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14094 mesh=784 parent=14106 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 310.748005
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14095 mesh=784 parent=14109 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 720.206022
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14096 mesh=784 parent=14108 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1997.595978 -2889.253044 40.799001
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14097 mesh=784 parent=14111 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 450.257015
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14098 mesh=784 parent=14110 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.995911 -2721.553040 -900.084019
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14334 mesh=860 parent=18055 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 450.257015
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14335 mesh=860 parent=18056 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 -359.888005
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14336 mesh=860 parent=18057 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 -89.789999
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14337 mesh=860 parent=18051 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 180.307996
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14338 mesh=860 parent=18053 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 720.206022
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14339 mesh=860 parent=18052 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 990.155029
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14340 mesh=860 parent=18054 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2187.339973 -2805.570030 -629.986000
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14597 mesh=927 parent=16589 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 448.211002
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14598 mesh=927 parent=16588 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 718.162012
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14599 mesh=927 parent=16587 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 -631.891012
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14600 mesh=927 parent=16585 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 178.260005
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14601 mesh=927 parent=16584 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 313.234997
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14602 mesh=927 parent=16586 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 -226.816010
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14603 mesh=927 parent=16583 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 -901.992035
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14604 mesh=927 parent=16596 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 43.283999
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14605 mesh=927 parent=16597 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 -91.690999
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14606 mesh=927 parent=16595 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 -361.790991
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14607 mesh=927 parent=16592 transform=Rotation: Pitch 90.000000 Yaw 90.000000 Roll 0.000000
+Translation: -2186.264992 -2684.995079 988.113022
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14608 mesh=927 parent=16593 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 -767.015982
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14609 mesh=927 parent=16591 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 583.186007
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14610 mesh=927 parent=16594 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 853.137016
+Scale3D: 1.000000 1.000000 1.000000
+
+Instance 14611 mesh=927 parent=16590 transform=Rotation: Pitch 90.000000 Yaw -90.000000 Roll 0.000000
+Translation: -1999.428940 -2925.827980 -496.916008
+Scale3D: 1.000000 1.000000 1.000000
+
+Camera=X=486.017 Y=-226.546 Z=734.067 Rotation=P=-10.024988 Y=-135.000000 R=0.000000 FOV=50
+PASS instances=53 meshes=4 materials=9 fallback=0 slots=121 triangles=760 translationErrorCm=0.000000000 cornerErrorCm=0.000000000
+BoundsMin=X=-2281.769 Y=-2976.645 Z=-1039.593 BoundsMax=X=-1903.927 Y=-2634.177 Z=1218.294
+Map=/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787

@@ -1,0 +1,53 @@
+Atlas / Unreal Engine — Root4 structural import report
+Date: 2026-09-20
+Status: staging PASS; offline sync PASS; manual Root4 validation pending
+
+Scope and source identity
+- RootId=4, source root SBG_Labyrinth_Area_05, level=549.
+- Fingerprint: a2fa9ad39c0dc867. Source pack/sidecar association matched the existing classification; no global audit was run.
+- Expected source inventory: 2,413 active LOD0 instances, 204 mesh IDs, 1,131 collider rows. Blocker classification: 544 total = 538 mesh + 6 boxes. Seven rows are convex mesh candidates and are explicitly excluded below; supported selection is therefore 537.
+- Defensible Root4↔Root1 source AABB contact: Root4 instance 15564 / Root1 instance 9425. After serialized-transform assembly audit the overlap is 49.843788 × 47.291266 × 1.061488 cm, above the 0.5 cm per-axis threshold.
+
+Geometry — BuildSector staging PASS
+- Exact map: /Game/Atlas/Sectors/Root_004/L_Atlas_Root004_Area05
+- Selection: complete-root-active-lod0; 2,413 selected from 2,570 root records; 157 higher LOD records excluded, zero inactive.
+- 204 unique meshes; 243 unique materials (147 supported / 96 fallback); 2,630 instance slots validated; 221,236 triangles.
+- Translation error 0 cm; maximum transformed-corner error 0.002720475 cm; duplicate IDs 0; missing references 0; anomalies 0.
+- Geometry bounds min (310.539, 1357.597, -611.467) cm; max (6335.008, 5314.348, 1265.178) cm.
+
+Collision — PASS on both runs; second run idempotent
+- Commandlet used the Root4-only opt-in -AllowUnsupportedConvexExclusion. Without this opt-in, existing unsupported-convex behavior remains an explicit error; no general silent fallback was introduced.
+- Supported selection: 537 components = 531 mesh + 6 box; 132 shared collision mesh assets; 4 collision-layer actors. Second run replaced exactly 4 managed actors / 537 components.
+- Geometry before/after: 2,413 actors and CRC32 1889731938 unchanged. Max bounds error 0.003160287 cm against 0.25 cm tolerance.
+- Exactly seven unsupported convex rows were excluded. All are `type=mesh`, `packedMeshId=850`, `mesh=collider__549_7_637.obj`, `root=SBG_Labyrinth_Area_05`, `level=549`, `layerId=18` / `LowPolyCollider`, `flags=0`. Sidecar rows have no meshId or instanceId fields. No additional unsupported candidate was observed.
+- Source files: sidecar `eft_assets/labyrinth/colliders.json`; shared OBJ `eft_assets/labyrinth/meshes/collider__549_7_637.obj`. The OBJ has approximately 176 vertices / 306 faces and local bounds about (-1.432,-1.376,-0.059) to (1.334,1.368,0.367), dimensions 2.766 × 2.744 × 0.426 source units: broad and flat, but this is not proof that it is non-critical. Treat all seven as priority collision debt and verify Player Collision manually after sync.
+
+Explicit convex exclusions (source translation; Atlas-converted translation in source units)
+row | source translation (x,y,z) | Atlas translation (x,y,z)
+7647 | (50.016880, 0.091000, 18.227791) | (-50.016880, 0.091000, 18.227791)
+7648 | (38.852380, -0.263630, 60.242538) | (-38.852379, -0.263630, 60.242538)
+7651 | (39.938380, -0.086630, 61.882549) | (-39.938381, -0.086630, 61.882549)
+7652 | (44.447410, -0.220630, 30.091551) | (-44.447411, -0.220630, 30.091551)
+7653 | (37.220410, -0.116630, 35.495548) | (-37.220409, -0.116630, 35.495548)
+7655 | (35.337160, 0.240000, 59.362080) | (-35.337158, 0.240000, 59.362080)
+7679 | (34.323650, -0.601000, 56.931850) | (-34.323650, -0.601000, 56.931850)
+
+Structural master — create and reload/validate PASS
+- Exact master: /Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural
+- Six ULevelStreamingAlwaysLoaded references at identity transform: Root1, Root3, Root7, Root6, Root5, Root4. Total geometry 10,009 + 1,944 + 629 + 943 + 1,445 + 2,413 = 17,383.
+- Reload/ValidateOnly: PASS; 0 persistent geometry actors; duplicateInstanceIds=false; six sector refs and five Root1 contact checks.
+- Bounds were audited from the serialized relative transform of each root mesh component and agree with the sector reports. Sector bounds are recorded in the JSON companion. Root4↔Root1 contact pair 15564/9425 overlap is (49.843788, 47.291266, 1.061488) cm.
+- Root1/Root3 sector maps and the legacy Root003_Root001 adjacent map were not modified.
+
+Offline sync — PASS; Unreal remained closed
+- Synced only complete Root_004 content and the structural master. Root_004: 641 files / 352,413,810 bytes; staging/live manifest SHA256 `805122CA0CDA5E85BE9CB26ABAA56C807F305E9F8401BA91C5CF5A3012881142`.
+- Master package: 8,518 bytes; staging/live SHA256 `769DCF5F733EA45908D8E267BC6AA23D3FA3305492EEC4658B320FE1121754BE`.
+- Previous live master backed up at `Aether/sector_collision_stage/Backups/StructuralMaster_PreRoot4_20260920_222327`; old package SHA256 `E4990E464C811F28B464B59AA92886243E7E3CB1E8EA667C6F611C422197ECB8`.
+- Protected Root1/3/5/6/7/Common/legacy adjacent manifest unchanged before/after: 3,595 files; SHA256 `D9482343822F5035D28D2F6AF17228D5BD855CE8B08B73329AEABCFD0501CDB1`.
+- UnrealEditor and UnrealEditor-Cmd were not running; exclusive lock probe passed before sync.
+
+Manual validation state
+- Root5, Root6 and the structural master: PASS as reported manually by the user; not re-tested during this Root4 pass.
+- Root4 post-sync visual/MCP and Player Collision checks: pending, with the seven excluded convex surfaces as priority.
+- No GUI, commit, or push was performed.
+- Exact map to open next: /Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural

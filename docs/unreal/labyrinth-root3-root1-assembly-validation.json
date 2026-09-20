@@ -1,0 +1,56 @@
+{
+  "date": "2026-09-20",
+  "status": "SYNCHRONIZED_OFFLINE_MCP_PENDING",
+  "assemblyMap": "/Game/Atlas/Sectors/Assemblies/L_Atlas_Root003_Root001_Adjacent",
+  "sha256": "4ADC4028CB23AE9A858EE0D8B58729DF48A660B243DE5097D73E2D6A0D5E04C7",
+  "bytes": 7118,
+  "sync": {
+    "destination": "MyProject/Content/Atlas/Sectors/Assemblies/L_Atlas_Root003_Root001_Adjacent.umap",
+    "destinationHashMatchesStage": true,
+    "destinationTargetExistedBeforeCorrection": true,
+    "previousAssemblySha256": "4E63A3421406632EDA9150A845EA2B079F75CC0BE418C2D89A3735ACE4B00B59",
+    "backupPath": "C:/Users/Pc/Documents/ChatGPT/Aether/sector_collision_stage/Root1AdjacencyStageHost/Saved/Backups/LiveAssemblyBoundsFix/L_Atlas_Root003_Root001_Adjacent.original.20260920-191726.umap",
+    "backupSha256": "4E63A3421406632EDA9150A845EA2B079F75CC0BE418C2D89A3735ACE4B00B59",
+    "Root3Overwritten": false,
+    "Root1SectorHashUnchanged": "CDBC0BBB30CC0E97F716F9499F41E800107BD3382ABA3018E466AF1D616E0A3D",
+    "Root3LiveSha256Unchanged": "4CEF41B2E46B5BBB2B0A6DBEDA175589318E1FF43C9DE713A929BBB4284EEF5C"
+  },
+  "stagingValidation": {
+    "correctedCreatePasses": 2,
+    "reloadValidateOnly": "PASS",
+    "streamingType": "ULevelStreamingAlwaysLoaded",
+    "streamingRefs": 2,
+    "persistentGeometryActors": 0,
+    "allTransformsIdentity": true,
+    "duplicateInstanceIds": 0,
+    "rootBoundsMethod": "8 corners of each StaticMesh local LOD0 AABB transformed by the serialized root static-mesh component RelativeTransform (the actor transform for these generated StaticMeshActors); avoids stale ComponentToWorld cache in LoadPackage-only audit",
+    "sectorReportBoundsToleranceCm": 0.25,
+    "boundsMatchSectorImportReports": true,
+    "junctionPair": {
+      "root3DoorInstanceId": 14303,
+      "root1PipeSupportInstanceId": 6257,
+      "overlapCm": [117.00009918212913, 10.000003814697266, 2.200015783310107],
+      "minimumOverlapPerAxisCm": 0.5
+    },
+    "sublevels": [
+      {
+        "map": "/Game/Atlas/Sectors/Root_003/L_Atlas_Root003_Area03",
+        "geometryActors": 1944,
+        "instanceIds": 1944,
+        "boundsMinCm": [-2287.021, -5346.584, -1039.593],
+        "boundsMaxCm": [-629.743, -2591.222, 1478.870],
+        "stagingMapSha256": "DCC7E3DF957B73F281CC9B7B7BD9B0197927F9F152E842296F225347F123D82C"
+      },
+      {
+        "map": "/Game/Atlas/Sectors/Root_001/L_Atlas_Root001_Area06",
+        "geometryActors": 10009,
+        "instanceIds": 10009,
+        "boundsMinCm": [-3383.764, -4467.952, -472.591],
+        "boundsMaxCm": [6545.657, 2547.392, 739.713],
+        "stagingMapSha256": "CDBC0BBB30CC0E97F716F9499F41E800107BD3382ABA3018E466AF1D616E0A3D"
+      }
+    ]
+  },
+  "liveValidation": "pending user reopen and MCP validation; live Root3 hash differs from the staging map, so headless bounds/reference results do not establish the current live composition",
+  "manualTest": "Open MyProject, then /Game/Atlas/Sectors/Assemblies/L_Atlas_Root003_Root001_Adjacent; verify both streamed levels loaded/visible at identity, count 1,944 Root3 and 10,009 Root1 geometry actors with no duplicate AtlasInstance IDs, confirm collision counts Root3 1,702 / Root1 6,805, then trace Pawn and WorldStatic against Root1 mesh/box and Root3 box blockers without saving manual changes."
+}

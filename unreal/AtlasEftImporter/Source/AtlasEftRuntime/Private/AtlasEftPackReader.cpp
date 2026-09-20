@@ -730,6 +730,20 @@ bool FPackReader::ReadManifest(const FString& PackDirectory, FManifest& OutManif
             OutManifest.Roots.Add(Value->AsString());
         }
     }
+    if (Root->HasTypedField<EJson::Object>(TEXT("layerNames")))
+    {
+        for (const TPair<FString, TSharedPtr<FJsonValue>>& Pair : Root->GetObjectField(TEXT("layerNames"))->Values)
+        {
+            uint32 Layer = 0;
+            if (!LexTryParseString(Layer, *Pair.Key) || !Pair.Value.IsValid() || Pair.Value->Type != EJson::String)
+            {
+                Report.Error(Path, FString::Printf(TEXT("Malformed layerNames entry '%s'."), *Pair.Key));
+                bOk = false;
+                continue;
+            }
+            OutManifest.LayerNames.Add(Layer, Pair.Value->AsString());
+        }
+    }
     if (Root->HasTypedField<EJson::Array>(TEXT("lodGroups")))
     {
         OutManifest.LodGroupCount = Root->GetArrayField(TEXT("lodGroups")).Num();
@@ -865,6 +879,15 @@ bool FPackReader::ReadMaterials(
             bOk = false;
         }
 
+        // Preserve feature presence, including blocks with no texture, for honest fallback classification.
+        for (const TCHAR* Feature : {TEXT("vp"), TEXT("detail"), TEXT("parallax"), TEXT("emissive")})
+        {
+            const TSharedPtr<FJsonValue> Value = Object->TryGetField(Feature);
+            Material.bUnsupportedOpaqueFeatures |= Value.IsValid() && Value->Type != EJson::Null;
+        }
+        bool bGlassTRS = false;
+        Object->TryGetBoolField(TEXT("glassTRS"), bGlassTRS);
+        Material.bUnsupportedOpaqueFeatures |= bGlassTRS;
         CollectTypedTextures(Object, Material.Textures);
         OutMaterials.Add(MoveTemp(Material));
     }
@@ -954,6 +977,230 @@ bool FPackReader::ReadInstances(
         {
             Report.Error(Path, FString::Printf(TEXT("Invalid instance record %llu."), Index));
             return false;
+        }
+    }
+    return true;
+}
+
+bool FPackReader::ReadColliders(
+    const FString& PackDirectory,
+    const FManifest& Manifest,
+    TArray<FColliderDesc>& OutColliders,
+    FAuditReport& Report)
+{
+    OutColliders.Reset();
+    if (!Manifest.ColliderLayout.IsSet())
+    {
+        Report.Error(TEXT("manifest.collider"), TEXT("Collider layout is absent."));
+        return false;
+    }
+
+    const FLayoutDesc& Layout = Manifest.ColliderLayout.GetValue();
+    bool bLayoutValid = true;
+    bLayoutValid &= ValidateField(Layout, TEXT("affine"), TEXT("f32x12"), TEXT("manifest.collider"), Report);
+    bLayoutValid &= ValidateField(Layout, TEXT("kind"), TEXT("u32"), TEXT("manifest.collider"), Report);
+    bLayoutValid &= ValidateField(Layout, TEXT("meshId"), TEXT("i32"), TEXT("manifest.collider"), Report);
+    bLayoutValid &= ValidateField(Layout, TEXT("center"), TEXT("f32x3"), TEXT("manifest.collider"), Report);
+    bLayoutValid &= ValidateField(Layout, TEXT("shape"), TEXT("f32x3"), TEXT("manifest.collider"), Report);
+    bLayoutValid &= ValidateField(Layout, TEXT("layer"), TEXT("u32"), TEXT("manifest.collider"), Report);
+    bLayoutValid &= ValidateField(Layout, TEXT("flags"), TEXT("u32"), TEXT("manifest.collider"), Report);
+    if (!bLayoutValid)
+    {
+        return false;
+    }
+
+    const FString Path = FPaths::Combine(PackDirectory, TEXT("colliders.bin"));
+    const int64 FileSize = IFileManager::Get().FileSize(*Path);
+    if (FileSize < 0 || FileSize > MAX_int32 || FileSize % Layout.Stride != 0)
+    {
+        Report.Error(Path, TEXT("Collider file is missing, too large, or not a multiple of its manifest stride."));
+        return false;
+    }
+    const uint64 Count64 = static_cast<uint64>(FileSize / Layout.Stride);
+    if (Count64 != Manifest.ColliderCount || Count64 > static_cast<uint64>(MAX_int32))
+    {
+        Report.Error(Path, FString::Printf(TEXT("Collider record count %llu differs from manifest count %llu or exceeds UE capacity."), Count64, Manifest.ColliderCount));
+        return false;
+    }
+
+    TArray<uint8> Bytes;
+    if (!FFileHelper::LoadFileToArray(Bytes, *Path) || Bytes.Num() != FileSize)
+    {
+        Report.Error(Path, TEXT("Cannot load colliders.bin."));
+        return false;
+    }
+
+    const FFieldDesc* AffineField = Layout.Find(TEXT("affine"));
+    const FFieldDesc* KindField = Layout.Find(TEXT("kind"));
+    const FFieldDesc* MeshField = Layout.Find(TEXT("meshId"));
+    const FFieldDesc* CenterField = Layout.Find(TEXT("center"));
+    const FFieldDesc* ShapeField = Layout.Find(TEXT("shape"));
+    const FFieldDesc* LayerField = Layout.Find(TEXT("layer"));
+    const FFieldDesc* FlagsField = Layout.Find(TEXT("flags"));
+
+    OutColliders.Reserve(static_cast<int32>(Count64));
+    for (uint64 Index = 0; Index < Count64; ++Index)
+    {
+        const uint8* Record = Bytes.GetData() + Index * Layout.Stride;
+        FColliderDesc& Collider = OutColliders.AddDefaulted_GetRef();
+        Collider.Index = Index;
+        for (uint32 Component = 0; Component < 12; ++Component)
+        {
+            Collider.Affine[Component] = ReadF32LE(Record + AffineField->Offset + Component * sizeof(float));
+        }
+        const uint32 KindValue = ReadU32LE(Record + KindField->Offset);
+        if (KindValue > static_cast<uint32>(EColliderKind::Mesh))
+        {
+            Report.Error(Path, FString::Printf(TEXT("Collider %llu has unsupported kind %u."), Index, KindValue));
+            return false;
+        }
+        Collider.Kind = static_cast<EColliderKind>(KindValue);
+        Collider.MeshId = ReadI32LE(Record + MeshField->Offset);
+        Collider.Center = FVector3f(
+            ReadF32LE(Record + CenterField->Offset),
+            ReadF32LE(Record + CenterField->Offset + 4),
+            ReadF32LE(Record + CenterField->Offset + 8));
+        Collider.Shape = FVector3f(
+            ReadF32LE(Record + ShapeField->Offset),
+            ReadF32LE(Record + ShapeField->Offset + 4),
+            ReadF32LE(Record + ShapeField->Offset + 8));
+        Collider.Layer = ReadU32LE(Record + LayerField->Offset);
+        Collider.Flags = ReadU32LE(Record + FlagsField->Offset);
+
+        bool bFinite = FCoordinate::AnalyzeAffine(Collider.Affine).bFinite;
+        bFinite &= FMath::IsFinite(Collider.Center.X) && FMath::IsFinite(Collider.Center.Y) && FMath::IsFinite(Collider.Center.Z);
+        bFinite &= FMath::IsFinite(Collider.Shape.X) && FMath::IsFinite(Collider.Shape.Y) && FMath::IsFinite(Collider.Shape.Z);
+        if (!bFinite || (Collider.Flags & ~0x0fu) != 0)
+        {
+            Report.Error(Path, FString::Printf(TEXT("Collider %llu has non-finite data or unknown flag bits."), Index));
+            return false;
+        }
+        if (Collider.Kind == EColliderKind::Mesh)
+        {
+            if (Collider.MeshId < 0 || !Manifest.ColliderMeshes.ContainsByPredicate([&Collider](const FColliderMeshDesc& Mesh) { return Mesh.Id == static_cast<uint32>(Collider.MeshId); }))
+            {
+                Report.Error(Path, FString::Printf(TEXT("Mesh collider %llu references missing collider mesh %d."), Index, Collider.MeshId));
+                return false;
+            }
+        }
+        else if (Collider.MeshId != -1)
+        {
+            Report.Error(Path, FString::Printf(TEXT("Primitive collider %llu unexpectedly references mesh %d."), Index, Collider.MeshId));
+            return false;
+        }
+        if (Collider.Kind == EColliderKind::Box && (Collider.Shape.X < 0.0f || Collider.Shape.Y < 0.0f || Collider.Shape.Z < 0.0f))
+        {
+            Report.Error(Path, FString::Printf(TEXT("Box collider %llu has a negative size."), Index));
+            return false;
+        }
+        if ((Collider.Kind == EColliderKind::Sphere || Collider.Kind == EColliderKind::Capsule) && Collider.Shape.X < 0.0f)
+        {
+            Report.Error(Path, FString::Printf(TEXT("Sphere/capsule collider %llu has a negative radius."), Index));
+            return false;
+        }
+        if (Collider.Kind == EColliderKind::Capsule
+            && (Collider.Shape.Y < 0.0f || Collider.Shape.Z < 0.0f || Collider.Shape.Z > 2.0f || FMath::FloorToFloat(Collider.Shape.Z) != Collider.Shape.Z))
+        {
+            Report.Error(Path, FString::Printf(TEXT("Capsule collider %llu has invalid height/direction."), Index));
+            return false;
+        }
+    }
+    return true;
+}
+
+bool FPackReader::ReadColliderMesh(
+    const FString& PackDirectory,
+    const FManifest& Manifest,
+    uint32 MeshId,
+    FDecodedColliderMesh& OutMesh,
+    FAuditReport& Report)
+{
+    TMap<uint32, FDecodedColliderMesh> Decoded;
+    if (!ReadColliderMeshes(PackDirectory, Manifest, TArray<uint32>{MeshId}, Decoded, Report)) return false;
+    FDecodedColliderMesh* Result = Decoded.Find(MeshId);
+    if (!Result)
+    {
+        Report.Error(TEXT("manifest.colliderMeshes"), FString::Printf(TEXT("Collider mesh %u was not decoded."), MeshId));
+        return false;
+    }
+    OutMesh = MoveTemp(*Result);
+    return true;
+}
+
+bool FPackReader::ReadColliderMeshes(
+    const FString& PackDirectory,
+    const FManifest& Manifest,
+    const TArray<uint32>& MeshIds,
+    TMap<uint32, FDecodedColliderMesh>& OutMeshes,
+    FAuditReport& Report)
+{
+    OutMeshes.Reset();
+    if (MeshIds.IsEmpty()) return true;
+
+    const FString Path = FPaths::Combine(PackDirectory, TEXT("collider_meshes.bin"));
+    const int64 FileSize = IFileManager::Get().FileSize(*Path);
+    if (FileSize < 0 || FileSize > MAX_int32)
+    {
+        Report.Error(Path, TEXT("Collider mesh file is missing or too large."));
+        return false;
+    }
+    TArray<uint8> Bytes;
+    if (!FFileHelper::LoadFileToArray(Bytes, *Path) || Bytes.Num() != FileSize)
+    {
+        Report.Error(Path, TEXT("Cannot load collider_meshes.bin."));
+        return false;
+    }
+
+    TSet<uint32> UniqueMeshIds;
+    OutMeshes.Reserve(MeshIds.Num());
+    for (uint32 MeshId : MeshIds)
+    {
+        if (UniqueMeshIds.Contains(MeshId))
+        {
+            Report.Error(TEXT("manifest.colliderMeshes"), FString::Printf(TEXT("Requested collider mesh %u more than once."), MeshId));
+            OutMeshes.Reset();
+            return false;
+        }
+        UniqueMeshIds.Add(MeshId);
+        const FColliderMeshDesc* Descriptor = Manifest.ColliderMeshes.FindByPredicate([MeshId](const FColliderMeshDesc& Mesh) { return Mesh.Id == MeshId; });
+        uint64 VertexEnd = 0;
+        uint64 IndexEnd = 0;
+        if (!Descriptor || Descriptor->VertexCount < 3 || Descriptor->IndexCount < 3 || Descriptor->IndexCount % 3 != 0
+            || !CheckedEnd(Descriptor->VertexOffset, Descriptor->VertexCount, 12, VertexEnd)
+            || !CheckedEnd(Descriptor->IndexOffset, Descriptor->IndexCount, sizeof(uint32), IndexEnd)
+            || VertexEnd > static_cast<uint64>(FileSize) || IndexEnd > static_cast<uint64>(FileSize))
+        {
+            Report.Error(Path, FString::Printf(TEXT("Collider mesh %u is absent or has invalid counts/byte ranges."), MeshId));
+            OutMeshes.Reset();
+            return false;
+        }
+
+        FDecodedColliderMesh& OutMesh = OutMeshes.Add(MeshId);
+        OutMesh.Id = MeshId;
+        OutMesh.Vertices.Reserve(Descriptor->VertexCount);
+        for (uint32 Index = 0; Index < Descriptor->VertexCount; ++Index)
+        {
+            const uint8* Position = Bytes.GetData() + Descriptor->VertexOffset + static_cast<uint64>(Index) * 12;
+            const FVector3f Vertex(ReadF32LE(Position), ReadF32LE(Position + 4), ReadF32LE(Position + 8));
+            if (!FMath::IsFinite(Vertex.X) || !FMath::IsFinite(Vertex.Y) || !FMath::IsFinite(Vertex.Z))
+            {
+                Report.Error(Path, FString::Printf(TEXT("Collider mesh %u has a non-finite vertex %u."), MeshId, Index));
+                OutMeshes.Reset();
+                return false;
+            }
+            OutMesh.Vertices.Add(Vertex);
+        }
+        OutMesh.Indices.Reserve(Descriptor->IndexCount);
+        for (uint32 Index = 0; Index < Descriptor->IndexCount; ++Index)
+        {
+            const uint32 Value = ReadU32LE(Bytes.GetData() + Descriptor->IndexOffset + static_cast<uint64>(Index) * sizeof(uint32));
+            if (Value >= Descriptor->VertexCount)
+            {
+                Report.Error(Path, FString::Printf(TEXT("Collider mesh %u has out-of-range index %u at %u."), MeshId, Value, Index));
+                OutMeshes.Reset();
+                return false;
+            }
+            OutMesh.Indices.Add(Value);
         }
     }
     return true;

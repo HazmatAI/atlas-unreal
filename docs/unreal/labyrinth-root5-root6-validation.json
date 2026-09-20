@@ -1,0 +1,148 @@
+{
+  "status": "PASS",
+  "date": "2026-09-20",
+  "source": {
+    "pack": "labyrinth.eftpack",
+    "fingerprint": "a2fa9ad39c0dc867",
+    "colliderAssociation": "sidecar/pack association from the existing classification; no new global audit"
+  },
+  "sectors": [
+    {
+      "rootId": 6,
+      "rootName": "SBG_Labyrinth_Area_01",
+      "map": "/Game/Atlas/Sectors/Root_006/L_Atlas_Root006_Area01",
+      "geometry": {
+        "status": "PASS",
+        "rootRecords": 1074,
+        "higherLodExcluded": 131,
+        "activeLod0": 943,
+        "uniqueMeshes": 160,
+        "materials": 164,
+        "supportedMaterials": 113,
+        "fallbackMaterials": 51,
+        "instanceSlots": 1002,
+        "triangles": 121135,
+        "translationErrorCm": 0,
+        "cornerErrorCm": 0.0018534244043948373,
+        "duplicateInstanceIds": 0,
+        "missingReferences": 0,
+        "boundsMinCm": "X=3795.073 Y=-4685.100 Z=-514.000",
+        "boundsMaxCm": "X=7589.778 Y=529.799 Z=726.863"
+      },
+      "collisions": {
+        "status": "PASS",
+        "sourceRows": 1541,
+        "meshRows": 1536,
+        "boxRows": 5,
+        "sphereRows": 0,
+        "capsuleRows": 0,
+        "triggerRows": 0,
+        "selectedBlockers": 748,
+        "selectedMesh": 743,
+        "selectedSimple": 5,
+        "uniqueColliderMeshes": 84,
+        "layerActors": 4,
+        "secondRunReplacedActors": 4,
+        "secondRunReplacedComponents": 748,
+        "geometryActorsAfter": 943,
+        "geometryCrc32Before": 2597788775,
+        "geometryCrc32After": 2597788775,
+        "maxBoundsErrorCm": 0.0016008729598979698,
+        "toleranceCm": 0.25
+      },
+      "root1Contact": {
+        "sectorInstanceId": 19589,
+        "root1InstanceId": 6664,
+        "sourceAabbOverlapM": [1.170001, 2.3, 0.304789],
+        "ueAabbOverlapCm": [30.478879928588867, 117.0000991821289, 230.00001525878918],
+        "minimumOverlapCmPerAxis": 0.5
+      },
+      "sync": {
+        "files": 482,
+        "bytes": 248981795,
+        "sourceDestinationManifestSha256": "EB12227B70AAC995BCED76079F57D5F0F8D2A5EDC1189E520DBF6788E2FDB38B"
+      }
+    },
+    {
+      "rootId": 5,
+      "rootName": "SBG_Labyrinth_Area_04",
+      "map": "/Game/Atlas/Sectors/Root_005/L_Atlas_Root005_Area04",
+      "geometry": {
+        "status": "PASS",
+        "rootRecords": 1540,
+        "higherLodExcluded": 95,
+        "activeLod0": 1445,
+        "uniqueMeshes": 192,
+        "materials": 199,
+        "supportedMaterials": 137,
+        "fallbackMaterials": 62,
+        "instanceSlots": 1507,
+        "triangles": 143702,
+        "translationErrorCm": 0,
+        "cornerErrorCm": 0.0014233237466425128,
+        "duplicateInstanceIds": 0,
+        "missingReferences": 0,
+        "boundsMinCm": "X=4844.852 Y=137.393 Z=-149.700",
+        "boundsMaxCm": "X=6990.576 Y=3221.545 Z=406.996"
+      },
+      "collisions": {
+        "status": "PASS",
+        "sourceRows": 1508,
+        "meshRows": 1505,
+        "boxRows": 3,
+        "sphereRows": 0,
+        "capsuleRows": 0,
+        "triggerRows": 0,
+        "selectedBlockers": 729,
+        "selectedMesh": 726,
+        "selectedSimple": 3,
+        "uniqueColliderMeshes": 92,
+        "layerActors": 3,
+        "secondRunReplacedActors": 3,
+        "secondRunReplacedComponents": 729,
+        "geometryActorsAfter": 1445,
+        "geometryCrc32Before": 3136661004,
+        "geometryCrc32After": 3136661004,
+        "maxBoundsErrorCm": 0.05774065103059911,
+        "toleranceCm": 0.25
+      },
+      "root1Contact": {
+        "sectorInstanceId": 18253,
+        "root1InstanceId": 158,
+        "sourceAabbOverlapM": [1.281407, 0.049607, 0.537787],
+        "ueAabbOverlapCm": [53.77838198664358, 128.142418696478, 4.960865973559692],
+        "minimumOverlapCmPerAxis": 0.5
+      },
+      "sync": {
+        "files": 568,
+        "bytes": 244962623,
+        "sourceDestinationManifestSha256": "43F6E6425726E5B4C88BC2AF34AB0CAAC197285644A43DC0428B05F92257BECD"
+      }
+    }
+  ],
+  "assembly": {
+    "status": "PASS",
+    "map": "/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural",
+    "sublevels": [1, 3, 7, 6, 5],
+    "streamingRefs": 5,
+    "streamingType": "ULevelStreamingAlwaysLoaded",
+    "transforms": "identity",
+    "geometryActors": 14970,
+    "duplicateInstanceIds": false,
+    "persistentGeometryActors": 0,
+    "create": "PASS",
+    "validateReload": "PASS",
+    "bounds": "all five serialized-transform audits matched their BuildSector reports within 0.25 cm",
+    "validatedContacts": ["Root3↔Root1", "Root7↔Root1", "Root6↔Root1", "Root5↔Root1"]
+  },
+  "liveSync": {
+    "status": "offline-synced/manual-pending",
+    "masterSha256SourceAndDestination": "E4990E464C811F28B464B59AA92886243E7E3CB1E8EA667C6F611C422197ECB8",
+    "preUpdateMasterBackup": "Aether/sector_collision_stage/Backups/StructuralMaster_PreRoot5Root6_20260920_214454/L_Atlas_Labyrinth_Structural.umap",
+    "preUpdateMasterSha256": "E6391D50ABA79C3DC35F26F2300C867DC5373298BFA8220C18FDC7D3AB510082",
+    "protectedContent": "Root1, Root3, Root7, Common, and the old Root003_Root001 adjacent assembly passed before/after manifest equality checks",
+    "unrealProcessesDuringSync": 0,
+    "mcpManualValidation": "pending"
+  },
+  "nextMapToOpen": "/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural"
+}

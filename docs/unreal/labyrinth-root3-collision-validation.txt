@@ -1,0 +1,35 @@
+Root3 collision staging validation — 2026-09-20
+
+Map: /Game/Atlas/Sectors/Root_003/L_Atlas_Root003_Area03
+Source pack fingerprint: a2fa9ad39c0dc867
+
+Association audit
+- Manifest RootId 3 maps uniquely to SBG_Labyrinth_Area_03; its instances map to level 547.
+- All 24,661 packed collider records match colliders.json in order and in their transform, center, shape, kind/type/layer/flags and mesh references.
+- Root3 contributes 3,407 rows: LowPolyCollider 1,617; HighPolyCollider 1,705; TransparentCollider 80; DoorLowPolyCollider 3; Interactive 2.
+- The selected useful blocker set excludes HighPolyCollider and trigger rows; it includes the two non-trigger Interactive boxes: 1,702 components = 1,700 mesh + 2 box, using 169 distinct collider mesh ids across four layers.
+
+Staged importer behavior
+- Uses one static-mesh asset per unique meshId in /Game/Atlas/Sectors/Root_003/CollisionMeshes.
+- Mesh collider assets use Complex-as-Simple; components are Static, invisible, non-shadowing, do not affect navigation, block Pawn and WorldStatic, ignore other channels, and do not generate overlaps.
+- Collision actors are grouped by layer under Atlas/Root_003/Collision/<layer>, tagged AtlasManagedCollision, AtlasRootId=3, AtlasColliderSchema=1, source layer and count. Replacement removes only the matching managed Root3 schema-1 actors/components.
+- No automatic NavMesh generation is requested.
+- Simple sphere/capsule mappings are implemented by shape kind, but none occur in this Root3 selected set. The two available simple shapes are boxes.
+
+Validation on isolated staged copy
+- Unreal 5.8 BuildPlugin Package12 PASS for UnrealEditor Development, UnrealGame Development, and UnrealGame Shipping.
+- First commandlet run created 1,702 components, 169 mesh assets, and four layer actors.
+- Second commandlet run replaced exactly four managed actors and 1,702 managed components, then recreated the same counts: idempotence PASS.
+- Geometry before/after remains 1,944 actors with the same signature CRC32 4,195,649,602.
+- World-space bounds min (-2285.771, -5346.584, -1053.842) cm; max (-682.113, -2591.222, 1478.870) cm.
+- Maximum tested component bounds error is 0.068625 cm (record 3328), under the 0.25 cm tolerance.
+- Final headless commandlet exit code 0; report: PASS.
+
+Live-project synchronization / MCP validation pending
+- Before synchronization, MCP had confirmed the exact Root3 map, 1,944 geometry actors under Atlas/Root_003, zero AtlasManagedCollision actors, and All Saved. The original live map SHA256 was `5EA6983AE2EC4CBD29F2B9D4E8A8F12C8C88A44839F95A5A8FEBDE09A714A3EB` (3,913,835 bytes).
+- Before copying, no `UnrealEditor` or `UnrealEditor-Cmd` process was running; an exclusive-read handle test succeeded on the live `.umap`. The staging candidate was the exact Root3 map from Package12 PASS, validated by its commandlet JSON/log, at `C:\Users\Pc\Documents\ChatGPT\Aether\sector_collision_stage\Root3CollisionValidationHost\Content\Atlas\Sectors\Root_003\L_Atlas_Root003_Area03.umap`.
+- A dated backup was created and hash-verified before mutation: `C:\Users\Pc\Documents\ChatGPT\Aether\sector_collision_stage\LiveOriginalBackup\Root003_LiveBackup_20260920_165631`. It contains the original `.umap`, all 169 original live collision `.uasset` files, and `Root003_LiveBackup_Manifest.json` with paths, sizes, and SHA256 values. Original map hash in the backup remains `5EA6983AE2EC4CBD29F2B9D4E8A8F12C8C88A44839F95A5A8FEBDE09A714A3EB`.
+- The live `CollisionMeshes` directory contained exactly 169 `.uasset` files (1,952,455 bytes), no subdirectories or other files. Filenames and sizes matched staging; binary SHA256 values differed for all 169 files, so to keep the map/dependencies byte-identical to validated Package12, only those 169 files were replaced with their staged versions, followed by the exact staged `.umap`. No other live path was changed.
+- Offline post-copy verification: live `.umap` is 16,073,277 bytes and SHA256 `DCC7E3DF957B73F281CC9B7B7BD9B0197927F9F152E842296F225347F123D82C`, exactly matching Package12; all 169/169 collision asset hashes now match staging. Status is `SYNCHRONIZED_OFFLINE`, not MCP-validated: Unreal was not launched and no post-sync actor/component counts have yet been read from a loaded map.
+- The earlier editor-native exploration stayed on the then-current Root3 map and stopped before mutation. Its deterministic placement plan was read through 35 MCP chunks (1,702 unique ids, 1,700 mesh + 2 box rows; largest chunk 42,663 bytes), and all 169 references were indexed. `AssetTools.is_dirty` remained false. MCP exposed individual calls but no Python/console executor or atomic/bulk scene operation, so the >3,400-call plan was not applied live.
+- Next test: the user reopens the existing `MyProject.uproject` (do not create/load another map) and opens `/Game/Atlas/Sectors/Root_003/L_Atlas_Root003_Area03`. Then use MCP to confirm 1,944 geometry actors plus four managed collision layer actors / 1,702 components, inspect collision visualization/invisible rendering, and run Pawn and WorldStatic traces against one mesh collider and both boxes. No editor validation is claimed until that check passes.

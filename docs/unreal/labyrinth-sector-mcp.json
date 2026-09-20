@@ -1,0 +1,3280 @@
+{
+  "actors": {
+    "count": 53,
+    "actors": [
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013745_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": -244.65200901031503
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": -224.55987262725822
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": -244.65200901031494
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013745_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013746_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": 1105.2410125732422
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": 1125.3331489562988
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": 1105.2410125732422
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013746_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013747_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": 295.394992828369
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": 315.4871292114259
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": 295.39499282836914
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013747_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013748_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": 970.2659606933593
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": 990.3580970764161
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": 970.2659606933594
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013748_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013749_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": 565.3429985046386
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": 585.4351348876954
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": 565.3429985046387
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013749_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013750_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": -379.7760009765626
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": -359.68386459350575
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": -379.7760009765625
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013750_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013751_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": 160.42000055313102
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": 180.51213693618783
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": 160.4200005531311
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013751_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013752_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": 430.3689956665038
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": 450.46113204956066
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": 430.3689956665039
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013752_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013753_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": -649.8740196228028
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": -629.781883239746
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": -649.8740196228027
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013753_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013754_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": -784.8480224609376
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": -764.7558860778807
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": -784.8480224609375
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013754_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013755_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": 835.2919578552245
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": 855.3840942382814
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": 835.2919578552246
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013755_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013756_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": -109.6779942512513
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": -89.5858578681945
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": -109.67799425125122
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013756_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013757_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": 25.4460006952285
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": 45.53813707828531
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": 25.446000695228577
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013757_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013758_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2001.5164527893066,
+            "y": -2976.6445693969727,
+            "z": -514.7500038146974
+          },
+          "max": {
+            "x": -1903.9274444580078,
+            "y": -2634.177345275879,
+            "z": -494.6578674316405
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1952.7219772338867,
+            "y": -2805.410957336426,
+            "z": -514.7500038146973
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013758_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013759_M0750"
+        },
+        "bounds": {
+          "min": {
+            "x": -2281.7694816589355,
+            "y": -2976.6445693969727,
+            "z": 700.3180027008056
+          },
+          "max": {
+            "x": -2184.1804733276367,
+            "y": -2634.177345275879,
+            "z": 720.4101390838624
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2232.9750061035156,
+            "y": -2805.410957336426,
+            "z": 700.3180027008057
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I013759_M0750.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014083_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": 850.6449699401855
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": 1078.784435272217
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": 850.6449699401855
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014083_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014084_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": -1039.5930290222168
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": -811.4535636901853
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": -1039.5930290222168
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014084_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014085_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": -229.298996925354
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": -1.1595315933226118
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": -229.298996925354
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014085_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014086_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": -89.78999853134158
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": 138.3494668006898
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": -89.78999853134155
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014086_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014087_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": -629.984998703003
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": -401.84553337097157
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": -629.9849987030029
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014087_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014088_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": -359.88800525665283
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": -131.74853992462147
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": -359.88800525665283
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014088_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014089_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": -499.3969917297363
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": -271.25752639770496
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": -499.3969917297363
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014089_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014090_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": 990.155029296875
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": 1218.2944946289062
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": 990.155029296875
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014090_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014091_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": 580.6960105895996
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": 808.8354759216311
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": 580.6960105895996
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014091_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014092_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": 180.30799627304077
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": 408.44746160507214
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": 180.30799627304077
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014092_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014093_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": -769.4950103759766
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": -541.3555450439451
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": -769.4950103759766
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014093_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014094_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": 310.7480049133301
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": 538.8874702453614
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": 310.7480049133301
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014094_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014095_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": 720.2060222625731
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": 948.3454875946046
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": 720.2060222625732
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014095_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014096_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2191.9076385498047,
+            "y": -2891.7830426692963,
+            "z": 40.79900085926056
+          },
+          "max": {
+            "x": -1995.0084609985352,
+            "y": -2886.722732782364,
+            "z": 268.9384661912919
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1997.5959777832031,
+            "y": -2889.253044128418,
+            "z": 40.79900085926056
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014096_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014097_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": 450.25701522827137
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": 678.3964805603028
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": 450.2570152282715
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014097_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014098_M0784"
+        },
+        "bounds": {
+          "min": {
+            "x": -2190.583427429199,
+            "y": -2724.0833508968353,
+            "z": -900.0840187072755
+          },
+          "max": {
+            "x": -1993.6842498779297,
+            "y": -2719.023041009903,
+            "z": -671.944553375244
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.9959106445312,
+            "y": -2721.5530395507812,
+            "z": -900.0840187072754
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014098_M0784.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014334_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": 450.25707626342773
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": 543.6204109191895
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": 450.2570152282715
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014334_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014335_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": -359.88794422149664
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": -266.5246095657348
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": -359.88800525665283
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014335_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014336_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": -89.78993749618533
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": 3.5733971595765013
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": -89.78999853134155
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014336_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014337_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": 180.30805730819702
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": 273.67139196395885
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": 180.30799627304077
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014337_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014338_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": 720.2060832977295
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": 813.5694179534912
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": 720.2060222625732
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014338_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014339_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": 990.1550903320312
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": 1083.518424987793
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": 990.155029296875
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014339_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014340_M0860"
+        },
+        "bounds": {
+          "min": {
+            "x": -2189.8383865356445,
+            "y": -2888.7385482788086,
+            "z": -629.9859390258789
+          },
+          "max": {
+            "x": -2184.841537475586,
+            "y": -2722.4016036987305,
+            "z": -536.6226043701172
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2187.339973449707,
+            "y": -2805.5700302124023,
+            "z": -629.9860000610352
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014340_M0860.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014597_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": 425.2650909423828
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": 584.4409980773926
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": 448.2110023498535
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014597_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014598_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": 695.216100692749
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": 854.3920078277588
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": 718.1620121002197
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014598_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014599_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": -654.8369235992432
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": -495.6610164642334
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": -631.8910121917725
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014599_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014600_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": 155.31409311294556
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": 314.49000024795544
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": 178.26000452041626
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014600_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014601_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": 290.2890853881836
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": 449.4649925231935
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": 313.2349967956543
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014601_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014602_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": -249.76192188262942
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": -90.58601474761954
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": -226.8160104751587
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014602_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014603_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": -924.9379463195801
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": -765.7620391845703
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": -901.9920349121094
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014603_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014604_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": 20.33808755874631
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": 179.5139946937562
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": 43.28399896621704
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014604_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014605_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": -114.6369106769562
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": 44.538996458053674
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": -91.69099926948547
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014605_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014606_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": -384.73690223693853
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": -225.56099510192865
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": -361.7909908294678
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014606_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014607_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.26664878719,
+            "y": -2720.408046722412,
+            "z": 965.1671104431152
+          },
+          "max": {
+            "x": -1999.3182907104492,
+            "y": -2634.177780151367,
+            "z": 1124.343017578125
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -2186.264991760254,
+            "y": -2684.9950790405273,
+            "z": 988.1130218505859
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": 89.99999999999999,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014607_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014608_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": -789.961893081665
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": -630.7859859466553
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": -767.0159816741943
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014608_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014609_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": 560.2400951385498
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": 719.4160022735596
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": 583.1860065460205
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014609_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014610_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": 830.191104888916
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": 989.3670120239258
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": 853.1370162963867
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014610_M0927.StaticMeshComponent0"
+          }
+        ]
+      },
+      {
+        "actor": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014611_M0927"
+        },
+        "bounds": {
+          "min": {
+            "x": -2186.3756408691406,
+            "y": -2976.645278930664,
+            "z": -519.8619194030762
+          },
+          "max": {
+            "x": -1999.4272827923996,
+            "y": -2890.415012359619,
+            "z": -360.6860122680663
+          },
+          "isValid": true
+        },
+        "transform": {
+          "location": {
+            "x": -1999.428939819336,
+            "y": -2925.827980041504,
+            "z": -496.91600799560547
+          },
+          "rotation": {
+            "pitch": 90,
+            "yaw": -90,
+            "roll": 0
+          },
+          "scale": {
+            "x": 1,
+            "y": 1,
+            "z": 1
+          }
+        },
+        "components": [
+          {
+            "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/L_Atlas_Sector_R03_L547_G9787.L_Atlas_Sector_R03_L547_G9787:PersistentLevel.Atlas_I014611_M0927.StaticMeshComponent0"
+          }
+        ]
+      }
+    ],
+    "folders": [
+      "Atlas",
+      "Atlas/Review",
+      "Atlas/Root_03",
+      "Atlas/Root_03/Level_547",
+      "Atlas/Root_03/Level_547/Ancestor_9787",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14103",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14104",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14105",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14106",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14107",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14108",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14109",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14110",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14111",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14112",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14113",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14114",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14115",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14116",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14117",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14118",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14407",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14408",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14409",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14410",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14411",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14412",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14413",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14414",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14415",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14416",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14417",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14418",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14419",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14420",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_14421",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16583",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16584",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16585",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16586",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16587",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16588",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16589",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16590",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16591",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16592",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16593",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16594",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16595",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16596",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_16597",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18051",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18052",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18053",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18054",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18055",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18056",
+      "Atlas/Root_03/Level_547/Ancestor_9787/Parent_18057"
+    ]
+  },
+  "meshes": {
+    "actors": 53,
+    "meshes": [
+      {
+        "mesh": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Meshes/SM_Atlas_0750_Platform_metal_01_LOD0.SM_Atlas_0750_Platform_metal_01_LOD0"
+        },
+        "slots": [
+          {
+            "slot": "AtlasMaterial_679",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0679.MI_Atlas_0679"
+            }
+          },
+          {
+            "slot": "AtlasMaterial_680",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0680.MI_Atlas_0680"
+            }
+          }
+        ]
+      },
+      {
+        "mesh": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Meshes/SM_Atlas_0784_Handrail_metal_06_LOD0.SM_Atlas_0784_Handrail_metal_06_LOD0"
+        },
+        "slots": [
+          {
+            "slot": "AtlasMaterial_703",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0703.MI_Atlas_0703"
+            }
+          },
+          {
+            "slot": "AtlasMaterial_704",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0704.MI_Atlas_0704"
+            }
+          }
+        ]
+      },
+      {
+        "mesh": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Meshes/SM_Atlas_0860_Handrail_metal_07_LOD0.SM_Atlas_0860_Handrail_metal_07_LOD0"
+        },
+        "slots": [
+          {
+            "slot": "AtlasMaterial_298",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0298.MI_Atlas_0298"
+            }
+          },
+          {
+            "slot": "AtlasMaterial_299",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0299.MI_Atlas_0299"
+            }
+          }
+        ]
+      },
+      {
+        "mesh": {
+          "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Meshes/SM_Atlas_0927_Stairs_metal_01_LOD0.SM_Atlas_0927_Stairs_metal_01_LOD0"
+        },
+        "slots": [
+          {
+            "slot": "AtlasMaterial_796",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0796.MI_Atlas_0796"
+            }
+          },
+          {
+            "slot": "AtlasMaterial_797",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0797.MI_Atlas_0797"
+            }
+          },
+          {
+            "slot": "AtlasMaterial_798",
+            "material": {
+              "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Materials/MI_Atlas_0798.MI_Atlas_0798"
+            }
+          }
+        ]
+      }
+    ]
+  },
+  "materials": {
+    "materials": [
+      {
+        "id": 298,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_Paint_metal_D__sharedassets5_673.T_Atlas_Albedo_Paint_metal_D__sharedassets5_673"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_Paint_metal_N__sharedassets5_773.T_Atlas_Normal_Paint_metal_N__sharedassets5_773"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            },
+            {
+              "parameterInfo": {
+                "name": "SpecularProvenanceTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Specular_Paint_metal_G__sharedassets5_613.T_Atlas_Specular_Paint_metal_G__sharedassets5_613"
+              },
+              "expressionGUId": "07CA0B6D-4730-DBA2-9BD7-1AB615C535BB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.550000011920929,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 299,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_Rust_metal_01_D__sharedassets5_675.T_Atlas_Albedo_Rust_metal_01_D__sharedassets5_675"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_Rust_metal_01_N__sharedassets5_957.T_Atlas_Normal_Rust_metal_01_N__sharedassets5_957"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            },
+            {
+              "parameterInfo": {
+                "name": "SpecularProvenanceTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Specular_Rust_metal_01_G__sharedassets5_750.T_Atlas_Specular_Rust_metal_01_G__sharedassets5_750"
+              },
+              "expressionGUId": "07CA0B6D-4730-DBA2-9BD7-1AB615C535BB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.550000011920929,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 679,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_metall_floor__sharedassets16_32.T_Atlas_Albedo_metall_floor__sharedassets16_32"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_metall_floor_nrm__sharedassets16_28.T_Atlas_Normal_metall_floor_nrm__sharedassets16_28"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 680,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_Paint_metal_damage_D__sharedassets5_1211.T_Atlas_Albedo_Paint_metal_damage_D__sharedassets5_1211"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_Paint_metal_damage_N__sharedassets5_1070.T_Atlas_Normal_Paint_metal_damage_N__sharedassets5_1070"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            },
+            {
+              "parameterInfo": {
+                "name": "SpecularProvenanceTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Specular_Paint_metal_damage_G__sharedassets5_925.T_Atlas_Specular_Paint_metal_damage_G__sharedassets5_925"
+              },
+              "expressionGUId": "07CA0B6D-4730-DBA2-9BD7-1AB615C535BB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.550000011920929,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 703,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_Paint_metal_D__sharedassets5_673.T_Atlas_Albedo_Paint_metal_D__sharedassets5_673"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_Paint_metal_N__sharedassets5_773.T_Atlas_Normal_Paint_metal_N__sharedassets5_773"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            },
+            {
+              "parameterInfo": {
+                "name": "SpecularProvenanceTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Specular_Paint_metal_G__sharedassets5_613.T_Atlas_Specular_Paint_metal_G__sharedassets5_613"
+              },
+              "expressionGUId": "07CA0B6D-4730-DBA2-9BD7-1AB615C535BB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.550000011920929,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 704,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_Rust_metal_01_D__sharedassets5_675.T_Atlas_Albedo_Rust_metal_01_D__sharedassets5_675"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_Rust_metal_01_N__sharedassets5_957.T_Atlas_Normal_Rust_metal_01_N__sharedassets5_957"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            },
+            {
+              "parameterInfo": {
+                "name": "SpecularProvenanceTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Specular_Rust_metal_01_G__sharedassets5_750.T_Atlas_Specular_Rust_metal_01_G__sharedassets5_750"
+              },
+              "expressionGUId": "07CA0B6D-4730-DBA2-9BD7-1AB615C535BB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.550000011920929,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 796,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_metall_floor__sharedassets16_32.T_Atlas_Albedo_metall_floor__sharedassets16_32"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_metall_floor_nrm__sharedassets16_28.T_Atlas_Normal_metall_floor_nrm__sharedassets16_28"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 797,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_Paint_metal_damage_D__sharedassets5_1211.T_Atlas_Albedo_Paint_metal_damage_D__sharedassets5_1211"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_Paint_metal_damage_N__sharedassets5_1070.T_Atlas_Normal_Paint_metal_damage_N__sharedassets5_1070"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            },
+            {
+              "parameterInfo": {
+                "name": "SpecularProvenanceTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Specular_Paint_metal_damage_G__sharedassets5_925.T_Atlas_Specular_Paint_metal_damage_G__sharedassets5_925"
+              },
+              "expressionGUId": "07CA0B6D-4730-DBA2-9BD7-1AB615C535BB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.550000011920929,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      },
+      {
+        "id": 798,
+        "properties": {
+          "parent": {
+            "refPath": "/Game/Atlas/Common/Materials/M_AtlasOpaque.M_AtlasOpaque"
+          },
+          "textureParameterValues": [
+            {
+              "parameterInfo": {
+                "name": "BaseColorTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Albedo_painted_metal_gray__sharedassets23_186.T_Atlas_Albedo_painted_metal_gray__sharedassets23_186"
+              },
+              "expressionGUId": "0F9A0214-4E1C-A23D-3FD4-F4B0D541456C"
+            },
+            {
+              "parameterInfo": {
+                "name": "NormalTexture",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": {
+                "refPath": "/Game/Atlas/Labyrinth/Pilot/R03_L547_G9787/Textures/T_Atlas_Normal_painted_metal_gray_nrm__sharedassets23_211.T_Atlas_Normal_painted_metal_gray_nrm__sharedassets23_211"
+              },
+              "expressionGUId": "1892DED0-466C-83DC-531E-F58AB49AE7FB"
+            }
+          ],
+          "scalarParameterValues": [
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Metallic",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0,
+              "expressionGUId": "7E7B2ADA-4230-3CAA-526B-3DABA06C0569"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "Roughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "2801D0B1-45A9-943F-964C-D386F7AF48AC"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "UseAlbedoAlphaRoughness",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "444FD402-468E-EC05-8B7A-F3B6440EC5EE"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "NormalScale",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 1,
+              "expressionGUId": "EC933AE1-4322-04E0-4FD6-16984ACBD270"
+            },
+            {
+              "atlasData": {
+                "bIsUsedAsAtlasPosition": false,
+                "curve": "None",
+                "atlas": "None"
+              },
+              "parameterInfo": {
+                "name": "DielectricSpecular",
+                "association": "GlobalParameter",
+                "index": -1
+              },
+              "parameterValue": 0.5,
+              "expressionGUId": "D456D6FD-42EF-CD6C-5A72-AFBF5D7CBA06"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

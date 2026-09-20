@@ -8,14 +8,23 @@ param(
 
     [string]$StageRoot = (Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'AtlasEftImporterDev'),
 
+    [ValidateScript({ Test-Path -LiteralPath $_ -PathType Leaf })]
+    [string]$LiveProjectPath,
+
     [ValidateRange(0, 2147483647)]
-    [int]$SampleMeshId = 0,
+    [int]$SampleMeshId = 20,
 
     [ValidateRange(0, 2147483647)]
     [int]$SampleTextureMaterialId = 17,
 
     [ValidateRange(1, 32)]
     [int]$SampleTextureCount = 3,
+
+    [ValidateRange(0, 2147483647)]
+    [int]$SecondMaterialId = 974,
+
+    [ValidateRange(0, 2147483647)]
+    [int]$SecondMaterialMeshId = 1240,
 
     [ValidateRange(1, 2147483647)]
     [int]$BatchMeshCount = 3,
@@ -38,6 +47,15 @@ $editorCmd = Join-Path $UnrealRoot 'Engine\Binaries\Win64\UnrealEditor-Cmd.exe'
 $pluginPackage = Join-Path $StageRoot 'BuildPluginPackage'
 $hostDirectory = Join-Path $StageRoot 'AtlasEftImporterHost'
 $hostProject = Join-Path $hostDirectory 'AtlasEftImporterHost.uproject'
+
+$liveProjectDirectory = $null
+if ($LiveProjectPath) {
+    $LiveProjectPath = (Resolve-Path -LiteralPath $LiveProjectPath).Path
+    if ([System.IO.Path]::GetExtension($LiveProjectPath) -ne '.uproject') {
+        throw "LiveProjectPath must point to a .uproject file: $LiveProjectPath"
+    }
+    $liveProjectDirectory = Split-Path -Parent $LiveProjectPath
+}
 
 foreach ($requiredPath in @($pluginDescriptor, $hostProjectSource, $hostConfigSource, $uat, $editorCmd)) {
     if (-not (Test-Path -LiteralPath $requiredPath -PathType Leaf)) {
@@ -155,12 +173,14 @@ if (-not (Test-Path -LiteralPath $architectureMap -PathType Leaf)) {
     throw "Architecture scene reported success but map was not created: $architectureMap"
 }
 
-Write-Host "== Building material vertical test (material $SampleTextureMaterialId on mesh $SampleMeshId) ==" -ForegroundColor Cyan
+Write-Host "== Building material comparison (materials $SampleTextureMaterialId and $SecondMaterialId) ==" -ForegroundColor Cyan
 & $editorCmd $hostProject `
     -run=AtlasEftBuildMaterialSample `
     "-Pack=$PackPath" `
     "-MaterialId=$SampleTextureMaterialId" `
     "-MeshId=$SampleMeshId" `
+    "-SecondMaterialId=$SecondMaterialId" `
+    "-SecondMeshId=$SecondMaterialMeshId" `
     '-Destination=/Game/Atlas/MaterialTest' `
     -unattended `
     -nop4 `
@@ -172,18 +192,23 @@ if ($LASTEXITCODE -ne 0) {
 
 $materialTestMapName = 'L_Atlas_Material_{0:D4}_Mesh{1:D4}.umap' -f $SampleTextureMaterialId, $SampleMeshId
 $materialTestMap = Join-Path $hostDirectory "Content\Atlas\MaterialTest\$materialTestMapName"
+$secondMaterialTestMapName = 'L_Atlas_Material_{0:D4}_Mesh{1:D4}.umap' -f $SecondMaterialId, $SecondMaterialMeshId
+$secondMaterialTestMap = Join-Path $hostDirectory "Content\Atlas\MaterialTest\$secondMaterialTestMapName"
 $materialMaster = Join-Path $hostDirectory 'Content\Atlas\Common\Materials\M_AtlasOpaque.uasset'
 $materialInstance = Join-Path $hostDirectory ("Content\Atlas\MaterialTest\Materials\MI_Atlas_{0:D4}.uasset" -f $SampleTextureMaterialId)
+$secondMaterialInstance = Join-Path $hostDirectory ("Content\Atlas\MaterialTest\Materials\MI_Atlas_{0:D4}.uasset" -f $SecondMaterialId)
 $materialTestMeshPrefix = 'SM_Atlas_{0:D4}_' -f $SampleMeshId
 $materialTestMeshes = @(Get-ChildItem -LiteralPath (Join-Path $hostDirectory 'Content\Atlas\MaterialTest\Meshes') -Filter "$materialTestMeshPrefix*.uasset" -File -ErrorAction Stop)
+$secondMaterialTestMeshPrefix = 'SM_Atlas_{0:D4}_' -f $SecondMaterialMeshId
+$secondMaterialTestMeshes = @(Get-ChildItem -LiteralPath (Join-Path $hostDirectory 'Content\Atlas\MaterialTest\Meshes') -Filter "$secondMaterialTestMeshPrefix*.uasset" -File -ErrorAction Stop)
 $materialTestTextures = @(Get-ChildItem -LiteralPath (Join-Path $hostDirectory 'Content\Atlas\MaterialTest\Textures') -Filter '*.uasset' -File -ErrorAction Stop)
-foreach ($requiredAsset in @($materialTestMap, $materialMaster, $materialInstance)) {
+foreach ($requiredAsset in @($materialTestMap, $secondMaterialTestMap, $materialMaster, $materialInstance, $secondMaterialInstance)) {
     if (-not (Test-Path -LiteralPath $requiredAsset -PathType Leaf)) {
         throw "Material vertical test reported success but asset was not created: $requiredAsset"
     }
 }
-if ($materialTestMeshes.Count -ne 1 -or $materialTestTextures.Count -ne 3) {
-    throw "Material vertical test expected one mesh and three textures; found meshes=$($materialTestMeshes.Count) textures=$($materialTestTextures.Count)."
+if ($materialTestMeshes.Count -ne 1 -or $secondMaterialTestMeshes.Count -ne 1 -or $materialTestTextures.Count -lt 5) {
+    throw "Material comparison expected two meshes and at least five textures; found firstMeshes=$($materialTestMeshes.Count) secondMeshes=$($secondMaterialTestMeshes.Count) textures=$($materialTestTextures.Count)."
 }
 
 Write-Host '== Running Atlas runtime automation tests ==' -ForegroundColor Cyan
@@ -206,11 +231,74 @@ if ($successCount -lt 5 -or $failureCount -ne 0) {
     throw "Unexpected automation result: successes=$successCount failures=$failureCount. See $automationLog"
 }
 
-Write-Host "PASS: pack audit, $($sampleTextureAssets.Count) sample textures, sample/batch meshes, $SceneInstanceCount-instance architecture map, material vertical test, and $successCount runtime tests succeeded." -ForegroundColor Green
+if ($LiveProjectPath) {
+    Write-Host "== Synchronizing only the validated material-comparison assets to $LiveProjectPath ==" -ForegroundColor Cyan
+    $liveContentDirectory = Join-Path $liveProjectDirectory 'Content\Atlas'
+    $livePluginDescriptor = Join-Path $liveProjectDirectory 'Plugins\AtlasEftImporter\AtlasEftImporter.uplugin'
+    if (-not (Test-Path -LiteralPath $livePluginDescriptor -PathType Leaf)) {
+        throw "The live Atlas plugin is not installed; refusing to copy or replace plugin files during asset-only synchronization: $livePluginDescriptor"
+    }
+
+    $materialComparisonRelativeAssets = @(
+        'Common\Materials\M_AtlasOpaque.uasset',
+        "MaterialTest\$materialTestMapName",
+        "MaterialTest\$secondMaterialTestMapName",
+        ("MaterialTest\Materials\MI_Atlas_{0:D4}.uasset" -f $SampleTextureMaterialId),
+        ("MaterialTest\Materials\MI_Atlas_{0:D4}.uasset" -f $SecondMaterialId),
+        ("MaterialTest\Meshes\$($materialTestMeshes[0].Name)"),
+        ("MaterialTest\Meshes\$($secondMaterialTestMeshes[0].Name)")
+    )
+    foreach ($textureAsset in $materialTestTextures) {
+        $materialComparisonRelativeAssets += "MaterialTest\Textures\$($textureAsset.Name)"
+    }
+
+    foreach ($relativeAssetPath in $materialComparisonRelativeAssets) {
+        $stagedAsset = Join-Path (Join-Path $hostDirectory 'Content\Atlas') $relativeAssetPath
+        if (-not (Test-Path -LiteralPath $stagedAsset -PathType Leaf)) {
+            throw "Validated staged material asset is missing: $stagedAsset"
+        }
+        $liveAsset = Join-Path $liveContentDirectory $relativeAssetPath
+        $liveAssetDirectory = Split-Path -Parent $liveAsset
+        New-Item -ItemType Directory -Force -Path $liveAssetDirectory | Out-Null
+        Copy-Item -LiteralPath $stagedAsset -Destination $liveAsset -Force
+
+        $stagedHash = (Get-FileHash -LiteralPath $stagedAsset -Algorithm SHA256).Hash
+        $liveHash = (Get-FileHash -LiteralPath $liveAsset -Algorithm SHA256).Hash
+        if ($stagedHash -ne $liveHash) {
+            throw "Live material asset synchronization hash mismatch: $relativeAssetPath"
+        }
+    }
+
+    if ($materialComparisonRelativeAssets.Count -ne 12) {
+        throw "Material comparison sync expected exactly 12 assets, found $($materialComparisonRelativeAssets.Count)."
+    }
+
+    Write-Host '== Validating Atlas plugin from the live project ==' -ForegroundColor Cyan
+    & $editorCmd $LiveProjectPath `
+        -run=AtlasEftAudit `
+        "-Pack=$PackPath" `
+        -DisablePlugins=ModelContextProtocol `
+        -unattended `
+        -nop4 `
+        -NullRHI `
+        -NoSplash
+    if ($LASTEXITCODE -ne 0) {
+        throw "Live project AtlasEftAudit failed with exit code $LASTEXITCODE"
+    }
+}
+
+Write-Host "PASS: pack audit, $($sampleTextureAssets.Count) sample textures, sample/batch meshes, $SceneInstanceCount-instance architecture map, two-material comparison, and $successCount runtime tests succeeded." -ForegroundColor Green
 Write-Host "Sample asset: $($sampleAssets[0].FullName)"
 Write-Host "Sample texture assets: $($sampleTextureAssets.Count)"
 Write-Host "Batch assets: $($batchAssets.Count)"
 Write-Host "Architecture map: $architectureMap"
 Write-Host "Material test map: $materialTestMap"
 Write-Host "Material instance: $materialInstance"
+Write-Host "Second material test map: $secondMaterialTestMap"
+Write-Host "Second material instance: $secondMaterialInstance"
 Write-Host "Staged plugin: $pluginPackage"
+if ($LiveProjectPath) {
+    Write-Host "Live project: $LiveProjectPath"
+    Write-Host "Live plugin preserved (not synchronized): $(Join-Path $liveProjectDirectory 'Plugins\AtlasEftImporter')"
+    Write-Host "Live material assets synchronized: $($materialComparisonRelativeAssets.Count)"
+}

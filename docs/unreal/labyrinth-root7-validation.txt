@@ -1,0 +1,33 @@
+Labyrinthe Root7 — Root SBG_Labyrinth_Area_02 — 2026-09-20
+
+Source: labyrinth.eftpack, fingerprint a2fa9ad39c0dc867. RootId 7 / level 546.
+
+Géométrie — PASS
+- Root actif complet hors LOD / LOD0: 629 acteurs sur 688 records; 59 LOD supérieurs exclus, aucun inactif.
+- 93 meshes, 114 matériaux (77 pris en charge / 37 fallback magenta), 93 chemins texture, 721/721 slots validés (363 supportés / 358 fallback).
+- 93 367 triangles; erreur translation 0 cm; erreur max des coins 0,001772 cm; doublons et références manquantes: 0.
+- Bounds UE: min (-3855,397, -1497,112, -68,999), max (-2759,094, 1054,083, 958,263) cm.
+- Map: /Game/Atlas/Sectors/Root_007/L_Atlas_Root007_Area02.
+
+Association et collisions — PASS
+- Les 24 661 rows sidecar/pack sont associées sans mismatch de champs; le commandlet confirme 1 189 colliders Root7, tous au level 546.
+- 1 185 mesh, 4 boxes, zéro sphere/capsule et zéro trigger. La politique existante sélectionne 599 blockers: 595 mesh + 4 boxes; aucun candidat convex.
+- 55 assets collider partagés, 4 layer actors. HighPolyCollider exclu; les blockers restent statiques, invisibles, bloquent Pawn/WorldStatic, ne génèrent pas d'overlap ni de navmesh. Boxes conservées comme primitives; meshes UseComplexAsSimple.
+- Deuxième exécution idempotente: remplace exactement 4 layer actors / 599 composants. Les deux runs gardent 599 composants, 629 acteurs géométriques et le CRC32 1451072567.
+- Bounds collision min (-3760,487, -1474,661, -52,609), max (-2781,545, 1032,780, 962,119) cm; erreur max 0,004679 cm sous 0,25 cm.
+
+Assembly structurelle — PASS
+- Master stable: /Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural.
+- Create + validation/reload: 3 références ULevelStreamingAlwaysLoaded à transform identité; 0 StaticMeshActor persistant; 12 582 géométries au total (Root1 10 009 + Root3 1 944 + Root7 629), aucun ID dupliqué.
+- Bounds LOD0 mesurées à partir des 8 coins mesh sous le RelativeTransform sérialisé; concordance aux rapports de secteur dans 0,25 cm.
+- Contact Root7 porte 20204 / Root1 support 6230: overlap UE 1,362 × 0,986 × 6,814 cm; seuil 0,5 cm par axe. Jonction existante Root3/Root1 14303/6257 toujours validée à 117,000 × 10,000 × 2,200 cm.
+- L'ancienne map /Game/Atlas/Sectors/Assemblies/L_Atlas_Root003_Root001_Adjacent n'a pas été touchée.
+
+Staging et synchronisation offline — PASS
+- Stage isolé: Aether/sector_collision_stage/Root7StructuralStageHost.
+- Root_007 synchronisé: 321 fichiers (320 .uasset + 1 .umap), 184 021 579 octets; manifeste SHA-256 source/destination identique: 97DD7765A0BE64EF22FADCCC5B6F3A488C15E7B5890D8F2035FD28ED984584F8.
+- Master assembly: 7 435 octets; SHA-256 staging/live identique: E6391D50ABA79C3DC35F26F2300C867DC5373298BFA8220C18FDC7D3AB510082. La cible était absente, donc aucune backup créée.
+- Editor/commandlets fermés et locks exclusifs vérifiés. Les 2 224 fichiers protégés de Root1, Root3, Common et l'ancienne adjacent gardent le même manifeste avant/après: 1B38A9A8AD59DC18D6E6C08C49F00F13FCB50D80597A4EB77E53ABC6D09BD6A4.
+- La copie distribution et le dépôt sont documentés. Validation post-sync MCP/manuelle en attente; aucune validation GUI/physique revendiquée.
+
+Prochaine map à ouvrir: /Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural

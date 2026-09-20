@@ -1,0 +1,120 @@
+{
+  "date": "2026-09-20",
+  "status": "PASS_STAGING_OFFLINE_SYNC_MANUAL_PENDING",
+  "source": {
+    "rootId": 4,
+    "rootName": "SBG_Labyrinth_Area_05",
+    "level": 549,
+    "fingerprint": "a2fa9ad39c0dc867",
+    "activeLod0Instances": 2413,
+    "meshIds": 204,
+    "colliderRows": 1131,
+    "blockersExpected": 544,
+    "supportedSelected": 537,
+    "convexExcluded": 7,
+    "association": "validated against existing source classification and pack",
+    "root1Contact": {
+      "root4InstanceId": 15564,
+      "root1InstanceId": 9425,
+      "overlapCm": [49.8437875509265, 47.2912658394355, 1.0614876844964],
+      "minimumOverlapPerAxisCm": 0.5
+    }
+  },
+  "geometry": {
+    "status": "PASS",
+    "map": "/Game/Atlas/Sectors/Root_004/L_Atlas_Root004_Area05",
+    "rootRecords": 2570,
+    "inactiveRecords": 0,
+    "higherLodExcluded": 157,
+    "selectedInstances": 2413,
+    "uniqueMeshes": 204,
+    "uniqueMaterials": 243,
+    "supportedMaterials": 147,
+    "fallbackMaterials": 96,
+    "instanceSlots": 2630,
+    "validatedSlots": 2630,
+    "triangles": 221236,
+    "translationErrorCm": 0,
+    "cornerErrorCm": 0.00272047540292452,
+    "duplicateInstanceIds": 0,
+    "missingReferences": 0,
+    "anomalies": [],
+    "boundsCm": {
+      "min": [310.539, 1357.597, -611.467],
+      "max": [6335.008, 5314.348, 1265.178]
+    }
+  },
+  "collisions": {
+    "status": "PASS_SECOND_RUN_IDEMPOTENT",
+    "commandletOptIn": "-AllowUnsupportedConvexExclusion",
+    "optInRestrictedToRoot4": true,
+    "selected": 537,
+    "selectedMesh": 531,
+    "selectedBoxes": 6,
+    "uniqueMeshAssets": 132,
+    "layerActors": 4,
+    "replacedActorsSecondRun": 4,
+    "replacedComponentsSecondRun": 537,
+    "geometryActorsBeforeAfter": [2413, 2413],
+    "geometrySignatureCrc32BeforeAfter": [1889731938, 1889731938],
+    "maxBoundsErrorCm": 0.00316028742054186,
+    "boundsErrorToleranceCm": 0.25,
+    "excludedUnsupportedConvex": [
+      {"sourceRowIndex":7647,"colliderIndex":7647,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[50.01688,0.091,18.22779],"atlasTranslationSourceUnits":[-50.01688003540039,0.09099999815225601,18.22779083251953],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"},
+      {"sourceRowIndex":7648,"colliderIndex":7648,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[38.85238,-0.26363,60.24254],"atlasTranslationSourceUnits":[-38.852378845214844,-0.2636300027370453,60.24253845214844],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"},
+      {"sourceRowIndex":7651,"colliderIndex":7651,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[39.93838,-0.08663,61.88255],"atlasTranslationSourceUnits":[-39.93838119506836,-0.08663000166416168,61.88254928588867],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"},
+      {"sourceRowIndex":7652,"colliderIndex":7652,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[44.44741,-0.22063,30.09155],"atlasTranslationSourceUnits":[-44.447410583496094,-0.2206300050020218,30.091550827026367],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"},
+      {"sourceRowIndex":7653,"colliderIndex":7653,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[37.22041,-0.11663,35.49555],"atlasTranslationSourceUnits":[-37.22040939331055,-0.11663000285625458,35.495548248291016],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"},
+      {"sourceRowIndex":7655,"colliderIndex":7655,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[35.33716,0.24,59.36208],"atlasTranslationSourceUnits":[-35.337158203125,0.23999999463558197,59.36207962036133],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"},
+      {"sourceRowIndex":7679,"colliderIndex":7679,"packedMeshId":850,"type":"mesh","mesh":"collider__549_7_637.obj","root":"SBG_Labyrinth_Area_05","level":549,"layerId":18,"layer":"LowPolyCollider","flags":0,"sourceTranslation":[34.32365,-0.601,56.93185],"atlasTranslationSourceUnits":[-34.32365036010742,-0.6010000109672546,56.93185043334961],"reason":"unsupported convex mesh; excluded only by explicit Root4 opt-in; manual collision review required"}
+    ],
+    "convexMeshLocalBoundsSourceUnits": {
+      "vertices": 176,
+      "faces": 306,
+      "min": [-1.432, -1.376, -0.059],
+      "max": [1.334, 1.368, 0.367],
+      "dimensions": [2.766, 2.744, 0.426],
+      "interpretation": "broad and flat; criticality unknown, manual review priority; not proof of non-criticality"
+    }
+  },
+  "assembly": {
+    "status": "PASS_CREATE_AND_RELOAD_VALIDATE_ONLY",
+    "map": "/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural",
+    "streamingType": "ULevelStreamingAlwaysLoaded",
+    "persistentGeometryActors": 0,
+    "duplicateInstanceIds": false,
+    "totalGeometryActors": 17383,
+    "contactsValidated": 5,
+    "sectors": [
+      {"rootId":1,"map":"/Game/Atlas/Sectors/Root_001/L_Atlas_Root001_Area06","geometryActors":10009,"transform":"identity","boundsMinCm":[-3383.764,-4467.952,-472.591],"boundsMaxCm":[6545.657,2547.392,739.713]},
+      {"rootId":3,"map":"/Game/Atlas/Sectors/Root_003/L_Atlas_Root003_Area03","geometryActors":1944,"transform":"identity","boundsMinCm":[-2287.021,-5346.584,-1039.593],"boundsMaxCm":[-629.743,-2591.222,1478.870]},
+      {"rootId":7,"map":"/Game/Atlas/Sectors/Root_007/L_Atlas_Root007_Area02","geometryActors":629,"transform":"identity","boundsMinCm":[-3855.397,-1497.112,-68.999],"boundsMaxCm":[-2759.094,1054.083,958.263]},
+      {"rootId":6,"map":"/Game/Atlas/Sectors/Root_006/L_Atlas_Root006_Area01","geometryActors":943,"transform":"identity","boundsMinCm":[3795.073,-4685.1,-514.0],"boundsMaxCm":[7589.778,529.799,726.863]},
+      {"rootId":5,"map":"/Game/Atlas/Sectors/Root_005/L_Atlas_Root005_Area04","geometryActors":1445,"transform":"identity","boundsMinCm":[4844.852,137.393,-149.7],"boundsMaxCm":[6990.576,3221.545,406.996]},
+      {"rootId":4,"map":"/Game/Atlas/Sectors/Root_004/L_Atlas_Root004_Area05","geometryActors":2413,"transform":"identity","boundsMinCm":[310.539,1357.597,-611.467],"boundsMaxCm":[6335.008,5314.348,1265.178]}
+    ],
+    "root4Root1Contact": {"root4InstanceId":15564,"root1InstanceId":9425,"overlapCm":[49.8437875509265,47.2912658394355,1.0614876844964],"minimumOverlapPerAxisCm":0.5}
+  },
+  "sync": {
+    "status": "PASS_OFFLINE",
+    "unrealEditorProcesses": 0,
+    "root004Files": 641,
+    "root004Bytes": 352413810,
+    "root004StagingLiveManifestSha256": "805122CA0CDA5E85BE9CB26ABAA56C807F305E9F8401BA91C5CF5A3012881142",
+    "masterBytes": 8518,
+    "masterStagingLiveSha256": "769DCF5F733EA45908D8E267BC6AA23D3FA3305492EEC4658B320FE1121754BE",
+    "previousMasterBackup": "Aether/sector_collision_stage/Backups/StructuralMaster_PreRoot4_20260920_222327",
+    "previousMasterSha256": "E4990E464C811F28B464B59AA92886243E7E3CB1E8EA667C6F611C422197ECB8",
+    "protectedManifestScope": ["Root_001","Root_003","Root_005","Root_006","Root_007","Common","Root003_Root001_Adjacent"],
+    "protectedManifestFiles": 3595,
+    "protectedManifestSha256BeforeAfter": "D9482343822F5035D28D2F6AF17228D5BD855CE8B08B73329AEABCFD0501CDB1"
+  },
+  "manualValidation": {
+    "root5": "PASS_REPORTED_BY_USER",
+    "root6": "PASS_REPORTED_BY_USER",
+    "master": "PASS_REPORTED_BY_USER",
+    "root4": "PENDING",
+    "root4Priority": "Player Collision checks for the seven excluded convex zones"
+  },
+  "nextMap": "/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural"
+}

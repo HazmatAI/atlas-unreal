@@ -1,0 +1,32 @@
+Labyrinthe Root6 + Root5 — validation structurelle — 2026-09-20
+
+Source: labyrinth.eftpack, fingerprint a2fa9ad39c0dc867. Préflight limité aux Roots 6 et 5; association sidecar/pack issue de la classification existante.
+
+Root6 `SBG_Labyrinth_Area_01` — PASS
+- 943 actifs LOD0 / 1 074 records; 131 LOD supérieurs exclus; 160 meshes.
+- 164 matériaux (113 supportés / 51 fallback), 1 002 slots, 121 135 triangles.
+- Translation 0 cm; erreur corners max 0,001853 cm; doublons/références manquantes: 0.
+- Bounds UE: min (3795,073; -4685,100; -514,000), max (7589,778; 529,799; 726,863) cm.
+- Collisions: 1 541 rows source; 748 blockers (743 meshes + 5 boxes), 84 assets, 4 layer actors; aucun convex, sphere, capsule ou trigger.
+- Seconde passe: remplacement exact de 4 acteurs / 748 composants; 943 acteurs et CRC32 2597788775 stables; erreur bounds 0,001601 cm / tolérance 0,25 cm.
+- Contact AABB Root6 instance 19589 ↔ Root1 instance 6664: overlap UE (30,479; 117,000; 230,000) cm; seuil 0,5 cm/axe.
+- Map `/Game/Atlas/Sectors/Root_006/L_Atlas_Root006_Area01`.
+
+Root5 `SBG_Labyrinth_Area_04` — PASS
+- 1 445 actifs LOD0 / 1 540 records; 95 LOD supérieurs exclus; 192 meshes.
+- 199 matériaux (137 supportés / 62 fallback), 1 507 slots, 143 702 triangles.
+- Translation 0 cm; erreur corners max 0,001423 cm; doublons/références manquantes: 0.
+- Bounds UE: min (4844,852; 137,393; -149,700), max (6990,576; 3221,545; 406,996) cm.
+- Collisions: 1 508 rows source; 729 blockers (726 meshes + 3 boxes), 92 assets, 3 layer actors; aucun convex, sphere, capsule ou trigger.
+- Seconde passe: remplacement exact de 3 acteurs / 729 composants; 1 445 acteurs et CRC32 3136661004 stables; erreur bounds 0,057741 cm / tolérance 0,25 cm.
+- Contact AABB Root5 instance 18253 ↔ Root1 instance 158: overlap UE (53,778; 128,142; 4,961) cm; seuil 0,5 cm/axe.
+- Map `/Game/Atlas/Sectors/Root_005/L_Atlas_Root005_Area04`.
+
+Master et intégration — PASS
+- `/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural`: 5 références AlwaysLoaded identité Root1/3/7/6/5, 14 970 géométries, 0 ID dupliqué et 0 StaticMeshActor persistant.
+- Bounds Root1/3/7/6/5 comparées aux reports de secteur depuis les transforms sérialisés; create + validate/reload PASS. Contacts Root3↔Root1, Root7↔Root1, Root6↔Root1 et Root5↔Root1 PASS.
+- Backup daté du master live précédent: `Aether/sector_collision_stage/Backups/StructuralMaster_PreRoot5Root6_20260920_214454`, SHA256 `E6391D50ABA79C3DC35F26F2300C867DC5373298BFA8220C18FDC7D3AB510082`.
+- Sync offline limitée à Root_005 (568 fichiers, 244 962 623 octets, manifest SHA256 `43F6E6425726E5B4C88BC2AF34AB0CAAC197285644A43DC0428B05F92257BECD`), Root_006 (482 fichiers, 248 981 795 octets, `EB12227B70AAC995BCED76079F57D5F0F8D2A5EDC1189E520DBF6788E2FDB38B`) et au master (source/destination SHA256 `E4990E464C811F28B464B59AA92886243E7E3CB1E8EA667C6F611C422197ECB8`). Les manifests Root1/3/7/Common/ancienne adjacent sont égaux avant/après.
+- Statut: sync offline PASS; validation MCP/manuelle post-sync en attente. Unreal fermé; aucune GUI ouverte.
+
+Prochaine map à ouvrir: `/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural`

@@ -29,6 +29,26 @@ public:
         const FManifest& Manifest,
         TArray<FInstanceDesc>& OutInstances,
         FAuditReport& Report);
+    /** Decode manifest-layout collider records without applying coordinate conversion. */
+    static bool ReadColliders(
+        const FString& PackDirectory,
+        const FManifest& Manifest,
+        TArray<FColliderDesc>& OutColliders,
+        FAuditReport& Report);
+    /** Decode one positions/indices-only collider mesh by its manifest id. */
+    static bool ReadColliderMesh(
+        const FString& PackDirectory,
+        const FManifest& Manifest,
+        uint32 MeshId,
+        FDecodedColliderMesh& OutMesh,
+        FAuditReport& Report);
+    /** Decode selected collider meshes with one collider_meshes.bin read. */
+    static bool ReadColliderMeshes(
+        const FString& PackDirectory,
+        const FManifest& Manifest,
+        const TArray<uint32>& MeshIds,
+        TMap<uint32, FDecodedColliderMesh>& OutMeshes,
+        FAuditReport& Report);
     static bool Audit(const FString& PackDirectory, FAuditReport& OutReport);
 };
 } // namespace AtlasEft

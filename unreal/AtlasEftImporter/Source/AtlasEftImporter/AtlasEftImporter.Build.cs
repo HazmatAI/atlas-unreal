@@ -11,6 +11,7 @@ public class AtlasEftImporter : ModuleRules
             "Core",
             "CoreUObject",
             "Engine",
+            "Json",
             "UnrealEd",
             "MaterialEditor",
             "AssetTools",

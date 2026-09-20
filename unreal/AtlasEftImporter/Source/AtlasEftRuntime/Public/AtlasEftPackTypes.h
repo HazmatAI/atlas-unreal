@@ -130,6 +130,7 @@ struct ATLASEFTRUNTIME_API FMaterialDesc
     bool bNormalGreenFlip = true;
     bool bDoubleSided = true;
     bool bRoughnessFromAlbedoAlpha = false;
+    bool bUnsupportedOpaqueFeatures = false;
     TArray<FTextureReference> Textures;
 };
 
@@ -141,6 +142,35 @@ struct ATLASEFTRUNTIME_API FColliderMeshDesc
     uint32 VertexCount = 0;
     uint64 IndexOffset = 0;
     uint32 IndexCount = 0;
+};
+
+enum class EColliderKind : uint32
+{
+    Box = 0,
+    Sphere = 1,
+    Capsule = 2,
+    Mesh = 3
+};
+
+/** One world-space collider row from colliders.bin. Affine/center/shape remain in Atlas units. */
+struct ATLASEFTRUNTIME_API FColliderDesc
+{
+    uint64 Index = 0;
+    float Affine[12] = {};
+    EColliderKind Kind = EColliderKind::Box;
+    int32 MeshId = -1;
+    FVector3f Center = FVector3f::ZeroVector;
+    FVector3f Shape = FVector3f::ZeroVector;
+    uint32 Layer = 0;
+    uint32 Flags = 0;
+};
+
+/** Positions and indices from collider_meshes.bin; positions are mesh-local Atlas metres. */
+struct ATLASEFTRUNTIME_API FDecodedColliderMesh
+{
+    uint32 Id = 0;
+    TArray<FVector3f> Vertices;
+    TArray<uint32> Indices;
 };
 
 struct ATLASEFTRUNTIME_API FManifest
@@ -157,6 +187,7 @@ struct ATLASEFTRUNTIME_API FManifest
     uint64 InstanceCount = 0;
     uint32 MaterialCount = 0;
     TArray<FString> Roots;
+    TMap<uint32, FString> LayerNames;
     uint32 LodGroupCount = 0;
     TOptional<FLayoutDesc> ColliderLayout;
     uint64 ColliderCount = 0;

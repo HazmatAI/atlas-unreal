@@ -31,6 +31,7 @@ public:
         const FString& InstanceDestinationPath,
         const FString& TextureDestinationPath,
         FMaterialImportResult& OutResult,
-        FString& OutError);
+        FString& OutError,
+        bool bReuseExistingMaster = false);
 };
 } // namespace AtlasEft

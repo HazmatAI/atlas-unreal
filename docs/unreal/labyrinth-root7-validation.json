@@ -1,0 +1,131 @@
+{
+  "reportDate": "2026-09-20",
+  "status": "PASS_OFFLINE_SYNCED_MCP_PENDING",
+  "source": {
+    "pack": "D:\\EXTRAtor tarkov to UE\\atlas-0.1.0-3dce665-win64-full\\packs\\labyrinth.eftpack",
+    "fingerprint": "a2fa9ad39c0dc867",
+    "rootId": 7,
+    "manifestName": "SBG_Labyrinth_Area_02",
+    "level": 546
+  },
+  "geometry": {
+    "selection": "complete-root-active-lod0",
+    "rootRecords": 688,
+    "higherLodExcluded": 59,
+    "inactive": 0,
+    "selectedInstances": 629,
+    "uniqueMeshes": 93,
+    "uniqueMaterials": 114,
+    "supportedMaterials": 77,
+    "fallbackMaterials": 37,
+    "uniqueSupportedTexturePaths": 93,
+    "uniqueMeshSlots": 119,
+    "instanceSlots": 721,
+    "validatedSlots": 721,
+    "supportedInstanceSlots": 363,
+    "fallbackInstanceSlots": 358,
+    "triangles": 93367,
+    "translationErrorCm": 0.0,
+    "maxCornerErrorCm": 0.0017722116058016882,
+    "duplicateInstanceIds": 0,
+    "missingReferences": 0,
+    "boundsMinCm": [-3855.397, -1497.112, -68.999],
+    "boundsMaxCm": [-2759.094, 1054.083, 958.263],
+    "buildSectorOutputFiles": 266,
+    "buildSectorOutputBytes": 179102758,
+    "map": "/Game/Atlas/Sectors/Root_007/L_Atlas_Root007_Area02"
+  },
+  "colliderAssociation": {
+    "packedRows": 24661,
+    "sidecarRows": 24661,
+    "matchedRows": 24661,
+    "fieldMismatchedRows": 0,
+    "maxNumericDifferenceAfterCoordinateConversion": 0.000003809,
+    "rootColliderRows": 1189,
+    "rootLevel": 546
+  },
+  "collisions": {
+    "selectionPolicy": "blocker-layers-with-nontrigger",
+    "rootColliderRows": 1189,
+    "meshRows": 1185,
+    "boxRows": 4,
+    "sphereRows": 0,
+    "capsuleRows": 0,
+    "triggerRows": 0,
+    "selectedBlockers": 599,
+    "selectedMeshBlockers": 595,
+    "selectedBoxBlockers": 4,
+    "convexCandidates": 0,
+    "uniqueColliderMeshes": 55,
+    "collisionLayerActors": 4,
+    "layers": {
+      "LowPolyCollider": 558,
+      "HighPolyColliderExcluded": 590,
+      "TransparentCollider": 31,
+      "DoorLowPolyCollider": 6,
+      "Interactive": 4
+    },
+    "collisionComponentsAfter": 599,
+    "geometryActorsBeforeAfter": [629, 629],
+    "geometrySignatureCrc32BeforeAfter": [1451072567, 1451072567],
+    "firstRunReplacedActorsComponents": [0, 0],
+    "secondRunReplacedActorsComponents": [4, 599],
+    "maxBoundsErrorCm": 0.0046791625541118265,
+    "boundsToleranceCm": 0.25,
+    "boundsMinCm": [-3760.487, -1474.661, -52.609],
+    "boundsMaxCm": [-2781.545, 1032.780, 962.119],
+    "runtimePolicy": {
+      "meshCollision": "UseComplexAsSimple",
+      "boxPrimitivesPreserved": true,
+      "visible": false,
+      "blocksPawnAndWorldStatic": true,
+      "overlapEvents": false,
+      "navmeshGeneration": false
+    }
+  },
+  "assembly": {
+    "map": "/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural",
+    "create": "PASS",
+    "validateReload": "PASS",
+    "streamingType": "ULevelStreamingAlwaysLoaded",
+    "streamingRefs": 3,
+    "identityTransforms": true,
+    "persistentStaticMeshActors": 0,
+    "geometryActorsTotal": 12582,
+    "duplicateInstanceIds": 0,
+    "sectorBoundsToleranceCm": 0.25,
+    "sublevels": [
+      {"rootId": 1, "map": "/Game/Atlas/Sectors/Root_001/L_Atlas_Root001_Area06", "geometryActors": 10009},
+      {"rootId": 3, "map": "/Game/Atlas/Sectors/Root_003/L_Atlas_Root003_Area03", "geometryActors": 1944},
+      {"rootId": 7, "map": "/Game/Atlas/Sectors/Root_007/L_Atlas_Root007_Area02", "geometryActors": 629, "boundsMinCm": [-3855.397, -1497.112, -68.999], "boundsMaxCm": [-2759.094, 1054.083, 958.263]}
+    ],
+    "root3Root1Contact": {
+      "instanceIds": [14303, 6257],
+      "overlapCm": [117.00009918212913, 10.000003814697266, 2.200015783310107]
+    },
+    "root7Root1Contact": {
+      "instanceIds": [20204, 6230],
+      "overlapCm": [1.3624649047851562, 0.9860011285418295, 6.814302421302784],
+      "minimumOverlapPerAxisCm": 0.5
+    }
+  },
+  "sync": {
+    "destinationProject": "D:\\EXTRAtor tarkov to UE\\unreal project\\MyProject",
+    "offlineSync": "PASS",
+    "unrealEditorClosed": true,
+    "targetWasNew": true,
+    "backupCreated": false,
+    "root7DestinationFiles": 321,
+    "root7DestinationBytes": 184021579,
+    "root7SourceManifestSha256": "97DD7765A0BE64EF22FADCCC5B6F3A488C15E7B5890D8F2035FD28ED984584F8",
+    "root7DestinationManifestSha256": "97DD7765A0BE64EF22FADCCC5B6F3A488C15E7B5890D8F2035FD28ED984584F8",
+    "assemblyBytes": 7435,
+    "assemblySourceSha256": "E6391D50ABA79C3DC35F26F2300C867DC5373298BFA8220C18FDC7D3AB510082",
+    "assemblyDestinationSha256": "E6391D50ABA79C3DC35F26F2300C867DC5373298BFA8220C18FDC7D3AB510082",
+    "protectedFilesRoot1Root3CommonOldAdjacent": 2224,
+    "protectedManifestSha256Before": "1B38A9A8AD59DC18D6E6C08C49F00F13FCB50D80597A4EB77E53ABC6D09BD6A4",
+    "protectedManifestSha256After": "1B38A9A8AD59DC18D6E6C08C49F00F13FCB50D80597A4EB77E53ABC6D09BD6A4",
+    "postSyncMcpOrManualValidation": "PENDING"
+  },
+  "nextMapToOpen": "/Game/Atlas/Assemblies/L_Atlas_Labyrinth_Structural"
+}
