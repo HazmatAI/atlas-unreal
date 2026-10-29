@@ -672,6 +672,59 @@ def _self_contain_materials(records, shipper):
                     if ly.get(k): ly[k] = shipper.ship_tex(ly[k])
 
 
+def _bc_safe_textures(records, out_dir):
+    """The viewer block-compresses (BC3/BC5) every texture >= 64 px on both axes, and wgpu rejects a
+    BC base level whose size is not a multiple of the 4 px block ("Width 98 is not a multiple of
+    Bc3RgbaUnormSrgb's block width"), which poisons the whole frame ("Encoder is invalid"). Infected
+    Factory ships one such albedo (Rare_5: 98x112). Write a copy resized UP to the next multiple of 4
+    into <pack>/tex/ and point the material at it; UVs are normalised, so the image maps the same.
+    The dataset PNG is never modified. Returns the number of textures fixed."""
+    import struct
+    fixed = {}
+
+    def fix(path):
+        if not path or not path.lower().endswith('.png'):
+            return path
+        if path in fixed:
+            return fixed[path]
+        full = path if os.path.isabs(path) else os.path.join(out_dir, path)
+        try:
+            with open(full, 'rb') as fh:
+                head = fh.read(24)
+            w, h = struct.unpack('>II', head[16:24])
+        except (OSError, struct.error):
+            fixed[path] = path
+            return path
+        if w < 64 or h < 64 or (w % 4 == 0 and h % 4 == 0):
+            fixed[path] = path
+            return path
+        from PIL import Image
+        nw, nh = (w + 3) // 4 * 4, (h + 3) // 4 * 4
+        name = os.path.basename(full)
+        os.makedirs(os.path.join(out_dir, 'tex'), exist_ok=True)
+        with Image.open(full) as im:
+            im.resize((nw, nh), Image.LANCZOS).save(os.path.join(out_dir, 'tex', name))
+        print(f"[bevy] bc-safe texture: {name} {w}x{h} -> {nw}x{nh} (pack copy)")
+        fixed[path] = f"tex/{name}"
+        return fixed[path]
+
+    for m in records:
+        for k in ('albedo', 'normal', 'specMap'):
+            if m.get(k): m[k] = fix(m[k])
+        em = m.get('emissive')
+        if em and em.get('texture'): em['texture'] = fix(em['texture'])
+        det = m.get('detail')
+        if det:
+            for k in ('albedo', 'normal'):
+                if det.get(k): det[k] = fix(det[k])
+        vp = m.get('vp')
+        if vp:
+            for ly in vp.get('layers') or []:
+                for k in ('albedo', 'normal'):
+                    if ly.get(k): ly[k] = fix(ly[k])
+    return sum(1 for k, v in fixed.items() if v != k)
+
+
 def _relativize_tl_manifest(path):
     """Defensive: rewrite any ABSOLUTE *.png path inside the COPIED terrain_layers manifest to
     its basename. The loader resolves those names relative to the sidecar's own dir (i.e.
@@ -1164,6 +1217,7 @@ def main():
         if shipper.missing:
             print(f"[bevy] self-contained: {len(shipper.missing)} referenced textures MISSING on disk "
                   f"(kept as tex/<name>; loader falls back same as for a missing absolute path)")
+    _bc_safe_textures(MF.records, OUT)
     json.dump(MF.records, open(os.path.join(OUT, 'materials.json'), 'w'), separators=(',', ':'))
 
     # ---- physics colliders -> colliders.bin + collider_meshes.bin ---------------------------------------------
