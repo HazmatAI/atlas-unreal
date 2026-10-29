@@ -740,6 +740,93 @@
       "bundles": [
         "terminal_preset"
       ]
+    },
+    {
+      "id": "labs_infected",
+      "en": "Infected Lab",
+      "ru": "Зараженная Лаборатория",
+      "folder": "Laboratory_Event",
+      "dev": "infected-lab",
+      "light_levels": [
+        757
+      ],
+      "derived_levels": [
+        715,
+        716,
+        717,
+        718,
+        719,
+        720,
+        721,
+        722,
+        723,
+        724,
+        725,
+        726,
+        727,
+        728,
+        729,
+        730,
+        731,
+        732,
+        733,
+        734,
+        735,
+        736,
+        737,
+        738,
+        739,
+        740,
+        741,
+        742,
+        743,
+        744,
+        745,
+        746,
+        747,
+        748,
+        749,
+        750,
+        751,
+        752,
+        753,
+        754,
+        755,
+        756,
+        757,
+        758,
+        759,
+        761
+      ],
+      "bundles": [
+        "laboratory_event_preset"
+      ]
+    },
+    {
+      "id": "factory_infected",
+      "en": "Infected Factory",
+      "ru": "Зараженный Завод",
+      "folder": "Factory_event",
+      "dev": "infected-factory",
+      "light_levels": [
+        763,
+        765,
+        766,
+        767,
+        769,
+        770
+      ],
+      "derived_levels": [
+        763,
+        765,
+        766,
+        767,
+        769,
+        770
+      ],
+      "bundles": [
+        "factory_event_preset"
+      ]
     }
   ]
 }

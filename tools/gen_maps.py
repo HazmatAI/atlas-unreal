@@ -80,6 +80,10 @@ ROSTER = [
     _M("terminal",       "Terminal",       "terminal"),           # whole scene set is DOUBLED in
                                                                   # BuildSettings (600-637 + 651-689)
                                                                   # — derive_levels path-dedupes
+    # Event variants shipped as SEPARATE location folders (own scenes, own geometry):
+    _M("labs_infected",    "Laboratory_Event", "infected-lab"),     # 714-762, own _LIGHT scene
+    _M("factory_infected", "Factory_event",    "infected-factory"), # 763-771, NO *_Light scene ->
+                                                                    # lights scanned from geometry
     # --- known NON-playable location folders (excluded from the menu ON PURPOSE) ---
     _M("", "Factory",               "", playable=False),   # legacy pre-rework Factory (rework ships)
     _M("", "Arena",                 "", playable=False),   # Arena mode, not a raid map
@@ -105,6 +109,8 @@ FALLBACK_NAMES = {
     "labyrinth":      ("The Labyrinth",     "Лабиринт"),
     "icebreaker":     ("Icebreaker",        "Ледокол"),
     "terminal":       ("Terminal",          "Терминал"),
+    "labs_infected":    ("Infected Lab",     "Зараженная Лаборатория"),
+    "factory_infected": ("Infected Factory", "Зараженный Завод"),
 }
 
 # Legacy hardcoded scalar LIGHT_LEVELS (the pre-manifest tools/build_map.py table), kept HERE only as
@@ -336,6 +342,11 @@ def main():
         en, ru = name_for(e, api_names)
         derived = derive_levels(scenes, e.folder)
         light = select_light_levels(derive_light_scenes(scenes, e.folder), night=e.night)
+        if not light:
+            # No dedicated *_Light scene (Factory_event): the light extractor reads Light components
+            # from whatever scenes it is given, so scan the geometry scenes instead of shipping a
+            # sky-only map. Lights stay optional: an empty scan just yields no sidecar.
+            light = derive_levels(scenes, e.folder)
         maps.append({"id": e.id, "en": en, "ru": ru, "folder": e.folder, "dev": e.dev,
                      "light_levels": light, "derived_levels": derived,
                      # scene-preset bundle stems (game logs say `scene preset path:maps/

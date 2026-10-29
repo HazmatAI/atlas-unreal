@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "id": "factory_infected",
+  "name": "Infected Factory",
+  "source": {
+    "type": "unity_eft_v2",
+    "unity_location": "Factory_event",
+    "levels": [
+      763,
+      765,
+      766,
+      767,
+      769,
+      770
+    ],
+    "root": "eft_assets/factory_infected",
+    "scene": "scene.json",
+    "mesh_dir": "meshes",
+    "texture_dir": "tex"
+  },
+  "coordinates": {
+    "up": "y",
+    "source_handedness": "left",
+    "target_handedness": "right",
+    "flip_winding_on_negative_determinant": true
+  },
+  "cull": {
+    "keep_root_prefix": "SBG_Factory_Event",
+    "drop_root_regex": null,
+    "drop_shadow_submeshes": true
+  }
+}
