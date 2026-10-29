@@ -82,7 +82,7 @@
     "assemblyTargetExistedBeforeInitialSync": false,
     "assemblyExistedBeforeBoundsCorrection": true,
     "initialSyncBackup": "none required: Root_001 and Assemblies targets were absent before initial sync",
-    "boundsCorrectionBackupPath": "C:/Users/Pc/Documents/ChatGPT/Aether/sector_collision_stage/Root1AdjacencyStageHost/Saved/Backups/LiveAssemblyBoundsFix/L_Atlas_Root003_Root001_Adjacent.original.20260920-191726.umap",
+    "boundsCorrectionBackupPath": "<AETHER_ROOT>/sector_collision_stage/Root1AdjacencyStageHost/Saved/Backups/LiveAssemblyBoundsFix/L_Atlas_Root003_Root001_Adjacent.original.20260920-191726.umap",
     "boundsCorrectionBackupSha256": "4E63A3421406632EDA9150A845EA2B079F75CC0BE418C2D89A3735ACE4B00B59",
     "synchronizedOnly": ["Content/Atlas/Sectors/Root_001/**", "Content/Atlas/Sectors/Assemblies/L_Atlas_Root003_Root001_Adjacent.umap"],
     "mcpValidation": "pending: live editor must reopen; Root3 live serialization differs from the staging copy used during headless assembly validation"

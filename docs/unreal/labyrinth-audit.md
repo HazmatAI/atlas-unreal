@@ -2,7 +2,7 @@
 
 Date de l'audit : 2026-09-19
 Atlas : `0.1.0-3dce665-win64-full`
-Pack : `D:\EXTRAtor tarkov to UE\atlas-0.1.0-3dce665-win64-full\packs\labyrinth.eftpack`
+Pack : `<WORK_ROOT>\atlas-0.1.0-3dce665-win64-full\packs\labyrinth.eftpack`
 
 ## Verdict
 

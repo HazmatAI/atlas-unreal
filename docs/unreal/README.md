@@ -35,7 +35,7 @@ Le premier jalon est implémenté dans `unreal/AtlasEftImporter` :
 - commandlet `AtlasEftBuildScene` pour créer un niveau de contrôle à partir d'un voisinage d'instances ;
 - prototype Labyrinthe validé avec 25 acteurs, 18 meshes uniques, 4 831 triangles et `0.000000 cm` d'erreur maximale de translation.
 
-Le projet minimal `unreal/AtlasEftImporterHost` reste un host temporaire de build/test. Le projet Unreal live canonique est `D:\EXTRAtor tarkov to UE\unreal project\MyProject\MyProject.uproject`. Le script `unreal/Scripts/BuildAndTest.ps1` automatise le build, l'audit, les imports et les tests. Avec `-LiveProjectPath`, il ne synchronise que les 12 assets de la verticale comparative (master opaque, deux maps, deux MI, deux meshes et cinq textures) et préserve le plugin ainsi que les autres dossiers `Content/Atlas`.
+Le projet minimal `unreal/AtlasEftImporterHost` reste un host temporaire de build/test. Le projet Unreal live canonique est `<WORK_ROOT>\unreal project\MyProject\MyProject.uproject`. Le script `unreal/Scripts/BuildAndTest.ps1` automatise le build, l'audit, les imports et les tests. Avec `-LiveProjectPath`, il ne synchronise que les 12 assets de la verticale comparative (master opaque, deux maps, deux MI, deux meshes et cinq textures) et préserve le plugin ainsi que les autres dossiers `Content/Atlas`.
 
 État vérifié le 2026-09-20 : la dernière passe staging complète a compilé Editor Development, Game Development et Game Shipping, puis réussi l'audit du pack, les imports échantillons/batch, la scène architecturale de 25 instances, les maps matériaux 17/20 et 974/1240 et les cinq tests runtime. Cette passe précède l'ajout du commandlet secteur : celui-ci a été compilé séparément en Editor Development et a réussi son import ciblé ainsi que son contrôle Unreal/MCP ; Game Development, Game Shipping et les cinq tests n'ont pas été relancés avec cette extension. Smart App Control ayant été désactivé par l'utilisateur, aucune nouvelle erreur WDAC n'est apparue ; aucune politique de sécurité n'a été modifiée. La validation staging n'utilise pas `-LiveProjectPath`; ce paramètre ne doit être activé qu'après inspection explicite des maps et limites de synchronisation.
 
@@ -43,7 +43,7 @@ Exemple :
 
 ```powershell
 & .\unreal\Scripts\BuildAndTest.ps1 `
-  -PackPath 'D:\EXTRAtor tarkov to UE\atlas-0.1.0-3dce665-win64-full\packs\labyrinth.eftpack' `
+  -PackPath '<WORK_ROOT>\atlas-0.1.0-3dce665-win64-full\packs\labyrinth.eftpack' `
   -SampleTextureMaterialId 17 -SampleMeshId 20 `
   -SecondMaterialId 974 -SecondMaterialMeshId 1240
 ```
@@ -121,7 +121,7 @@ Compiler uniquement Editor avec `RunUAT.bat BuildPlugin -Plugin=<source.uplugin>
 
 Résultat : code 0, 53 acteurs, 4 meshes, 9 MI, 13 textures, 121 slots instanciés, erreurs de translation et des huit coins nulles. Le compte incorrect 54 est refusé avant toute création. Le rapport est `Saved/AtlasSectorValidation.txt`. Le dossier Outliner contient root/niveau/ancêtre/parent, avec transforms monde conservés. Le fallback magenta est implémenté mais non exercé par ce secteur entièrement opaque supporté. La capture MCP montre les escaliers/paliers, avec un éclairage sombre : validation structurelle acquise, matériau visuel partiel. LOD, collisions et lumières source restent à faire.
 
-La compilation et l'exécution de cette session utilisent `C:\Users\Pc\Documents\ChatGPT\Aether\sector_build\HostProject`. Le plugin live reste à sa version précédente ; l'installation de la nouvelle version exigerait un redémarrage distinct et n'est pas nécessaire pour ouvrir les assets générés.
+La compilation et l'exécution de cette session utilisent `<AETHER_ROOT>\sector_build\HostProject`. Le plugin live reste à sa version précédente ; l'installation de la nouvelle version exigerait un redémarrage distinct et n'est pas nécessaire pour ouvrir les assets générés.
 
 ## RootId 3 complet — sélection active LOD0
 

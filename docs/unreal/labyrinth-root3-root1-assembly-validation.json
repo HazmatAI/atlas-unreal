@@ -9,7 +9,7 @@
     "destinationHashMatchesStage": true,
     "destinationTargetExistedBeforeCorrection": true,
     "previousAssemblySha256": "4E63A3421406632EDA9150A845EA2B079F75CC0BE418C2D89A3735ACE4B00B59",
-    "backupPath": "C:/Users/Pc/Documents/ChatGPT/Aether/sector_collision_stage/Root1AdjacencyStageHost/Saved/Backups/LiveAssemblyBoundsFix/L_Atlas_Root003_Root001_Adjacent.original.20260920-191726.umap",
+    "backupPath": "<AETHER_ROOT>/sector_collision_stage/Root1AdjacencyStageHost/Saved/Backups/LiveAssemblyBoundsFix/L_Atlas_Root003_Root001_Adjacent.original.20260920-191726.umap",
     "backupSha256": "4E63A3421406632EDA9150A845EA2B079F75CC0BE418C2D89A3735ACE4B00B59",
     "Root3Overwritten": false,
     "Root1SectorHashUnchanged": "CDBC0BBB30CC0E97F716F9499F41E800107BD3382ABA3018E466AF1D616E0A3D",

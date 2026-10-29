@@ -57,7 +57,7 @@ La couverture structurelle se suit ici par nombre de placements actifs LOD0, pas
 - Cinq tests runtime (coordonnées, affine, meshes, matériaux et instances) ont passé dans la dernière passe staging complète avant l'ajout du commandlet secteur. Ils n'ont pas été relancés avec cette extension.
 - Script reproductible `BuildAndTest.ps1` et staging Windows sur `C:`.
 - Workflow de contrôle live via MCP documenté.
-- Projet Unreal canonique fixé à `D:\EXTRAtor tarkov to UE\unreal project\MyProject` ; `-LiveProjectPath` copie uniquement les 12 assets comparatifs matériau validés vers `Content/Atlas`, préserve le plugin live et les autres assets Atlas, puis lance l'audit depuis le `.uproject` fourni.
+- Projet Unreal canonique fixé à `<WORK_ROOT>\unreal project\MyProject` ; `-LiveProjectPath` copie uniquement les 12 assets comparatifs matériau validés vers `Content/Atlas`, préserve le plugin live et les autres assets Atlas, puis lance l'audit depuis le `.uproject` fourni.
 
 **Reste**
 

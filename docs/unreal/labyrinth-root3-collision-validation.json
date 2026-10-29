@@ -78,10 +78,10 @@
     "liveCollisionAssetPackagePath": "/Game/Atlas/Sectors/Root_003/CollisionMeshes",
     "liveStatus": "synchronized offline; not yet reopened or validated via MCP",
     "postSyncMcpValidation": "pending user reopens the existing MyProject project/map; do not infer loaded actor/component counts from the offline copy",
-    "backupDirectory": "C:/Users/Pc/Documents/ChatGPT/Aether/sector_collision_stage/LiveOriginalBackup/Root003_LiveBackup_20260920_165631",
-    "backupMapPath": "C:/Users/Pc/Documents/ChatGPT/Aether/sector_collision_stage/LiveOriginalBackup/Root003_LiveBackup_20260920_165631/L_Atlas_Root003_Area03.original.umap",
+    "backupDirectory": "<AETHER_ROOT>/sector_collision_stage/LiveOriginalBackup/Root003_LiveBackup_20260920_165631",
+    "backupMapPath": "<AETHER_ROOT>/sector_collision_stage/LiveOriginalBackup/Root003_LiveBackup_20260920_165631/L_Atlas_Root003_Area03.original.umap",
     "backupMapSha256": "5EA6983AE2EC4CBD29F2B9D4E8A8F12C8C88A44839F95A5A8FEBDE09A714A3EB",
-    "backupManifestPath": "C:/Users/Pc/Documents/ChatGPT/Aether/sector_collision_stage/LiveOriginalBackup/Root003_LiveBackup_20260920_165631/Root003_LiveBackup_Manifest.json",
+    "backupManifestPath": "<AETHER_ROOT>/sector_collision_stage/LiveOriginalBackup/Root003_LiveBackup_20260920_165631/Root003_LiveBackup_Manifest.json",
     "editorNativeExploration": {
       "deterministicPlanGeneratedByCommandlet": true,
       "planComponents": 1702,

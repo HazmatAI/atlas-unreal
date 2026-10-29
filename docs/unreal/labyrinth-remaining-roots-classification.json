@@ -2,8 +2,8 @@
   "report": "Labyrinth remaining-root classification",
   "date": "2026-09-20",
   "source": {
-    "pack": "D:\\EXTRAtor tarkov to UE\\atlas-0.1.0-3dce665-win64-full\\packs\\labyrinth.eftpack",
-    "sidecarDirectory": "D:\\EXTRAtor tarkov to UE\\atlas-0.1.0-3dce665-win64-full\\eft_assets\\labyrinth",
+    "pack": "<WORK_ROOT>\\atlas-0.1.0-3dce665-win64-full\\packs\\labyrinth.eftpack",
+    "sidecarDirectory": "<WORK_ROOT>\\atlas-0.1.0-3dce665-win64-full\\eft_assets\\labyrinth",
     "sourceFingerprint": "a2fa9ad39c0dc867",
     "manifestRoots": 18
   },

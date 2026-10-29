@@ -2,7 +2,7 @@
   "reportDate": "2026-09-20",
   "status": "PASS_OFFLINE_SYNCED_MCP_PENDING",
   "source": {
-    "pack": "D:\\EXTRAtor tarkov to UE\\atlas-0.1.0-3dce665-win64-full\\packs\\labyrinth.eftpack",
+    "pack": "<WORK_ROOT>\\atlas-0.1.0-3dce665-win64-full\\packs\\labyrinth.eftpack",
     "fingerprint": "a2fa9ad39c0dc867",
     "rootId": 7,
     "manifestName": "SBG_Labyrinth_Area_02",
@@ -110,7 +110,7 @@
     }
   },
   "sync": {
-    "destinationProject": "D:\\EXTRAtor tarkov to UE\\unreal project\\MyProject",
+    "destinationProject": "<WORK_ROOT>\\unreal project\\MyProject",
     "offlineSync": "PASS",
     "unrealEditorClosed": true,
     "targetWasNew": true,

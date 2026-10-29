@@ -7,7 +7,7 @@ Le serveur MCP Unreal local est joignable via `127.0.0.1:8000`. Les appels passe
 Deux namespaces ne doivent jamais être confondus :
 
 - `EditorAssetSubsystem` / `AssetTools` attend un chemin d'asset Unreal, par exemple `/Game/Atlas/Meshes/0000_0255/SM_Atlas_0000_stone1` ;
-- un chemin Windows comme `D:/EXTRAtor tarkov to UE/.../HostProject.uproject` est un chemin de fichier, pas un asset Unreal.
+- un chemin Windows comme `<WORK_ROOT>/.../HostProject.uproject` est un chemin de fichier, pas un asset Unreal.
 
 Passer un chemin Windows à `AssetTools.exists` force Unreal à tenter une conversion en package path. Les espaces deviennent alors invalides et produisent le message trompeur `because there are too many spaces`. Ce n'est ni une limite de longueur, ni un défaut du chemin d'installation, ni une raison de déplacer le dépôt.
 
@@ -22,7 +22,7 @@ Exception explicite : `TextureTools.import_file(folder_path, asset_name, source_
 
 ## Projet canonique depuis le 2026-09-20
 
-- projet live : `D:\EXTRAtor tarkov to UE\unreal project\MyProject\MyProject.uproject` ;
+- projet live : `<WORK_ROOT>\unreal project\MyProject\MyProject.uproject` ;
 - configuration Codex/MCP : `MyProject\.codex\config.toml` ;
 - endpoint : `http://127.0.0.1:8000/mcp` ;
 - plugin Atlas installé : `MyProject\Plugins\AtlasEftImporter` ;
@@ -38,7 +38,7 @@ Après installation ou remplacement du plugin Atlas, redémarrer une fois l'édi
 - level : `/Temp/Untitled_1` (non sauvegardé) ;
 - PIE : arrêté ;
 - plugin `AtlasEftImporter` : activé ;
-- base du plugin : `D:/EXTRAtor tarkov to UE/atlas-unreal/unreal/BuildPluginPackage` ;
+- base du plugin : `<WORK_ROOT>/atlas-unreal/unreal/BuildPluginPackage` ;
 - mount point : `/AtlasEftImporter/` ;
 - monde World Partition avec Landscape, proxies, HLOD et `WorldDataLayers`.
 
